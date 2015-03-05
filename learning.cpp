@@ -76,8 +76,8 @@ bool vertical_empty(component_type const * d, size_t w, size_t h) {
     return true;
 };
 
-box_type make_box_character(component_type const * cs, box_type const & cbox) {
-
+box_type make_box_character(component_type const * cs, box_type const & cbox)
+{
     box_type box = cbox;
 
     auto d = cs + box.y*cbox.w + box.x;
@@ -88,13 +88,25 @@ box_type make_box_character(component_type const * cs, box_type const & cbox) {
         ++d;
     }
     box.w = box.x;
-    while (++box.w < cbox.w) {
-        if (vertical_empty(d, cbox.w, box.h)) {
+    while (box.w + 1 < cbox.w) {
+        ++box.w;
+        if ([](component_type const * d, size_t w, size_t h) -> bool {
+            for (auto e = d+w*h; d != e; d += w) {
+                if (isc(*d) && (
+                    (d+1 != e && isc(*(d+1)))
+                 || (d-w+1 < e && isc(*(d-w+1)))
+                 || (d+w+1 < e && isc(*(d+w+1)))
+                )) {
+                    return false;
+                }
+            }
+            return true;
+        }(d, cbox.w, box.h)) {
             break;
         }
         ++d;
     }
-    box.w -= box.x + 1;
+    box.w -= box.x;
 
     d = cs + box.y*cbox.w + box.x;
     for (; box.y < cbox.h; ++box.y) {

@@ -8,9 +8,9 @@
 #include <cassert>
 #include <cstring>
 
-#include <stdexcept> // fix range.hpp
-#include <falcon/range/range.hpp>
-#include <falcon/iostreams/get_file_contents.hpp>
+// #include <stdexcept> // fix range.hpp
+// #include <falcon/range/range.hpp>
+// #include <falcon/iostreams/get_file_contents.hpp>
 
 #include "mln/image/image2d.hh"
 #include "mln/io/ppm/load.hh"
@@ -41,7 +41,7 @@ constexpr const component_type cc = ' ';
 constexpr const component_type ncc = 'o';
 
 bool isc(component_type c)
-{ return c == ' '; }
+{ return c == cc; }
 
 
 struct box_type {
@@ -76,8 +76,8 @@ bool vertical_empty(component_type const * d, size_t w, size_t h) {
     return true;
 };
 
-box_type make_box_character(component_type const * cs, box_type const & cbox) {
-
+box_type make_box_character(component_type const * cs, box_type const & cbox)
+{
     box_type box = cbox;
 
     auto d = cs + box.y*cbox.w + box.x;
@@ -88,13 +88,25 @@ box_type make_box_character(component_type const * cs, box_type const & cbox) {
         ++d;
     }
     box.w = box.x;
-    while (++box.w < cbox.w) {
-        if (vertical_empty(d, cbox.w, box.h)) {
+    while (box.w + 1 < cbox.w) {
+        ++box.w;
+        if ([](component_type const * d, size_t w, size_t h) -> bool {
+            for (auto e = d+w*h; d != e; d += w) {
+                if (isc(*d) && (
+                    (d+1 != e && isc(*(d+1)))
+                 || (d-w+1 < e && isc(*(d-w+1)))
+                 || (d+w+1 < e && isc(*(d+w+1)))
+                )) {
+                    return false;
+                }
+            }
+            return true;
+        }(d, cbox.w, box.h)) {
             break;
         }
         ++d;
     }
-    box.w -= box.x + 1;
+    box.w -= box.x;
 
     d = cs + box.y*cbox.w + box.x;
     for (; box.y < cbox.h; ++box.y) {
@@ -352,9 +364,9 @@ int main(int argc, char **argv)
             = ((511/*PPM_RED_WEIGHT*/   * rgb.red()   + 511)>>10)
             + ((396/*PPM_GREEN_WEIGHT*/ * rgb.green() + 511)>>10)
             + ((117/*PPM_BLUE_WEIGHT*/  * rgb.blue()  + 511)>>10);
-            *it++ = (c < 128) ? 'x' : ' ';
-//             *it++ = !(rgb.red() == 60 && rgb.green() == 64 && rgb.blue() == 72) ? ' ' : 'x';
-//             *it++ = (rgb.red() == 255 && rgb.green() == 255 && rgb.blue() == 255) ? 'x' : ' ';
+            *it++ = (c < 128) ? ncc : cc;
+//             *it++ = !(rgb.red() == 60 && rgb.green() == 64 && rgb.blue() == 72) ? cc :ncc;
+//             *it++ = (rgb.red() == 255 && rgb.green() == 255 && rgb.blue() == 255) ? ncc : cc;
         }
     }
 

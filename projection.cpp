@@ -142,7 +142,7 @@ void projection(std::ostream & os, component_type const * components, size_t w, 
 
     const size_t count_projection = 5;
     vcomponent_type v(h*w*count_projection);
-    for (auto y : falcon::range(size_t{}, h)) {
+    for (auto y : falcon::range(size_t {}, h)) {
         std::copy(vleft.begin() + y*w, vleft.begin() + (y+1)*w,     v.begin()+(y*count_projection+0)*w);
         std::copy(vright.begin() + y*w, vright.begin() + (y+1)*w,   v.begin()+(y*count_projection+1)*w);
         std::copy(vtop.begin() + y*w, vtop.begin() + (y+1)*w,       v.begin()+(y*count_projection+2)*w);
