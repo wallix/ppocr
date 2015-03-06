@@ -11,34 +11,33 @@ Image::Image(const Bounds& bounds, PtrImageData data)
 , bounds_(bounds)
 {}
 
-Image::Image(Bounds const & bounds, Pixel const * data, const Index & section_idx, const Bounds & section_bnd)
-: data_(new Pixel[section_bnd.air()])
+Image::Image(Image const & img, const Index & section_idx, const Bounds & section_bnd)
+: data_(new Pixel[section_bnd.area()])
 , bounds_(section_bnd)
 {
-    assert(data);
-    cP d = data + to_size_t(section_idx);
+    cP d = img.data_at(section_idx);
     P out = data_.get();
     for (size_t y = 0; y != height(); ++y) {
         out = std::copy(d, d+width(), out);
-        d += bounds.h();
+        d += img.width();
     }
 }
 
 Image Image::section(const Index& section_idx, const Bounds& section_bnd) const
 {
     assert(bounds_.contains(section_idx));
-    assert(section_bnd.contains(section_idx));
-    assert(section_bnd.w() <= width() && section_bnd.h() <= height());
-    return Image(bounds_, data_.get(), section_idx, section_bnd);
+    assert(section_bnd.w() + section_idx.x() <= width() && section_bnd.h() + section_idx.y() <= height());
+    return Image(*this, section_idx, section_bnd);
 }
 
 Image Image::rotate90() const
 {
     Bounds bnd(height(), width());
-    PtrImageData data(new Pixel[bnd.air()]);
+    PtrImageData data(new Pixel[bnd.area()]);
     P out = data.get();
-    for (size_t x = 0; x != width(); ++x) {
-        for (cP d = data_.get() + x, e = d + bounds_.air(); d != e; d += width()) {
+    for (size_t x = width(); x; ) {
+        --x;
+        for (cP d = data_.get() + x, e = d + bounds_.area(); d != e; d += width()) {
             *out++ = *d;
         }
     }

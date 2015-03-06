@@ -47,7 +47,7 @@ struct Bounds {
     , h_(h)
     {}
 
-    size_t air() const noexcept { return w_ * h_; }
+    size_t area() const noexcept { return w_ * h_; }
     size_t w() const noexcept { return w_; }
     size_t h() const noexcept { return h_; }
 
@@ -72,7 +72,7 @@ using PtrImageData = std::unique_ptr<Pixel[]>;
 struct Image
 {
     Image(Bounds const & bounds, PtrImageData data);
-    Image(Bounds const & bounds, Pixel const * data, const Index & section_idx, const Bounds & section_bnd);
+    Image(Image const & img, const Index & section_idx, const Bounds & section_bnd);
 
     size_t width() const noexcept { return bounds_.w(); }
     size_t height() const noexcept { return bounds_.h(); }
@@ -80,6 +80,8 @@ struct Image
     Image section(const Index& section_idx, const Bounds& section_bnd) const;
 
     Image rotate90() const;
+
+    Pixel const * data() const noexcept { return this->data_.get(); }
 
     friend std::ostream & operator<<(std::ostream &, Image const &);
 
@@ -94,7 +96,7 @@ private:
     { return idx.y() * this->width() + idx.x(); }
 
     Pixel const * data_at(Index const & idx) const noexcept
-    { return this->data_.get() + to_size_t(idx); }
+    { return data() + to_size_t(idx); }
 };
 
 
@@ -193,5 +195,52 @@ private:
 
 inline HorizontalRange<AnyPixelGet> hrange(Image const & img, Index pos, Bounds bounds)
 { return {img, pos, bounds.w(), AnyPixelGet(bounds.h(), img.width())}; }
+
+
+namespace rng
+{
+    template<class PixelGetter>
+    bool any(HorizontalRange<PixelGetter> const & range)
+    {
+        for (bool is : range) {
+            if (is) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    template<class PixelGetter>
+    bool all(HorizontalRange<PixelGetter> const & range)
+    {
+        for (bool is : range) {
+            if (!is) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<class PixelGetter>
+    bool none(HorizontalRange<PixelGetter> const & range)
+    {
+        for (bool is : range) {
+            if (is) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<class Iterator>
+    bool next_alternation(Iterator & it, Iterator last)
+    {
+        bool x = *it;
+        while (it != last && *it == x) {
+            ++it;
+        }
+        return it != last;
+    }
+}
 
 #endif

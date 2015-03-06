@@ -18,11 +18,13 @@ endif()
 
 add_executable(ppocr image.cpp image_from_file.cpp main.cpp)
 add_executable(learning learning.cpp)
-add_executable(array_view array_view.cpp)
+# add_executable(array_view array_view.cpp)
+add_executable(print_alternation image.cpp image_from_file.cpp print_alternation.cpp)
 
 target_link_libraries (ppocr ${LIB_ASAN})
 target_link_libraries (learning ${LIB_ASAN})
-target_link_libraries (array_view ${LIB_ASAN})
+# target_link_libraries (array_view ${LIB_ASAN})
+target_link_libraries (print_alternation ${LIB_ASAN})
 
 
 # add_subdirectory(test)

@@ -83,12 +83,12 @@ BOOST_AUTO_TEST_CASE(TestImage)
     BOOST_CHECK_EQUAL(oss.str(),
     "::::::::::::::::\n"
     ":--------------:\n"
-    ":-----xxxxx----:\n"
-    ":----xxxxxxx---:\n"
-    ":----x--x--x---:\n"
-    ":----x--x--x---:\n"
-    ":----xxxx-xx---:\n"
     ":-----xxx-x----:\n"
+    ":----xxxx-xx---:\n"
+    ":----x--x--x---:\n"
+    ":----x--x--x---:\n"
+    ":----xxxxxxx---:\n"
+    ":-----xxxxx----:\n"
     ":--------------:\n"
     "::::::::::::::::\n"
     );
@@ -111,5 +111,24 @@ BOOST_AUTO_TEST_CASE(TestImage)
         std::copy(range.begin(), range.end(), std::back_inserter(v));
         std::string s; for (auto b : v) s += b  ? 'x' : '-';
         BOOST_CHECK_EQUAL(s, "-xxxxxx-");
+    }
+
+    BOOST_CHECK_EQUAL(false, rng::any(hrange(img, {0, 0}, 8)));
+    BOOST_CHECK_EQUAL(false, rng::all(hrange(img, {0, 0}, 8)));
+    BOOST_CHECK_EQUAL(true, rng::none(hrange(img, {0, 0}, 8)));
+
+    BOOST_CHECK_EQUAL(true, rng::any(hrange(img, {0, 5}, 8)));
+    BOOST_CHECK_EQUAL(false, rng::all(hrange(img, {0, 5}, 8)));
+    BOOST_CHECK_EQUAL(false, rng::none(hrange(img, {0, 5}, 8)));
+
+    {
+        auto range = hrange(img, {0, 5}, 8);
+        auto it = range.begin();
+        auto last = range.end();
+        BOOST_CHECK_EQUAL(true, rng::next_alternation(it, last));
+        BOOST_CHECK_EQUAL(true, rng::next_alternation(it, last));
+        BOOST_CHECK_EQUAL(true, rng::next_alternation(it, last));
+        BOOST_CHECK_EQUAL(true, rng::next_alternation(it, last));
+        BOOST_CHECK_EQUAL(false, rng::next_alternation(it, last));
     }
 }
