@@ -62,7 +62,7 @@ private:
 using Pixel = char;
 
 inline bool is_letter(Pixel pix)
-{ return pix == ' '; }
+{ return pix == 'x'; }
 
 template<class PixelGetter>
 struct HorizontalRange;
@@ -101,24 +101,46 @@ private:
 Image image_from_file(const char * filename);
 
 
-template<class PixelGetter>
+struct NormalPixelGet {
+    constexpr NormalPixelGet() noexcept {}
+
+    bool operator()(Pixel const * p) const
+    { return is_letter(*p); }
+};
+
+template<class PixelGetter = NormalPixelGet>
 struct HorizontalRange
 {
     struct iterator
     {
-        bool operator<(iterator const & other) const { return data < other.data; }
-        bool operator==(iterator const & other) const { return data == other.data; }
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = bool;
+        using reference = bool;
+        using pointer = void;
+
+        bool operator<(iterator const & other) const { return data_ < other.data_; }
+        bool operator==(iterator const & other) const { return data_ == other.data_; }
         bool operator!=(iterator const & other) const { return !(*this == other); }
 
-        bool operator*() const { return r.pixel_get_(data); }
+        bool operator*() const { return r_.pixel_get_(data_); }
 
-        iterator & operator++(iterator const & other) { ++data; return *this; }
+        bool operator-(iterator const & other) const { return data_ - other.data_; }
+
+        iterator & operator++() { ++data_; return *this; }
+
+        Pixel const * base() const noexcept { return data_; }
 
     private:
-        HorizontalRange & r;
-        Pixel const * data;
+        HorizontalRange const & r_;
+        Pixel const * data_;
 
-        friend class HorizontalRange<PixelGetter>;
+        friend class HorizontalRange;
+
+        iterator(HorizontalRange const & r, Pixel const * data)
+        : r_(r)
+        , data_(data)
+        {}
     };
 
     HorizontalRange(Image const & img, Index idx, size_t w, PixelGetter pixel_get)
@@ -127,8 +149,10 @@ struct HorizontalRange
     , data_(img.data_at(idx))
     {}
 
-    iterator begin() { return {*this, data_}; }
-    iterator end() { return {*this, data_ + w_}; }
+    iterator begin() const { return {*this, data_}; }
+    iterator end() const { return {*this, data_ + w_}; }
+    size_t size() const { return w_; }
+    bool operator[](size_t x) const { return pixel_get_(data_ + w_); }
 
 private:
     PixelGetter pixel_get_;
@@ -140,14 +164,6 @@ private:
 template<class PixelGetter>
 HorizontalRange<PixelGetter> hrange(Image const & img, Index pos, size_t w, PixelGetter pixel_get)
 { return {img, pos, w, pixel_get}; }
-
-
-struct NormalPixelGet {
-    constexpr NormalPixelGet() noexcept {}
-
-    bool operator()(Pixel const * p) const
-    { return is_letter(*p); }
-};
 
 inline HorizontalRange<NormalPixelGet> hrange(Image const & img, Index pos, size_t w)
 { return {img, pos, w, NormalPixelGet()}; }

@@ -92,4 +92,24 @@ BOOST_AUTO_TEST_CASE(TestImage)
     ":--------------:\n"
     "::::::::::::::::\n"
     );
+
+    {
+        auto range = hrange(img, {0, 5}, 8);
+        BOOST_CHECK_EQUAL(range.size(), 8);
+
+        std::vector<bool> v;
+        std::copy(range.begin(), range.end(), std::back_inserter(v));
+        std::string s; for (auto b : v) s += b  ? 'x' : '-';
+        BOOST_CHECK_EQUAL(s, "-xx--xx-");
+    }
+
+    {
+        auto range = hrange(img, {0, 5}, {8, 3});
+        BOOST_CHECK_EQUAL(range.size(), 8);
+
+        std::vector<bool> v;
+        std::copy(range.begin(), range.end(), std::back_inserter(v));
+        std::string s; for (auto b : v) s += b  ? 'x' : '-';
+        BOOST_CHECK_EQUAL(s, "-xxxxxx-");
+    }
 }
