@@ -16,7 +16,7 @@ if(${LIB_ASAN} STREQUAL "LIB_ASAN-NOTFOUND")
     message(FATAL_ERROR "Couldn't find the 'libasan' library")
 endif()
 
-add_executable(ppocr main.cpp)
+add_executable(ppocr image.cpp image_from_file.cpp main.cpp)
 add_executable(learning learning.cpp)
 add_executable(array_view array_view.cpp)
 
@@ -28,3 +28,5 @@ target_link_libraries (array_view ${LIB_ASAN})
 # add_subdirectory(test)
 
 # install(TARGETS ppocr RUNTIME DESTINATION bin)
+
+add_subdirectory(tests)
