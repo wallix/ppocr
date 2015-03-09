@@ -5,5 +5,5 @@
 
 
 std::ostream & operator<<(std::ostream & os, Box const & box) {
-    return os << box.x() << ", " << box.y() << ", " << box.w() << ", " << box.h();
+    return os << box.index() << ' ' << box.bounds();
 }

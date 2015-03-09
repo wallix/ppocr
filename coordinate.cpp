@@ -27,11 +27,11 @@
 
 
 std::ostream & operator<<(std::ostream & os, Index const & idx) {
-    return os << idx.x() << ',' << idx.y();
+    return os << idx.x() << ' ' << idx.y();
 }
 
 std::ostream & operator<<(std::ostream & os, Bounds const & bnd) {
-    return os << bnd.w() << ',' << bnd.h();
+    return os << bnd.w() << ' ' << bnd.h();
 }
 
 #endif

@@ -45,6 +45,7 @@ struct Image
     size_t height() const noexcept { return bounds_.h(); }
 
     Bounds const & bounds() const noexcept { return bounds_; }
+    size_t area() const noexcept { return bounds_.area(); }
 
     Image section(const Index& section_idx, const Bounds& section_bnd) const;
 

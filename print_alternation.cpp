@@ -1,11 +1,16 @@
 #include "image.hpp"
 #include "box.hpp"
 #include "make_box_character.hpp"
+#include "strategies/alternation.hpp"
 
 #include <iostream>
+#include <sstream>
+#include <vector>
+
+#include <cassert>
 
 
-int main(int ac,  char ** av)
+int main(int ac, char ** av)
 {
     if (ac != 2) {
         std::cerr << av[0] << " filename\n";
@@ -15,60 +20,55 @@ int main(int ac,  char ** av)
     Image const img = image_from_file(av[1]);
 //     std::cout << img;
 
-    Index index;
+    struct Def {
+        std::string c;
+        std::array<strategies::alternation_seq_t, 7> alternations;
+
+        bool operator<(Def const & other) const {
+            return alternations < other.alternations;
+        }
+
+        bool operator == (Def const & other) const {
+            return alternations == other.alternations;
+        }
+    };
+
+    std::vector<Def> definitions;
+
+    size_t x = 0;
     Bounds bounds(img.width(), img.height());
 
-    while (auto const cbox = make_box_character(img, index, bounds)) {
-        std::cout << cbox << std::endl;
+    while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
+        std::cout << "\nbox(" << cbox << ")\n";
 
-        Image img_word = img.section(cbox.index(), cbox.bounds());
-        Image img_word90 = img_word.rotate90();
-
+        Image const img_word = img.section(cbox.index(), cbox.bounds());
+        Image const img_word90 = img_word.rotate90();
         std::cout << img_word;
         std::cout << img_word90;
 
-        if (cbox.h() < 2) {
-            std::cout << "h1: []";
-        } else {
-            auto range = hrange(img_word, {0, (cbox.h()-2)/3}, cbox.w());
-            auto it = range.begin();
-            auto last = range.end();
-            std::cout << "h1: " << ((cbox.h()-2)/3) << ": " << *it;
-            while (rng::next_alternation(it, last)) {
-                std::cout << ',' << *it;
+        Def def{
+            static_cast<std::ostringstream&>(std::ostringstream() << img_word).str()
+          , strategies::all_sequence_alternation(img_word, img_word90)
+        };
+
+        for (auto const & alternations : def.alternations) {
+            static char const * names[]{"hl1", "hl2", "hm1", "hm2", "vl1", "vm1", "vm2"};
+            std::cout << names[&alternations - &def.alternations[0]] << ':';
+            for (auto const & x : alternations) {
+                std::cout << ' ' << x;
             }
-            endl(std::cout);
+            std::cout << '\n';
         }
 
-//         auto vlight1 = (cbox.h < 2)
-//           ? vlight_type()
-//           : horizontal_light(vbox.cbegin() + (cbox.h-2)/3*cbox.w,               cbox.w, cbox.h);
-//         auto vlight2 = horizontal_light(vbox.cbegin() + (cbox.h*2-1)/3*cbox.w,  cbox.w, cbox.h);
-//         auto vlight3 = vertical_light(vbox.cbegin() + (cbox.w/2),               cbox.w, cbox.h);
-//
-//         auto vmask1 = horizontal_mask(vbox.cbegin(),                        cbox.h/3, cbox.w, cbox.h);
-//         auto vmask2 = horizontal_mask(vbox.cend() - (cbox.h/3) * cbox.w,    cbox.h/3, cbox.w, cbox.h);
-//         auto vmask3 = vertical_mask(vbox.cbegin(),                          cbox.w/3, cbox.w, cbox.h);
-//         auto vmask4 = vertical_mask(vbox.cbegin() + (cbox.w/3*2),           cbox.w/3, cbox.w, cbox.h);
-//
-//         Def def = {std::string(), {{
-//             std::move(vlight1)
-//           , std::move(vlight2)
-//           , std::move(vlight3)
-//           , std::move(vmask1)
-//           , std::move(vmask2)
-//           , std::move(vmask3)
-//           , std::move(vmask4)
-//         }}};
-//
-//         auto p = std::lower_bound(all.begin(), all.end(), def);
-//         if (p != all.end() && *p == def) {
-//             std::cout << p->w << ' ';
-//         }
-//         else {
-//             std::cout << "[?] ";
-//         }
+        auto p = std::lower_bound(definitions.begin(), definitions.end(), def);
+        if (p != definitions.end() && *p == def) {
+            std::cout << p->c << ' ';
+        }
+        else {
+            std::cout << "[?] ";
+            definitions.push_back(std::move(def));
+        }
 
-        index = Index(cbox.x()+cbox.w(), index.y());
+        x = cbox.x() + cbox.w();
     }
 }
