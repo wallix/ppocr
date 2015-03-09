@@ -16,10 +16,14 @@ if(${LIB_ASAN} STREQUAL "LIB_ASAN-NOTFOUND")
     message(FATAL_ERROR "Couldn't find the 'libasan' library")
 endif()
 
-add_executable(ppocr image.cpp image_from_file.cpp main.cpp)
+set(COORDINATE_IO_SRC coordinate.cpp)
+set(BOX_IO_SRC box.cpp ${COORDINATE_IO_SRC})
+set(IMAGE_FROM_FILE_SRC image.cpp image_from_file.cpp)
+
+add_executable(ppocr ${BOX_IO_SRC} ${IMAGE_FROM_FILE_SRC} main.cpp)
 add_executable(learning learning.cpp)
 # add_executable(array_view array_view.cpp)
-add_executable(print_alternation image.cpp image_from_file.cpp print_alternation.cpp)
+add_executable(print_alternation ${BOX_IO_SRC} ${IMAGE_FROM_FILE_SRC} make_box_character.cpp print_alternation.cpp)
 
 target_link_libraries (ppocr ${LIB_ASAN})
 target_link_libraries (learning ${LIB_ASAN})

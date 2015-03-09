@@ -21,47 +21,14 @@
 #ifndef REDEMPTION_IMAGE_HPP
 #define REDEMPTION_IMAGE_HPP
 
-#include <cstddef>
-#include <iosfwd>
+#include "coordinate.hpp"
+
 #include <memory>
 
-using std::size_t;
-
-struct Index {
-    Index(size_t x, size_t y)
-    : x_(x)
-    , y_(y)
-    {}
-
-    size_t x() const noexcept { return x_; }
-    size_t y() const noexcept { return y_; }
-
-private:
-    size_t x_;
-    size_t y_;
-};
-
-struct Bounds {
-    Bounds(size_t w, size_t h)
-    : w_(w)
-    , h_(h)
-    {}
-
-    size_t area() const noexcept { return w_ * h_; }
-    size_t w() const noexcept { return w_; }
-    size_t h() const noexcept { return h_; }
-
-    size_t contains(Index const & idx) const
-    { return idx.x() < w() && idx.y() < h(); }
-
-private:
-    size_t w_;
-    size_t h_;
-};
 
 using Pixel = char;
 
-inline bool is_letter(Pixel pix)
+inline bool is_pix_letter(Pixel pix)
 { return pix == 'x'; }
 
 template<class PixelGetter>
@@ -76,6 +43,8 @@ struct Image
 
     size_t width() const noexcept { return bounds_.w(); }
     size_t height() const noexcept { return bounds_.h(); }
+
+    Bounds const & bounds() const noexcept { return bounds_; }
 
     Image section(const Index& section_idx, const Bounds& section_bnd) const;
 
@@ -107,7 +76,7 @@ struct NormalPixelGet {
     constexpr NormalPixelGet() noexcept {}
 
     bool operator()(Pixel const * p) const
-    { return is_letter(*p); }
+    { return is_pix_letter(*p); }
 };
 
 template<class PixelGetter = NormalPixelGet>
@@ -181,7 +150,7 @@ struct AnyPixelGet
     bool operator()(Pixel const * p) const
     {
         for (Pixel const * e = p + h_*step_; p != e; p += step_) {
-            if (is_letter(*p)) {
+            if (is_pix_letter(*p)) {
                 return true;
             }
         }
