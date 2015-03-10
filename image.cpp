@@ -15,7 +15,7 @@ Image::Image(Image const & img, const Index & section_idx, const Bounds & sectio
 : data_(new Pixel[section_bnd.area()])
 , bounds_(section_bnd)
 {
-    cP d = img.data_at(section_idx);
+    cP d = img.data(section_idx);
     P out = data_.get();
     for (size_t y = 0; y != height(); ++y) {
         out = std::copy(d, d+width(), out);

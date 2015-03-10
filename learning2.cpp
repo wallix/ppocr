@@ -1,6 +1,9 @@
 #include "image.hpp"
+#include "data_loader.hpp"
 #include "make_box_character.hpp"
+
 #include "strategies/alternation.hpp"
+#include "strategies/direction.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -29,6 +32,10 @@ int main(int ac, char **av)
     size_t x = 0;
     Bounds bounds(img.width(), img.height());
 
+    DataLoader loader;
+    loader.registry<strategies::alternations>("alternations");
+    loader.registry<strategies::direction>("direction");
+
     while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
         //std::cerr << "\nbox(" << cbox << ")\n";
 
@@ -39,7 +46,7 @@ int main(int ac, char **av)
         Image const img_word = img.section(cbox.index(), cbox.bounds());
         std::cerr << img_word << '\n';
 
-        std::cout << s << "\n" << strategies::alternations(img_word, img_word.rotate90()) << "\n";
+        std::cout << s << "\n" << loader.new_data(img_word, img_word.rotate90()) << "\n";
 
         x = cbox.x() + cbox.w();
     }

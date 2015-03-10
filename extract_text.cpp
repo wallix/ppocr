@@ -1,6 +1,9 @@
 #include "image.hpp"
+#include "data_loader.hpp"
 #include "make_box_character.hpp"
+
 #include "strategies/alternation.hpp"
+#include "strategies/direction.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -24,7 +27,7 @@ int main(int ac, char **av)
 
     struct Def {
         std::string c;
-        std::array<strategies::alternation_seq_t, 7> alternations;
+        strategies::alternations alternations;
 
         bool operator<(Def const & other) const {
             return alternations < other.alternations || (alternations == other.alternations && c < other.c);
@@ -41,16 +44,7 @@ int main(int ac, char **av)
     while (file >> s) {
         Def def;
         def.c = s;
-        size_t sz;
-        bool x;
-        for (auto & alternation : def.alternations) {
-            file >> sz;
-            alternation.resize(sz);
-            for (size_t i = 0; i != sz; ++i) {
-                file >> x;
-                alternation[i] = x;
-            }
-        }
+        file >> def.alternations;
         definitions.push_back(std::move(def));
     }
 
@@ -68,7 +62,7 @@ int main(int ac, char **av)
         Image const img_word = img.section(cbox.index(), cbox.bounds());
         //std::cerr << img_word << '\n';
 
-        Def const def{{}, strategies::all_sequence_alternation(img_word, img_word.rotate90())};
+        Def const def{{}, strategies::alternations(img_word, img_word.rotate90())};
 
         auto it = std::lower_bound(
             definitions.begin(), definitions.end(), def.alternations

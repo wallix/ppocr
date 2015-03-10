@@ -1,24 +1,43 @@
 #include "alternation.hpp"
+#include "image.hpp"
 
+#include <ostream>
+#include <istream>
 #include <cassert>
 
 #ifdef DEBUG_ALTERNATION
 #include <iostream>
 #define MAKE_SEQUENCE_ALTERNATION(name, img, x, y, B)                                          \
     (void(std::cout << name ":[" << img.bounds() << "][" << Index x, y << "] + [" << B << "]\n"), \
-    make_sequence_alternation(img, x, y, B))
+    make_alternations(img, x, y, B))
 #else
-#define MAKE_SEQUENCE_ALTERNATION(name, img, x, y, B) make_sequence_alternation(img, x, y, B)
+#define MAKE_SEQUENCE_ALTERNATION(name, img, x, y, B) make_alternations(img, x, y, B)
 #endif
 
-namespace strategies {
-
-std::array<alternation_seq_t, 7>
-all_sequence_alternation(const Image& img, const Image& img90)
+namespace strategies
 {
-    std::array<alternation_seq_t, 7> alternations;
 
-    auto it = alternations.begin();
+template<class T>
+alternations::sequence_type
+make_alternations(const Image & img, Index const & idx, T const & bounds)
+{
+    alternations::sequence_type ret;
+
+    auto range = hrange(img, idx, bounds);
+    auto it = range.begin();
+    auto last = range.end();
+
+    ret.push_back(*it);
+    while (rng::next_alternation(it, last)) {
+        ret.push_back(*it);
+    }
+
+    return ret;
+}
+
+alternations::alternations(const Image& img, const Image& img90)
+{
+    auto it = seq_alternations.begin();
 
     {
         Bounds const & bnd = img.bounds();
@@ -43,9 +62,34 @@ all_sequence_alternation(const Image& img, const Image& img90)
         *it++ = MAKE_SEQUENCE_ALTERNATION("Vm2", img90, {0, 0}, bnd_mask);
     }
 
-    assert(it == alternations.end());
+    assert(it == seq_alternations.end());
+}
 
-    return alternations;
+std::ostream & operator<<(std::ostream & os, alternations const & seq_alternations)
+{
+    for (alternations::sequence_type const & alternation : seq_alternations) {
+        os << alternation.size();
+        for (auto x : alternation) {
+            os << ' ' << x;
+        }
+        os << ' ';
+    }
+    return os;
+}
+
+std::istream & operator>>(std::istream & is, alternations & seq_alternations)
+{
+    size_t sz;
+    bool val;
+    for (auto & alternation : seq_alternations.seq_alternations) {
+        is >> sz;
+        alternation.resize(sz);
+        for (auto && x : alternation) {
+            is >> val;
+            x = val;
+        }
+    }
+    return is;
 }
 
 }

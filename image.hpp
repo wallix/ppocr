@@ -28,8 +28,15 @@
 
 using Pixel = char;
 
-inline bool is_pix_letter(Pixel pix)
+inline bool is_pix_letter(Pixel pix) noexcept
 { return pix == 'x'; }
+
+struct is_pix_letter_fn {
+    constexpr is_pix_letter_fn() noexcept {}
+
+    bool operator()(Pixel pix) const noexcept
+    { return is_pix_letter(pix); }
+};
 
 template<class PixelGetter>
 struct HorizontalRange;
@@ -53,6 +60,15 @@ struct Image
 
     Pixel const * data() const noexcept { return this->data_.get(); }
 
+    Pixel const * data(Index const & idx) const noexcept
+    { return data() + to_size_t(idx); }
+
+    Pixel const * data_end() const noexcept
+    { return data() + width() * height(); }
+
+    size_t to_size_t(Index const & idx) const noexcept
+    { return idx.y() * this->width() + idx.x(); }
+
     friend std::ostream & operator<<(std::ostream &, Image const &);
 
 private:
@@ -61,12 +77,6 @@ private:
 
     template<class PixelGetter>
     friend class HorizontalRange;
-
-    size_t to_size_t(Index const & idx) const noexcept
-    { return idx.y() * this->width() + idx.x(); }
-
-    Pixel const * data_at(Index const & idx) const noexcept
-    { return data() + to_size_t(idx); }
 };
 
 
@@ -118,7 +128,7 @@ struct HorizontalRange
     HorizontalRange(Image const & img, Index idx, size_t w, PixelGetter pixel_get)
     : pixel_get_(pixel_get)
     , w_(w)
-    , data_(img.data_at(idx))
+    , data_(img.data(idx))
     {}
 
     iterator begin() const { return {*this, data_}; }

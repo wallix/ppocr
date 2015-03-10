@@ -72,8 +72,8 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
         );
     }
 
-    auto alternations = strategies::all_sequence_alternation(img, img.rotate90());
-    using seq_t = strategies::alternation_seq_t;
+    strategies::alternations alternations(img, img.rotate90());
+    using seq_t = strategies::alternations::sequence_type;
     BOOST_CHECK(alternations[0] == seq_t({1, 0, 1}));
     BOOST_CHECK(alternations[1] == seq_t({1, 0}));
     BOOST_CHECK(alternations[2] == seq_t({1}));

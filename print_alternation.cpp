@@ -22,7 +22,7 @@ int main(int ac, char ** av)
 
     struct Def {
         std::string c;
-        std::array<strategies::alternation_seq_t, 7> alternations;
+        strategies::alternations alternations;
 
         bool operator<(Def const & other) const {
             return alternations < other.alternations;
@@ -48,7 +48,7 @@ int main(int ac, char ** av)
 
         Def def{
             static_cast<std::ostringstream&>(std::ostringstream() << img_word).str()
-          , strategies::all_sequence_alternation(img_word, img_word90)
+          , strategies::alternations(img_word, img_word90)
         };
 
         for (auto const & alternations : def.alternations) {

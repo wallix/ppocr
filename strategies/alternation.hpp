@@ -21,17 +21,100 @@
 #ifndef REDEMPTION_STRATEGIES_ALTERNATION_HPP
 #define REDEMPTION_STRATEGIES_ALTERNATION_HPP
 
-#include "image.hpp"
-
 #include <vector>
 #include <array>
+#include <iosfwd>
 
+
+class Image;
 
 namespace strategies
 {
-    using alternation_seq_t = std::vector<bool>;
+    /**
+     *                             ::::::::::::
+     *                             :xx        :
+     *                             :xx        :
+     *                             :xx        :
+     *                             :xx        :
+     *    Hl1, Hl2,                :xx        :
+     *    Hm1, Hm2,                :xxxxxxx   :
+     *    Vl1,                     :xxxxxxxx  :
+     *    Vm1, Vm2                 :xx     xxx:
+     *                             :xx      xx:
+     *                             :xx     xxx:
+     *                             :xxxxxxxxx :
+     *                             :xxxxxxx   :
+     *                             ::::::::::::
+     *
+     *   ::::::::::::
+     *   :xx        :                                           ----------
+     *   :xx        :                                          :xx        :
+     *   :xx        :                                          :xx        : Hm1 = 1, 0
+     *    ----------                                           :xx        : h = (img.h/3)
+     *   |xx        | Hl1 = 1, 0 ; y = ((img.h-2)/3)           :xx        :
+     *    ----------                                            ----------
+     *   :xx        :                                          :xx        :
+     *   :xxxxxxx   :                                          :xxxxxxx   :
+     *   :xxxxxxxx  :                                          :xxxxxxxx  :
+     *    ----------                                           :xx     xxx:
+     *   |xx     xxx| Hl2 = 1, 0, 1 ; y = ((img.h*2-1)/3)       ----------
+     *    ----------                                           :xx      xx:
+     *   :xx      xx:                                          :xx     xxx: Hm2 = 1
+     *   :xx     xxx:                                          :xxxxxxxxx : h = (img.h/3)
+     *   :xxxxxxxxx :                                          :xxxxxxx   :
+     *   :xxxxxxx   :                                           ----------
+     *   ::::::::::::
+     *
+     *
+     *  Vl1 = 0, 1, 0, 1 ; x = (img.w-1)/2      Vm1 = 1 ; w = img.w/3 ; Vm2 = 0, 1, 0
+     *           ::::::_:::::::                        :___::::::___:
+     *           :xx  | |     :                        |xx |    |   |
+     *           :xx  | |     :                        |xx |    |   |
+     *           :xx  | |     :                        |xx |    |   |
+     *           :xx  | |     :                        |xx |    |   |
+     *           :xx  | |     :                        |xx |    |   |
+     *           :xxxx|x|xx   :                        |xxx|xxxx|   |
+     *           :xxxx|x|xxx  :                        |xxx|xxxx|x  |
+     *           :xx  | |  xxx:                        |xx |    |xxx|
+     *           :xx  | |   xx:                        |xx |    | xx|
+     *           :xx  | |  xxx:                        |xx |    |xxx|
+     *           :xxxx|x|xxxx :                        |xxx|xxxx|xx |
+     *           :xxxx|x|xx   :                        |xxx|xxxx|   |
+     *           ::::::-:::::::                        :---::::::---:
+     */
+    struct alternations
+    {
+        using sequence_type = std::vector<bool>;
 
-//     class alternation_seq_t
+        alternations() = default;
+
+        alternations(const Image & img, const Image & img90);
+
+        sequence_type const & operator[](size_t i) const /*noexcept*/
+        { return seq_alternations[i]; }
+
+        size_t size() const noexcept { return seq_alternations.size(); }
+        auto begin() const noexcept { return seq_alternations.begin(); }
+        auto end() const noexcept { return seq_alternations.end(); }
+
+        bool operator<(alternations const & other) const
+        { return seq_alternations < other.seq_alternations; }
+
+        bool operator==(alternations const & other) const
+        { return seq_alternations == other.seq_alternations; }
+
+        friend std::istream & operator>>(std::istream &, alternations &);
+
+    private:
+        std::array<sequence_type, 7> seq_alternations;
+    };
+
+    std::ostream & operator<<(std::ostream &, alternations const &);
+
+
+    /// TODO alternations -> alternation< Hl1>,  alternation< Hl2>,  alternation< Hm1>, etc
+
+//     class alternations
 //     {
 //         using internal_value_ = uint_fast16_t;
 //
@@ -127,77 +210,6 @@ namespace strategies
 //         internal_value_ v = 0;
 //         unsigned sz = 0;
 //     };
-
-    template<class T>
-    alternation_seq_t make_sequence_alternation(const Image & img, Index const & idx, T const & bounds)
-    {
-        alternation_seq_t ret;
-
-        auto range = hrange(img, idx, bounds);
-        auto it = range.begin();
-        auto last = range.end();
-
-        ret.push_back(*it);
-        while (rng::next_alternation(it, last)) {
-            ret.push_back(*it);
-        }
-
-        return ret;
-    }
-
-    /**
-     *                             ::::::::::::
-     *                             :xx        :
-     *                             :xx        :
-     *                             :xx        :
-     *                             :xx        :
-     *    Hl1, Hl2,                :xx        :
-     *    Hm1, Hm2,                :xxxxxxx   :
-     *    Vl1,                     :xxxxxxxx  :
-     *    Vm1, Vm2                 :xx     xxx:
-     *                             :xx      xx:
-     *                             :xx     xxx:
-     *                             :xxxxxxxxx :
-     *                             :xxxxxxx   :
-     *                             ::::::::::::
-     *
-     *   ::::::::::::
-     *   :xx        :                                           ----------
-     *   :xx        :                                          :xx        :
-     *   :xx        :                                          :xx        : Hm1 = 1, 0
-     *    ----------                                           :xx        : h = (img.h/3)
-     *   |xx        | Hl1 = 1, 0 ; y = ((img.h-2)/3)           :xx        :
-     *    ----------                                            ----------
-     *   :xx        :                                          :xx        :
-     *   :xxxxxxx   :                                          :xxxxxxx   :
-     *   :xxxxxxxx  :                                          :xxxxxxxx  :
-     *    ----------                                           :xx     xxx:
-     *   |xx     xxx| Hl2 = 1, 0, 1 ; y = ((img.h*2-1)/3)       ----------
-     *    ----------                                           :xx      xx:
-     *   :xx      xx:                                          :xx     xxx: Hm2 = 1
-     *   :xx     xxx:                                          :xxxxxxxxx : h = (img.h/3)
-     *   :xxxxxxxxx :                                          :xxxxxxx   :
-     *   :xxxxxxx   :                                           ----------
-     *   ::::::::::::
-     *
-     *
-     *  Vl1 = 0, 1, 0, 1 ; x = (img.w-1)/2      Vm1 = 1 ; w = img.w/3 ; Vm2 = 0, 1, 0
-     *           ::::::_:::::::                        :___::::::___:
-     *           :xx  | |     :                        |xx |    |   |
-     *           :xx  | |     :                        |xx |    |   |
-     *           :xx  | |     :                        |xx |    |   |
-     *           :xx  | |     :                        |xx |    |   |
-     *           :xx  | |     :                        |xx |    |   |
-     *           :xxxx|x|xx   :                        |xxx|xxxx|   |
-     *           :xxxx|x|xxx  :                        |xxx|xxxx|x  |
-     *           :xx  | |  xxx:                        |xx |    |xxx|
-     *           :xx  | |   xx:                        |xx |    | xx|
-     *           :xx  | |  xxx:                        |xx |    |xxx|
-     *           :xxxx|x|xxxx :                        |xxx|xxxx|xx |
-     *           :xxxx|x|xx   :                        |xxx|xxxx|   |
-     *           ::::::-:::::::                        :---::::::---:
-     */
-    std::array<alternation_seq_t, 7> all_sequence_alternation(const Image & img, const Image & img90);
 }
 
 #endif
