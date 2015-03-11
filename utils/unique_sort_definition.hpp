@@ -18,36 +18,14 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_DIRECTION_HPP
-#define REDEMPTION_STRATEGIES_DIRECTION_HPP
+#ifndef REDEMPTION_UTILS_UNIQUE_SORT_DEFINITION_HPP
+#define REDEMPTION_UTILS_UNIQUE_SORT_DEFINITION_HPP
 
-#include <iosfwd>
+#include "definition.hpp"
 
-class Image;
+#include <vector>
 
-namespace strategies
-{
-    struct direction
-    {
-        direction() = default;
 
-        direction(const Image & img, const Image & img90);
-
-        bool operator<(direction const & other) const
-        { return d < other.d; }
-
-        bool operator==(direction const & other) const
-        { return d == other.d; }
-
-        int id() const noexcept { return d; }
-
-        friend std::istream & operator>>(std::istream &, direction &);
-
-    private:
-        int d = 0;
-    };
-
-    std::ostream & operator<<(std::ostream &, direction const &);
-}
+void unique_sort_definitions(std::vector<Definition> & defs);
 
 #endif

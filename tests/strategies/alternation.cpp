@@ -13,9 +13,7 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-  Product name: redemption, a FLOSS RDP proxy
-  Copyright (C) Wallix 2013
-  Author(s): Christophe Grosjean, Meng Tan
+  Author(s): Jonathan Poelen
 */
 
 #define BOOST_AUTO_TEST_MAIN
@@ -30,13 +28,15 @@
 //#define LOGPRINT
 
 #include "strategies/alternation.hpp"
+#include "image_from_string.hpp"
+#include "image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"
 
 BOOST_AUTO_TEST_CASE(TestAlternation)
 {
-    char const * text_img =
+    Image const img = image_from_string({6, 7},
         "-xxxx-"
         "xx--xx"
         "xx--xx"
@@ -44,33 +44,7 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
         "xx----"
         "xx--xx"
         "-xxxx-"
-    ;
-
-    Bounds const bnd(6, 7);
-    assert(text_img[bnd.area()] == 0 && text_img[bnd.area()-1] == '-');
-
-    Image const img(bnd, [text_img, &bnd]{
-        size_t const area = bnd.area();
-        PtrImageData data(new Pixel[area]);
-        std::copy(text_img, text_img+area, data.get());
-        return data;
-    }());
-
-    {
-        std::ostringstream oss;
-        oss << img;
-        BOOST_CHECK_EQUAL(oss.str(),
-            "::::::::\n"
-            ":-xxxx-:\n"
-            ":xx--xx:\n"
-            ":xx--xx:\n"
-            ":xxxxxx:\n"
-            ":xx----:\n"
-            ":xx--xx:\n"
-            ":-xxxx-:\n"
-            "::::::::\n"
-        );
-    }
+    );
 
     strategies::alternations alternations(img, img.rotate90());
     using seq_t = strategies::alternations::sequence_type;

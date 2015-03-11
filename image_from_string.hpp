@@ -18,36 +18,12 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_DIRECTION_HPP
-#define REDEMPTION_STRATEGIES_DIRECTION_HPP
+#ifndef REDEMPTION_IMAGE_FROM_STRING_HPP
+#define REDEMPTION_IMAGE_FROM_STRING_HPP
 
-#include <iosfwd>
+#include "coordinate.hpp"
+#include "image.hpp"
 
-class Image;
-
-namespace strategies
-{
-    struct direction
-    {
-        direction() = default;
-
-        direction(const Image & img, const Image & img90);
-
-        bool operator<(direction const & other) const
-        { return d < other.d; }
-
-        bool operator==(direction const & other) const
-        { return d == other.d; }
-
-        int id() const noexcept { return d; }
-
-        friend std::istream & operator>>(std::istream &, direction &);
-
-    private:
-        int d = 0;
-    };
-
-    std::ostream & operator<<(std::ostream &, direction const &);
-}
+Image image_from_string(Bounds const & bnd, const char * data);
 
 #endif

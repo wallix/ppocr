@@ -10,6 +10,7 @@ bool DataLoader::Data::operator<(const DataLoader::Data& other) const
     auto it = this->datas_.begin();
     auto it2 = other.datas_.begin();
     for (auto e = this->datas_.end(); it != e; ++it, ++it2) {
+        // TODO compare (this is a default implementation)
         if ((*it)->less(**it2)) {
             return true;
         }
@@ -32,16 +33,23 @@ bool DataLoader::Data::operator==(const DataLoader::Data& other) const
     return true;
 }
 
-// DataLoader::Data DataLoader::new_data() const
-// {
-//     std::vector<data_ptr> datas;
-//
-//     for (auto & factory : loaders) {
-//         datas.push_back(factory->construct());
-//     }
-//
-//     return {std::move(datas)};
-// }
+DataLoader::Data DataLoader::new_data() const
+{
+    std::vector<data_ptr> datas;
+
+    for (auto & factory : loaders) {
+        datas.push_back(factory.new_strategy());
+    }
+
+    return {std::move(datas)};
+}
+
+DataLoader::Data DataLoader::new_data(std::istream& is) const
+{
+    auto data = this->new_data();
+    read(is, data);
+    return data;
+}
 
 DataLoader::Data DataLoader::new_data(Image const & img, Image const & img90) const
 {
@@ -51,14 +59,11 @@ DataLoader::Data DataLoader::new_data(Image const & img, Image const & img90) co
         datas.push_back(factory.new_strategy(img, img90));
     }
 
-    return {std::move(datas), *this};
+    return {std::move(datas)};
 }
-
 
 void DataLoader::read(std::istream& is, DataLoader::Data& data) const
 {
-    assert(data.datas_.size() == this->loaders.size() && &data.loader_.get() == this);
-
     std::string s;
     // TODO dichotomic
     for (auto & p : data.datas_) {
@@ -69,8 +74,6 @@ void DataLoader::read(std::istream& is, DataLoader::Data& data) const
 
 void DataLoader::write(std::ostream& os, DataLoader::Data const & data) const
 {
-    assert(data.datas_.size() == this->loaders.size() && &data.loader_.get() == this);
-
     auto it = this->loaders.begin();
     for (auto & p : data.datas_) {
         os << it->name() << ' ';
@@ -79,4 +82,3 @@ void DataLoader::write(std::ostream& os, DataLoader::Data const & data) const
         ++it;
     }
 }
-

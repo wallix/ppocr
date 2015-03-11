@@ -45,6 +45,7 @@ using PtrImageData = std::unique_ptr<Pixel[]>;
 
 struct Image
 {
+    Image() = default;
     Image(Bounds const & bounds, PtrImageData data);
     Image(Image const & img, const Index & section_idx, const Bounds & section_bnd);
 
@@ -69,6 +70,8 @@ struct Image
     size_t to_size_t(Index const & idx) const noexcept
     { return idx.y() * this->width() + idx.x(); }
 
+    explicit operator bool () const noexcept { return bool(this->data_); }
+
     friend std::ostream & operator<<(std::ostream &, Image const &);
 
 private:
@@ -78,6 +81,10 @@ private:
     template<class PixelGetter>
     friend class HorizontalRange;
 };
+
+
+bool operator == (Image const &, Image const &);
+inline bool operator != (Image const & a, Image const & b) { return !(a == b); }
 
 
 Image image_from_file(const char * filename);

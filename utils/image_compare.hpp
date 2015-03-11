@@ -18,36 +18,26 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_DIRECTION_HPP
-#define REDEMPTION_STRATEGIES_DIRECTION_HPP
+#ifndef REDEMPTION_UTILS_IMAGE_COMPARE_HPP
+#define REDEMPTION_UTILS_IMAGE_COMPARE_HPP
 
-#include <iosfwd>
+#include <functional>
 
 class Image;
 
-namespace strategies
-{
-    struct direction
+int image_compare(Image const & a, Image const & b);
+
+namespace std {
+    template<>
+    struct less<Image>
     {
-        direction() = default;
+        constexpr less() noexcept {}
 
-        direction(const Image & img, const Image & img90);
-
-        bool operator<(direction const & other) const
-        { return d < other.d; }
-
-        bool operator==(direction const & other) const
-        { return d == other.d; }
-
-        int id() const noexcept { return d; }
-
-        friend std::istream & operator>>(std::istream &, direction &);
-
-    private:
-        int d = 0;
+        bool operator()(Image const & a, Image const & b) const
+        { return image_compare(a, b) < 0; }
     };
-
-    std::ostream & operator<<(std::ostream &, direction const &);
 }
+
+using image_less = std::less<Image>;
 
 #endif

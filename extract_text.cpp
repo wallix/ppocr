@@ -1,9 +1,6 @@
 #include "image.hpp"
-#include "data_loader.hpp"
 #include "make_box_character.hpp"
-
 #include "strategies/alternation.hpp"
-#include "strategies/direction.hpp"
 
 #include <algorithm>
 #include <iostream>

@@ -13,9 +13,7 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-  Product name: redemption, a FLOSS RDP proxy
-  Copyright (C) Wallix 2013
-  Author(s): Christophe Grosjean, Meng Tan
+  Author(s): Jonathan Poelen
 */
 
 #define BOOST_AUTO_TEST_MAIN

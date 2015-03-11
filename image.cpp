@@ -44,6 +44,12 @@ Image Image::rotate90() const
     return {bnd, std::move(data)};
 }
 
+bool operator==(const Image& a, const Image& b)
+{
+    return a.width() == b.width()
+        && a.height() == b.height()
+        && std::equal(a.data(), a.data_end(), b.data());
+}
 
 std::ostream & operator<<(std::ostream & os, Image const & image)
 {

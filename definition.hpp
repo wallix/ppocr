@@ -18,36 +18,30 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_DIRECTION_HPP
-#define REDEMPTION_STRATEGIES_DIRECTION_HPP
+#ifndef REDEMPTION_DEFINITION_HPP
+#define REDEMPTION_DEFINITION_HPP
 
+#include "image.hpp"
+#include "data_loader.hpp"
+
+#include <string>
 #include <iosfwd>
 
-class Image;
 
-namespace strategies
+struct Definition
 {
-    struct direction
-    {
-        direction() = default;
+    std::string c;
+    Image img;
+    DataLoader::Data data;
 
-        direction(const Image & img, const Image & img90);
+    Definition() = default;
+    Definition(std::string c, Image img, DataLoader const & loader);
+    Definition(std::string c, Image img, DataLoader::Data data);
 
-        bool operator<(direction const & other) const
-        { return d < other.d; }
+    explicit operator bool () const noexcept { return bool(this->img); }
+};
 
-        bool operator==(direction const & other) const
-        { return d == other.d; }
-
-        int id() const noexcept { return d; }
-
-        friend std::istream & operator>>(std::istream &, direction &);
-
-    private:
-        int d = 0;
-    };
-
-    std::ostream & operator<<(std::ostream &, direction const &);
-}
+void write_definition(std::ostream & os, Definition const & def, DataLoader const & loader);
+void read_definition(std::istream& is, Definition & def, DataLoader const & loader);
 
 #endif

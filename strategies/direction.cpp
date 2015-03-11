@@ -45,7 +45,7 @@ static int horizontal_direction(const Image& img)
 }
 
 direction::direction(const Image& img, const Image& img90)
-: d(horizontal_direction(img) + horizontal_direction(img90) * 3)
+: d(horizontal_direction(img) + horizontal_direction(img90) * 5)
 {}
 
 

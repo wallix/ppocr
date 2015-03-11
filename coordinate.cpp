@@ -24,6 +24,7 @@
 #include "coordinate.hpp"
 
 #include <ostream>
+#include <istream>
 
 
 std::ostream & operator<<(std::ostream & os, Index const & idx) {
@@ -32,6 +33,22 @@ std::ostream & operator<<(std::ostream & os, Index const & idx) {
 
 std::ostream & operator<<(std::ostream & os, Bounds const & bnd) {
     return os << bnd.w() << ' ' << bnd.h();
+}
+
+std::istream & operator>>(std::istream & is, Index & idx) {
+    size_t x, y;
+    if (is >> x >> y) {
+        idx = Index(x, y);
+    }
+    return is;
+}
+
+std::istream & operator>>(std::istream & is, Bounds & bnd) {
+    size_t w, h;
+    if (is >> w >> h) {
+        bnd = Bounds(w, h);
+    }
+    return is;
 }
 
 #endif
