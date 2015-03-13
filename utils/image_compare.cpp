@@ -19,7 +19,7 @@ int image_compare(Image const & a, Image const & b)
         return 1;
     }
 
-    auto const pair = std::mismatch(a.data(), a.data_end(), b.data(), std::less<>());
+    auto const pair = std::mismatch(a.data(), a.data_end(), b.data());
     if (pair.first == a.data_end()) {
         return 0;
     }

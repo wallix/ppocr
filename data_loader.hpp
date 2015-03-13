@@ -37,9 +37,13 @@ struct proxy_iterator : IteratorBase, private Proxy
     : IteratorBase(base)
     {}
 
-    auto operator*() { return Proxy::operator()(IteratorBase::operator*()); }
-    auto operator->() { return &Proxy::operator()(IteratorBase::operator*()); }
-    auto operator[](std::size_t i) { return &Proxy::operator()(IteratorBase::operator[](i)); }
+    decltype(auto) operator*() { return this->proxy()(*this->base()); }
+    decltype(auto) operator->() { return &this->proxy()(*this->base()); }
+    decltype(auto) operator[](std::size_t i) { return this->proxy()(*(this->base()+i)); }
+
+private:
+    IteratorBase & base() { return static_cast<IteratorBase&>(*this); }
+    Proxy & proxy() { return static_cast<Proxy&>(*this); }
 };
 
 template<class Iterator, class Proxy>
@@ -51,8 +55,11 @@ struct range_iterator
 
     proxy_iterator<Iterator, Proxy> begin() const { return {this->first_, this->proxy_}; }
     proxy_iterator<Iterator, Proxy> end() const { return {this->last_, this->proxy_}; }
+    decltype(auto) operator[](std::size_t i) const { return this->proxy_(*(this->first_+i)); }
+    decltype(auto) front() const { return this->proxy_(*this->first_); }
+    decltype(auto) back() const { return this->proxy_(*(this->last_-1)); }
 
-    auto size() const { return this->first_ - this->last_; }
+    auto size() const { return this->last_ - this->first_; }
 };
 
 
@@ -204,6 +211,9 @@ public:
 
     name_list names() const
     { return {this->loaders.begin(), this->loaders.end(), proxy()}; };
+
+    std::size_t size() const
+    { return this->loaders.size(); }
 
 private:
     std::vector<Loader> loaders;

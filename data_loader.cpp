@@ -7,28 +7,28 @@
 
 bool DataLoader::Data::operator<(const DataLoader::Data& other) const
 {
-    auto it = this->datas_.begin();
     auto it2 = other.datas_.begin();
-    for (auto e = this->datas_.end(); it != e; ++it, ++it2) {
+    for (data_ptr const & data : this->datas_) {
         // TODO compare (this is a default implementation)
-        if ((*it)->less(**it2)) {
+        if (data->less(**it2)) {
             return true;
         }
-        if (!(*it)->eq(**it2)) {
+        if (!data->eq(**it2)) {
             return false;
         }
+        ++it2;
     }
     return false;
 }
 
 bool DataLoader::Data::operator==(const DataLoader::Data& other) const
 {
-    auto it = this->datas_.begin();
     auto it2 = other.datas_.begin();
-    for (auto e = this->datas_.end(); it != e; ++it, ++it2) {
-        if (!(*it)->eq(**it2)) {
+    for (data_ptr const & data : this->datas_) {
+        if (!data->eq(**it2)) {
             return false;
         }
+        ++it2;
     }
     return true;
 }

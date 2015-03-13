@@ -11,6 +11,7 @@
 
 #include <cstring>
 #include <cerrno>
+#include <cassert>
 
 static int load_file(
     std::vector<Definition> & definitions, DataLoader const & loader,
@@ -39,6 +40,7 @@ static int load_file(
         }
 
         definitions.emplace_back(s, img.section(cbox.index(), cbox.bounds()), loader);
+        assert(definitions.back().data == definitions.back().data);
 
         x = cbox.x() + cbox.w();
     }

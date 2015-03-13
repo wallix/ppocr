@@ -18,7 +18,7 @@
 
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestAuthentifierNew
+#define BOOST_TEST_MODULE TestStratGravity
 #include <boost/test/auto_unit_test.hpp>
 
 #undef SHARE_PATH
@@ -27,108 +27,108 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/direction.hpp"
+#include "strategies/gravity.hpp"
 #include "image_from_string.hpp"
 #include "image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"
 
-static int to_directtion_id(Bounds bnd, const char * data_text)
+static int to_gravity_id(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::direction(img, img.rotate90()).id();
+    return strategies::gravity(img, img.rotate90()).id();
 }
 
-BOOST_AUTO_TEST_CASE(TestDirection)
+BOOST_AUTO_TEST_CASE(TestGravity)
 {
     int id;
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "---"
         "---"
     );
     BOOST_CHECK_EQUAL(id, 0);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "-x-"
         "---"
         "---"
     );
     BOOST_CHECK_EQUAL(id, 1);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "--x"
         "---"
     );
     BOOST_CHECK_EQUAL(id, 5);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "---"
         "-x-"
     );
     BOOST_CHECK_EQUAL(id, 3);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "x--"
         "---"
     );
     BOOST_CHECK_EQUAL(id, 15);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "x--"
         "---"
         "---"
     );
     BOOST_CHECK_EQUAL(id, 16);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "--x"
         "---"
         "---"
     );
     BOOST_CHECK_EQUAL(id, 6);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "---"
         "--x"
     );
     BOOST_CHECK_EQUAL(id, 8);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "---"
         "x--"
     );
     BOOST_CHECK_EQUAL(id, 18);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "-x-"
         "---"
     );
     BOOST_CHECK_EQUAL(id, 0);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "---"
         "x--"
         "--x"
     );
     BOOST_CHECK_EQUAL(id, 3);
 
-    id = to_directtion_id({3, 3},
+    id = to_gravity_id({3, 3},
         "--x"
         "---"
         "--x"
     );
     BOOST_CHECK_EQUAL(id, 5);
 
-    id = to_directtion_id({3, 5},
+    id = to_gravity_id({3, 5},
         "--x"
         "--x"
         "---"
@@ -136,4 +136,15 @@ BOOST_AUTO_TEST_CASE(TestDirection)
         "--x"
     );
     BOOST_CHECK_EQUAL(id, 10);
+
+    id = to_gravity_id({5, 7},
+        "-----"
+        "-----"
+        "---xx"
+        "-----"
+        "-----"
+        "-----"
+        "---xx"
+    );
+    BOOST_CHECK_EQUAL(id, 13);
 }

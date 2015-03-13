@@ -4,18 +4,16 @@
 #include <ostream>
 #include <istream>
 
-#include <iostream>
-
 namespace strategies
 {
 
-static int normalize_positif_direction(const Image& img, unsigned d)
+static inline int normalize_positif_direction(const Image& img, unsigned d, int plus)
 {
-    if (d > img.width() / 4) {
-        if (d > img.width()) {
-            return 2;
+    if (d > img.height() / 4) {
+        if (d > img.height()) {
+            return plus+2;
         }
-        return 1;
+        return plus+1;
     }
     return 0;
 }
@@ -30,7 +28,7 @@ static int horizontal_direction(const Image& img)
             ++top;
         }
     }
-    if (img.width() & 1) {
+    if (img.height() & 1) {
         p += img.width();
     }
     for (auto ep = img.data_end(); p != ep; ++p) {
@@ -39,8 +37,8 @@ static int horizontal_direction(const Image& img)
         }
     }
 
-    return (top > bottom) ? normalize_positif_direction(img, top - bottom)
-        : (top < bottom) ? 2+normalize_positif_direction(img, bottom - top)
+    return (top > bottom) ? normalize_positif_direction(img, top - bottom, 0)
+        : (top < bottom) ? normalize_positif_direction(img, bottom - top, 2)
         : 0;
 }
 
