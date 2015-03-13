@@ -29,7 +29,7 @@ namespace strategies
 {
     struct dcompass
     {
-        enum cardinal_direction { NONE = 0, SOUTH = 1, NORT = 2, WEST = 4, EAST = 8 };
+        enum cardinal_direction { NONE = 0, SOUTH = 1, NORTH = 2, WEST = 4, EAST = 8 };
 
         dcompass() = default;
 

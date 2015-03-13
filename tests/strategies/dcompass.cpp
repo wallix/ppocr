@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NORT);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH);
 
     id = to_dcompass_d({3, 3},
         "---"
@@ -86,28 +86,28 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NONE);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH | CardinalDirection::WEST);
 
     id = to_dcompass_d({3, 3},
         "--x"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NONE);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH | CardinalDirection::EAST);
 
     id = to_dcompass_d({3, 3},
         "---"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NONE);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH | CardinalDirection::EAST);
 
     id = to_dcompass_d({3, 3},
         "---"
         "---"
         "x--"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NONE);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH | CardinalDirection::WEST);
 
     id = to_dcompass_d({3, 3},
         "---"
@@ -121,14 +121,14 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "x--"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::WEST);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH);
 
     id = to_dcompass_d({3, 3},
         "--x"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NONE);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::EAST);
 
     id = to_dcompass_d({3, 5},
         "--x"
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "--x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NONE);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::EAST);
 
     id = to_dcompass_d({5, 7},
         "-----"
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "-----"
         "---xx"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::EAST);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::EAST | CardinalDirection::SOUTH);
 
     id = to_dcompass_d({5, 7},
         "--xx-"
@@ -159,5 +159,15 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "-----"
         "-----"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::EAST);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH);
+
+    id = to_dcompass_d({5, 6},
+        "-----"
+        "--x--"
+        "-----"
+        "-----"
+        "-----"
+        "-----"
+    );
+    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH);
 }
