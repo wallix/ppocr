@@ -21,87 +21,16 @@
 #ifndef REDEMPTION_MAKE_BOX_CHARACTER_HPP
 #define REDEMPTION_MAKE_BOX_CHARACTER_HPP
 
-#include "image.hpp"
 #include "box.hpp"
 
+class Image;
 
-static bool horizontal_empty(Pixel const * d, size_t w) {
-    for (auto e = d+w; d != e; ++d) {
-        if (is_pix_letter(*d)) {
-            return false;
-        }
-    }
-    return true;
+namespace utils {
+    bool horizontal_empty(Pixel const * d, size_t w);
+    bool vertical_empty(Pixel const * d, Bounds const & bnd);
 }
 
-static bool vertical_empty(Pixel const * d, size_t w, size_t h) {
-    for (auto e = d+w*h; d != e; d += w) {
-        if (is_pix_letter(*d)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-
-Box make_box_character(Image const & image, Index const & idx, Bounds const & bnd)
-{
-    size_t x = idx.x();
-
-    auto d = image.data() + idx.y()*bnd.w() + x;
-    for (; x < bnd.w(); ++x) {
-        if (!vertical_empty(d, bnd.w(), bnd.h())) {
-            break;
-        }
-        ++d;
-    }
-
-    size_t w = x;
-
-    while (w + 1 < bnd.w()) {
-        ++w;
-        if ([](Pixel const * d, size_t w, size_t h) -> bool {
-            for (auto e = d+w*h; d != e; d += w) {
-                if (is_pix_letter(*d) && (
-                    (d+1 != e && is_pix_letter(*(d+1)))
-                 || (d-w+1 < e && is_pix_letter(*(d-w+1)))
-                 || (d+w+1 < e && is_pix_letter(*(d+w+1)))
-                )) {
-                    return false;
-                }
-            }
-            return true;
-        }(d, bnd.w(), bnd.h())) {
-            break;
-        }
-        ++d;
-    }
-    w -= x;
-
-    size_t y = idx.y();
-
-    d = image.data() + y*bnd.w() + x;
-    for (; y < bnd.h(); ++y) {
-        if (!horizontal_empty(d, w)) {
-            break;
-        }
-        d += bnd.w();
-    }
-
-    size_t h = bnd.h();
-
-    d = image.data() + h*bnd.w() + x;
-    while (--h > y) {
-        d -= bnd.w();
-        if (!horizontal_empty(d, w)) {
-            break;
-        }
-    }
-    h -= y;
-
-    ++h;
-    return {{x, y}, {w, h}};
-}
+Box make_box_character(Image const & image, Index const & idx, Bounds const & bnd);
 
 
 #endif

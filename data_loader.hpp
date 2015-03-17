@@ -60,6 +60,7 @@ struct range_iterator
     decltype(auto) back() const { return this->proxy_(*(this->last_-1)); }
 
     auto size() const { return this->last_ - this->first_; }
+    bool empty() const { return this->first_ == this->last_; }
 };
 
 

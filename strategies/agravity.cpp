@@ -74,6 +74,10 @@ agravity::agravity(const Image& img, const Image& img90)
 bool agravity::operator==(const agravity& other) const
 { return almost_equal(this->a, other.a, 2); }
 
+bool agravity::operator<(agravity const & other) const
+{ return a < other.a && !(*this == other); }
+
+
 std::istream& operator>>(std::istream& is, agravity& ag)
 { return is >> ag.a; }
 

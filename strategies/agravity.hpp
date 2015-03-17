@@ -36,8 +36,7 @@ namespace strategies
 
         agravity(const Image & img, const Image & img90);
 
-        bool operator<(agravity const & other) const
-        { return a < other.a; }
+        bool operator<(agravity const & other) const;
 
         bool operator==(agravity const & other) const;
 

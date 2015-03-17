@@ -28,12 +28,12 @@
 
 struct Box
 {
-    Box(Index idx,  Bounds bnd)
+    Box(Index const & idx,  Bounds const & bnd)
     : idx_(idx)
     , bounds_(bnd)
     {}
 
-    Box(Bounds bnd)
+    Box(Bounds const & bnd)
     : bounds_(bnd)
     {}
 
@@ -42,6 +42,11 @@ struct Box
 
     size_t w() const noexcept { return bounds_.w(); }
     size_t h() const noexcept { return bounds_.h(); }
+
+    size_t bottom() const noexcept { return y()+h()-1; }
+    size_t right() const noexcept { return x()+w()-1; }
+    size_t left() const noexcept { return x(); }
+    size_t top() const noexcept { return y(); }
 
     Index const & index() const noexcept { return idx_; }
     Bounds const & bounds() const noexcept { return bounds_; }
