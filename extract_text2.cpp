@@ -3,6 +3,7 @@
 #include "make_box_character.hpp"
 #include "registry.hpp"
 #include "definition.hpp"
+#include "box.hpp"
 // #include "utils/unique_sort_definition.hpp"
 
 #include <iostream>
@@ -115,20 +116,61 @@ int main(int ac, char **av)
     std::istringstream iss;
     bool display_char = false;
     bool show_one_line = false;
+    bool search_baseline = true;
     struct Proxy { Proxy() {} Definition const & operator()(Definition const & def) const { return def; } };
-    std::vector<range_iterator<decltype(definitions.begin()), Proxy>> def_ranges;
+    using range_definition = range_iterator<decltype(definitions.begin()), Proxy>;
+    std::vector<range_definition> def_ranges;
 
     //unique_sort_definitions(definitions);
 
+    struct CharInfo {
+        Box box;
+        range_definition def_range;
+        bool ok;
+    };
+    std::vector<CharInfo> char_infos;
+
+    struct Line {
+        std::string s;
+        unsigned i;
+    };
+    std::vector<Line> info_lines;
+    {
+        std::ifstream file("/tmp/l");
+        std::string s; unsigned i;
+        while (file >> s >> i) {
+            info_lines.push_back({s, i});
+        }
+    }
+
     do {
         def_ranges.clear();
+        char_infos.clear();
         std::sort(definitions.begin(), definitions.end(), [&data_compare](auto & a, auto & b) {
             return data_compare.lt(a.data, b.data);
         });
 
-        size_t x = 0;
+        size_t x = [&] {
+            size_t x = 0;
+            auto d = img.data();
+            for (; x < img.width(); ++x, ++d) {
+                if (!utils::vertical_empty(d, img.bounds())) {
+                    break;
+                }
+            }
+            return x;
+        }();
         size_t num_word = 0;
+
+        size_t const min_x = x;
+        size_t min_y = img.height();
+        size_t bounds_x = 0;
+        size_t bounds_y = 0;
+
         while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
+            min_y = std::min(cbox.y(), min_y);
+            bounds_y = std::max(cbox.y() + cbox.h(), bounds_y);
+            bounds_x = cbox.x() + cbox.w();
             //std::cerr << "\nbox(" << cbox << ")\n";
 
             Image const img_word = img.section(cbox.index(), cbox.bounds());
@@ -152,6 +194,7 @@ int main(int ac, char **av)
             );
             if (it == definitions.end()) {
                 std::cout << "?\n";
+                char_infos.push_back({cbox, range_definition(), false});
             }
             else {
                 if (num_word < 10 && !show_one_line) {
@@ -168,8 +211,11 @@ int main(int ac, char **av)
                     ++it;
                 }
                 def_ranges.push_back({first, it, Proxy()});
+                char_infos.push_back({cbox, def_ranges.back(), ok});
                 if (first == it) {
                     std::cout << num_word << " \033[00;31m000\033[0m []";
+
+                    std::cout << "\n" << loader.writer(data);
                 }
                 else {
                     std::cout << num_word << " ";
@@ -202,6 +248,99 @@ int main(int ac, char **av)
             x = cbox.x() + cbox.w();
         }
 
+        if (search_baseline)
+        {
+            Index text_index(min_x, min_y);
+            Bounds text_bounds(bounds_x-min_x, bounds_y-min_y);
+            std::cout << "\n box: [" << text_index << " + " << text_bounds << "]\n";
+
+            struct Stat { size_t n; size_t val; };
+            struct StatEqVal {
+                size_t val;
+                bool operator()(const Stat & s) const { return s.val == val; }
+            };
+            std::vector<Stat> baseline_stats;
+            std::vector<Stat> topline_stats;
+            std::vector<Stat> bottomline_stats;
+
+            //size_t middle = img.height()/2;
+            size_t meanline = ~size_t(0);
+            size_t baseline = ~size_t(0);
+            for (CharInfo const & info : char_infos) {
+//                 std::cout << info.ok;
+                if (info.ok) {
+                    Box const & box = info.box;
+                    Definition const & def = info.def_range.front();
+//                     std::cout << "  " << def.c;
+                    auto p = std::find_if(info_lines.begin(), info_lines.end(), [&](Line const & l) {
+                        return l.s == def.c;
+                    });
+                    if (p != info_lines.end()) {
+                        if (p->i == 1) {
+                            meanline = box.top();
+                            baseline = box.bottom();
+                            break;
+                        }
+                        else if ((p->i & 0b00110) == 0) {
+                            meanline = box.top();
+                        }
+                        else if ((p->i & 0b11000) == 0) {
+                            baseline = box.bottom();
+                        }
+
+                        if (meanline != ~size_t(0) && baseline != ~size_t(0)) {
+                            break;
+                        }
+                    }
+                }
+//                 std::cout << "\n";
+            }
+
+            std::cout
+              << "\n meanline: " << meanline
+              << "\n baseline: " << baseline
+              << "\n\n"
+            ;
+
+            for (CharInfo const & info : char_infos) {
+                if (!info.ok && !info.def_range.empty()) {
+                    Box const & box = info.box;
+                    std::cout << info.def_range.front().c << ':';
+                    for (Definition const & def : info.def_range) {
+                        auto p = std::find_if(info_lines.begin(), info_lines.end(), [&](Line const & l) {
+                            return l.s == def.c;
+                        });
+                        if (p != info_lines.end()) {
+                            if (p->i == 1) {
+                                if (meanline == box.top() && baseline == box.bottom()) {
+                                    std::cout << ' ' << def.c;
+                                }
+                            }
+                            else if ((p->i & 0b00110) == 0) {
+                                if (meanline == box.top()
+                                 && (
+                                     ((p->i & 0b11000) == 0b01000 && box.bottom() < baseline)
+                                  || ((p->i & 0b11000) == 0b10000 && box.bottom() > baseline)
+                                )) {
+                                    std::cout << ' ' << def.c;
+                                }
+                            }
+                            else if ((p->i & 0b11000) == 0) {
+                                if (baseline == box.bottom()
+                                 && (
+                                     ((p->i & 0b00110) == 0b00010 && box.top() < meanline)
+                                  || ((p->i & 0b00110) == 0b00100 && box.top() > meanline)
+                                )) {
+                                    std::cout << ' ' << def.c;
+                                }
+                            }
+                        }
+                    }
+                    std::cout << "\n";
+                }
+            }
+        }
+
         if (ac != 4) break;
         std::cout << "\n";
 
@@ -221,6 +360,7 @@ int main(int ac, char **av)
 
         std::cin.clear();
 
+        // interactive
         while (std::cin >> s && !s.empty()) {
             if (s[0] == 'r') {
                 data_compare.enable_seq.clear();
@@ -263,7 +403,7 @@ int main(int ac, char **av)
                 std::cin >> i;
                 if (i < def_ranges.size()) {
                     for (Definition const & def : def_ranges[i]) {
-                        std::cout << def.c << "  " << (&def - &definitions.front()) << ' ' << def.img;
+                        std::cout << def.c << "  " << (&def - &definitions.front()) << "\n" << def.img;
                     }
                 }
                 else {
@@ -288,6 +428,23 @@ int main(int ac, char **av)
             }
             else if (s[0] == 'c') {
                 break;
+            }
+            else if (s[0] == 'l') {
+                search_baseline = !search_baseline;
+            }
+            else if (s[0] == 'h') {
+                std::cout <<
+                  "r: reset strategies\n"
+                  "e id id2 ...: enable/disable strategy(ies)\n"
+                  "x: inverse strategies\n"
+                  "p id: print definition\n"
+                  "i id: print definition.img\n"
+                  "s: enable/disable \"one line per word\"\n"
+                  "d: enable/disable \"print image with word\"\n"
+                  "l: enable/disable search_baseline\n"
+                  "c: continue\n"
+                  "q: quit\n"
+                  "h: help\n";
             }
             else {
                 std::cerr << "Unknow\n";
