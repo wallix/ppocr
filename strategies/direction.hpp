@@ -39,6 +39,8 @@ namespace strategies
         bool operator==(direction const & other) const
         { return d == other.d; }
 
+        unsigned relationship(const direction& other) const;
+
         int id() const noexcept { return d; }
 
         friend std::istream & operator>>(std::istream &, direction &);

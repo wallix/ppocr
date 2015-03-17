@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <algorithm>
 
 #include <cstring>
@@ -84,6 +85,22 @@ int main(int ac, char **av)
             }
             return true;
         }
+
+        std::vector<unsigned>
+        relationships(const DataLoader::Data& a, const DataLoader::Data& b) const
+        {
+            std::vector<unsigned> ret;
+            auto enable_it = this->enable_seq.begin();
+            auto it2 = b.datas().begin();
+            for (DataLoader::data_base const & data : a.datas()) {
+                if (*enable_it) {
+                    ret.push_back(data.relationship(*it2));
+                }
+                ++it2;
+                ++enable_it;
+            }
+            return ret;
+        }
     };
 
     DataCompareParametrable data_compare;
@@ -117,6 +134,8 @@ int main(int ac, char **av)
     bool display_char = false;
     bool show_one_line = false;
     bool search_baseline = true;
+    bool show_data_if_empty_range = false;
+    unsigned conformity = 100;
     struct Proxy { Proxy() {} Definition const & operator()(Definition const & def) const { return def; } };
     using range_definition = range_iterator<decltype(definitions.begin()), Proxy>;
     std::vector<range_definition> def_ranges;
@@ -203,19 +222,39 @@ int main(int ac, char **av)
                 auto first = it;
                 std::string * sref = &it->c;
                 bool ok = true;
-                while (it != definitions.end() && data_compare.eq(it->data, data)) {
-                    if (ok && it->c != *sref) {
-                        ok = false;
+                {
+                    auto it_to_end = [&](auto f) {
+                        while (it != definitions.end() && f(it->data, data)) {
+                            if (ok && it->c != *sref) {
+                                ok = false;
+                            }
+                            sref = &it->c;
+                            ++it;
+                        }
+                    };
+
+                    if (conformity == 100) {
+                        it_to_end([&](auto & a, auto & b) { return data_compare.eq(a, b); });
                     }
-                    sref = &it->c;
-                    ++it;
+                    else {
+                        it_to_end([&](auto & a, auto & b) {
+                            for (auto percent : data_compare.relationships(a, b)) {
+                                if (percent < conformity) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        });
+                    }
                 }
                 def_ranges.push_back({first, it, Proxy()});
                 char_infos.push_back({cbox, def_ranges.back(), ok});
                 if (first == it) {
                     std::cout << num_word << " \033[00;31m000\033[0m []";
 
-                    std::cout << "\n" << loader.writer(data);
+                    if (show_data_if_empty_range) {
+                        std::cout << "\n" << loader.writer(data);
+                    }
                 }
                 else {
                     std::cout << num_word << " ";
@@ -237,7 +276,15 @@ int main(int ac, char **av)
                     }
                     std::cout << " [";
                     for (; first !=  it; ++first) {
-                        std::cout << first->c << ' ';
+                        if (conformity != 100 && !ok) {
+                            std::cout << "\n " << first->c << " ";
+                            for (auto percent : data_compare.relationships(first->data, data)) {
+                                std::cout << std::setw(3) << percent << "% ";
+                            }
+                        }
+                        else {
+                            std::cout << first->c << ' ';
+                        }
                     }
                     std::cout << "\b]";
                 }
@@ -356,6 +403,10 @@ int main(int ac, char **av)
         };
         show_name();
 
+        if (conformity != 100) {
+            std::cout << "\n conformity: " << conformity << "\n";
+        }
+
         std::cout << "\n> ";
 
         std::cin.clear();
@@ -432,6 +483,13 @@ int main(int ac, char **av)
             else if (s[0] == 'l') {
                 search_baseline = !search_baseline;
             }
+            else if (s[0] == 'f') {
+                show_data_if_empty_range = !show_data_if_empty_range;
+            }
+            else if (s[0] == '%') {
+                std::cin >> conformity;
+                conformity = std::min(100u, conformity);
+            }
             else if (s[0] == 'h') {
                 std::cout <<
                   "r: reset strategies\n"
@@ -442,7 +500,9 @@ int main(int ac, char **av)
                   "s: enable/disable \"one line per word\"\n"
                   "d: enable/disable \"print image with word\"\n"
                   "l: enable/disable search_baseline\n"
+                  "f: enable/disable show_data_if_empty_range\n"
                   "c: continue\n"
+                  "% conformity: percent min\n"
                   "q: quit\n"
                   "h: help\n";
             }

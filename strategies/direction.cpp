@@ -1,6 +1,8 @@
 #include "direction.hpp"
 #include "image.hpp"
 
+#include "utils/relationship.hpp"
+
 #include <ostream>
 #include <istream>
 
@@ -43,9 +45,11 @@ static int horizontal_direction(const Image& img)
 }
 
 direction::direction(const Image& img, const Image& img90)
-: d(horizontal_direction(img) + horizontal_direction(img90) * 5)
+: d(horizontal_direction(img) | (horizontal_direction(img90) << 3))
 {}
 
+unsigned direction::relationship(const direction& other) const
+{ return mask_relationship(d, other.d, 0b111, 3, 10); }
 
 std::istream& operator>>(std::istream& is, direction& d)
 { return is >> d.d; }

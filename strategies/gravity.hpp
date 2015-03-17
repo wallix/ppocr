@@ -39,6 +39,8 @@ namespace strategies
         bool operator==(gravity const & other) const
         { return d == other.d; }
 
+        unsigned relationship(const gravity& other) const;
+
         int id() const noexcept { return d; }
 
         friend std::istream & operator>>(std::istream &, gravity &);

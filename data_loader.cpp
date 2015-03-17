@@ -33,6 +33,19 @@ bool DataLoader::Data::operator==(const DataLoader::Data& other) const
     return true;
 }
 
+std::vector<unsigned> DataLoader::Data::relationships(const DataLoader::Data& other) const
+{
+    std::vector<unsigned> ret(datas_.size());
+    auto itret = ret.begin();
+    auto it2 = other.datas_.begin();
+    for (data_ptr const & data : this->datas_) {
+        *itret = data->relationship(**it2);
+        ++it2;
+        ++itret;
+    }
+    return ret;
+}
+
 DataLoader::Data DataLoader::new_data() const
 {
     std::vector<data_ptr> datas;

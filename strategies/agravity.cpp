@@ -2,6 +2,7 @@
 #include "image.hpp"
 
 #include "math/almost_equal.hpp"
+#include "utils/relationship.hpp"
 
 #include <ostream>
 #include <istream>
@@ -77,6 +78,15 @@ bool agravity::operator==(const agravity& other) const
 bool agravity::operator<(agravity const & other) const
 { return a < other.a && !(*this == other); }
 
+unsigned agravity::relationship(const agravity& other) const
+{
+    // disable -Wfloat-equal
+    std::equal_to<> const eq;
+    if (eq(angle(), null_angle()) || eq(other.angle(), null_angle())) {
+        return !eq(other.angle(), angle());
+    }
+    return compute_relationship(angle(), other.angle(), M_PI);
+}
 
 std::istream& operator>>(std::istream& is, agravity& ag)
 { return is >> ag.a; }

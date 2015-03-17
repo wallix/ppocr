@@ -18,8 +18,8 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_COMPASS_HPP
-#define REDEMPTION_STRATEGIES_COMPASS_HPP
+#ifndef REDEMPTION_STRATEGIES_GRAVITY2_HPP
+#define REDEMPTION_STRATEGIES_GRAVITY2_HPP
 
 #include <iosfwd>
 
@@ -27,31 +27,29 @@ class Image;
 
 namespace strategies
 {
-    struct compass
+    struct gravity2
     {
-        enum cardinal_direction { NONE, NORT = 1, EAST = 2, SOUTH = 4, WEST = 8 };
+        gravity2() = default;
 
-        compass() = default;
+        gravity2(const Image & img, const Image & img90);
 
-        compass(const Image & img, const Image & img90);
-
-        bool operator<(compass const & other) const
+        bool operator<(gravity2 const & other) const
         { return d < other.d; }
 
-        bool operator==(compass const & other) const
+        bool operator==(gravity2 const & other) const
         { return d == other.d; }
 
-        unsigned relationship(const compass& other) const;
+        unsigned relationship(const gravity2& other) const;
 
-        cardinal_direction direction() const noexcept { return d; }
+        int id() const noexcept { return d; }
 
-        friend std::istream & operator>>(std::istream &, compass &);
+        friend std::istream & operator>>(std::istream &, gravity2 &);
 
     private:
-        cardinal_direction d = NONE;
+        int d = 0;
     };
 
-    std::ostream & operator<<(std::ostream &, compass const &);
+    std::ostream & operator<<(std::ostream &, gravity2 const &);
 }
 
 #endif

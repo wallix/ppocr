@@ -39,7 +39,10 @@ namespace strategies
         bool operator<(proportionality const & other) const
         { return proportion_ < other.proportion_; }
 
-        bool operator==(proportionality const & other) const;
+        bool operator==(proportionality const & other) const
+        { return this->proportion_ == other.proportion_; }
+
+        unsigned relationship(proportionality const & other) const;
 
         int proportion() const noexcept { return proportion_; }
 

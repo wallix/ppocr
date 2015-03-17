@@ -1,6 +1,8 @@
 #include "gravity.hpp"
 #include "image.hpp"
 
+#include "utils/relationship.hpp"
+
 #include <ostream>
 #include <istream>
 
@@ -57,9 +59,11 @@ static int horizontal_gravity(const Image& img)
 }
 
 gravity::gravity(const Image& img, const Image& img90)
-: d(horizontal_gravity(img) + horizontal_gravity(img90) * 5)
+: d(horizontal_gravity(img) | (horizontal_gravity(img90) << 3))
 {}
 
+unsigned gravity::relationship(const gravity& other) const
+{ return mask_relationship(d, other.d, 0b111, 3, 10); }
 
 std::istream& operator>>(std::istream& is, gravity& d)
 { return is >> d.d; }

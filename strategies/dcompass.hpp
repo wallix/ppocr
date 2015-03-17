@@ -41,6 +41,8 @@ namespace strategies
         bool operator==(dcompass const & other) const
         { return d == other.d; }
 
+        unsigned relationship(const dcompass& other) const;
+
         cardinal_direction direction() const noexcept { return d; }
 
         friend std::istream & operator>>(std::istream &, dcompass &);

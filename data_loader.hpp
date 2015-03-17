@@ -76,6 +76,7 @@ struct DataLoader
         virtual bool eq(data_base const & other) const = 0;
         virtual void write(std::ostream & os) const = 0;
         virtual void read(std::istream & is) = 0;
+        virtual unsigned relationship(const data_base& other) const = 0;
     };
 
     template<class Strategy>
@@ -95,6 +96,9 @@ struct DataLoader
 
         virtual bool less(const data_base& other) const override
         { return this->strategy < static_cast<data const&>(other).strategy; }
+
+        virtual unsigned relationship(const data_base& other) const
+        { return this->strategy.relationship(static_cast<data const&>(other).strategy); }
 
         virtual void write(std::ostream & os) const override
         { os << this->strategy; }
@@ -157,6 +161,8 @@ public:
 
         bool operator<(const Data & other) const;
         bool operator==(const Data & other) const;
+
+        std::vector<unsigned> relationships(const Data& other) const;
 
         data_base const & operator[](std::size_t i) const { return *this->datas_[i].get(); }
 

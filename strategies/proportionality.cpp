@@ -1,4 +1,5 @@
 #include "proportionality.hpp"
+#include "utils/relationship.hpp"
 #include "image.hpp"
 
 #include <ostream>
@@ -16,8 +17,8 @@ proportionality::proportionality(const Image& img, const Image& /*img90*/)
 )
 {}
 
-bool proportionality::operator==(const proportionality& other) const
-{ return this->proportion_ == other.proportion_; }
+unsigned proportionality::relationship(const proportionality& other) const
+{ return compute_relationship(proportion(), other.proportion(), 200); }
 
 std::istream& operator>>(std::istream& is, proportionality& prop)
 { return is >> prop.proportion_; }

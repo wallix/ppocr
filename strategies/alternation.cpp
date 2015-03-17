@@ -65,6 +65,19 @@ alternations::alternations(const Image& img, const Image& img90)
     assert(it == seq_alternations.end());
 }
 
+unsigned alternations::relationship(const alternations& other) const
+{
+    auto it = this->seq_alternations.begin();
+    unsigned nb_equal = 0;
+    for (auto const & x : other.seq_alternations) {
+        if (x == *it) {
+            ++nb_equal;
+        }
+        ++it;
+    }
+    return nb_equal * 100 / this->seq_alternations.size();
+}
+
 std::ostream & operator<<(std::ostream & os, alternations const & seq_alternations)
 {
     for (alternations::sequence_type const & alternation : seq_alternations) {

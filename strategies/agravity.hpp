@@ -29,7 +29,7 @@ namespace strategies
 {
     struct agravity
     {
-        static constexpr double null_angle = 100000;
+        static constexpr double null_angle() { return 1.0e5; }
 
         agravity() = default;
         agravity(double a) : a(a) {}
@@ -40,12 +40,14 @@ namespace strategies
 
         bool operator==(agravity const & other) const;
 
+        unsigned relationship(const agravity& other) const;
+
         double angle() const noexcept { return a; }
 
         friend std::istream & operator>>(std::istream &, agravity &);
 
     private:
-        double a = null_angle;
+        double a = null_angle();
     };
 
     std::ostream & operator<<(std::ostream &, agravity const &);

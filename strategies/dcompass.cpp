@@ -1,6 +1,8 @@
 #include "dcompass.hpp"
 #include "image.hpp"
 
+#include "utils/relationship.hpp"
+
 #include <ostream>
 #include <istream>
 
@@ -58,9 +60,11 @@ static int horizontal_dcompass(const Image& img)
 }
 
 dcompass::dcompass(const Image& img, const Image& img90)
-: d(static_cast<cardinal_direction>(horizontal_dcompass(img) | horizontal_dcompass(img90) * 4))
+: d(static_cast<cardinal_direction>(horizontal_dcompass(img) | horizontal_dcompass(img90) << 2))
 {}
 
+unsigned dcompass::relationship(const dcompass& other) const
+{ return mask_relationship(d, other.d, 0b11, 2, 25); }
 
 std::istream& operator>>(std::istream& is, dcompass& d)
 { return is >> reinterpret_cast<std::underlying_type_t<dcompass::cardinal_direction>&>(d.d); }

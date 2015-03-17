@@ -103,6 +103,8 @@ namespace strategies
         bool operator==(alternations const & other) const
         { return seq_alternations == other.seq_alternations; }
 
+        unsigned relationship(const alternations& other) const;
+
         friend std::istream & operator>>(std::istream &, alternations &);
 
     private:
