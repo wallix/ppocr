@@ -17,5 +17,6 @@ void all_registy(DataLoader& loader)
     loader.registry<strategies::gravity>("gravity");
     loader.registry<strategies::compass>("compass");
     loader.registry<strategies::dcompass>("dcompass"); // good
+    loader.registry<strategies::proportionality>("proportionality"); // good
     loader.registry<strategies::gravity2>("gravity2"); // ?
 }

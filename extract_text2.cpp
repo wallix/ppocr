@@ -112,6 +112,7 @@ struct DataSorted
     {
         std::vector<Definition const *> ret;
         std::vector<Definition const *> localret;
+        bool is_init = false;
 
         size_t i = 0;
         for (Buffer const & buf : buffers_) {
@@ -129,11 +130,11 @@ struct DataSorted
                         localret.push_back(def);
                     }
                 }
-//                 std::cout << localret.size() << "\n";
 
                 std::sort(localret.begin(), localret.end());
-                if (0 == i) {
+                if (!is_init) {
                     ret = localret;
+                    is_init = true;
                 }
                 else {
                     auto it1 = ret.begin();
@@ -142,14 +143,14 @@ struct DataSorted
                     auto end2 = localret.end();
                     auto out = it1;
                     for (; it1 != end1; ++it1) {
-                        for (; it2 != end2 && *it2 < *it1; ++it2) {
-                        }
-                        if (it2 == end2) {
-                            break;
-                        }
-                        if (*it1 == *it2) {
-                            *out++ = *it1;
-                        }
+                       for (; it2 != end2 && *it2 < *it1; ++it2) {
+                       }
+                       if (it2 == end2) {
+                           break;
+                       }
+                       if (*it1 == *it2) {
+                           *out++ = *it1;
+                       }
                     }
                     ret.erase(out, ret.end());
                 }
