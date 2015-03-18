@@ -14,6 +14,190 @@
 
 #include <cstring>
 #include <cerrno>
+#include <cassert>
+
+using std::size_t;
+
+
+struct DataSorted
+{
+    struct Buffer
+    {
+        using iterator = Definition const * *;
+
+        Buffer(std::vector<Definition> const & definitions)
+        : p_(std::make_unique<Definition const*[]>(definitions.size()))
+        , sz_(definitions.size())
+        , enable_(true)
+        {
+            auto p = this->p_.get();
+            for (Definition const & def : definitions) {
+                *p++ = &def;
+            }
+        };
+
+        Buffer() = default;
+        Buffer(Buffer const &) = delete;
+        Buffer&operator=(Buffer const &) = delete;
+        Buffer(Buffer &&) = default;
+        Buffer&operator == (Buffer &&) = delete;
+
+        iterator begin() const { return this->p_.get(); }
+        iterator end() const { return this->begin() + this->sz_; }
+
+        operator bool () const { return this->enable_; }
+
+        void set_enable(bool x) { this->enable_ = x; }
+
+    private:
+        std::unique_ptr<Definition const *[]> const p_;
+        std::size_t sz_;
+        bool enable_;
+    };
+
+    struct Buffers
+    {
+        Buffers(std::vector<Definition> const & definitions, std::size_t data_sz)
+        : buffers_(std::make_unique<Buffer[]>(data_sz))
+        , sz_(data_sz)
+        {
+            std::uninitialized_fill(this->begin(), this->end(), definitions);
+        }
+
+        Buffer const * begin() const { return this->buffers_.get(); }
+        Buffer const * end() const { return this->begin() + this->sz_; }
+        Buffer * begin() { return this->buffers_.get(); }
+        Buffer * end() { return this->begin() + this->sz_; }
+        Buffer const & operator[](size_t i) const { return this->begin()[i]; }
+        void set_enable(size_t i, bool x) { return this->buffers_.get()[i].set_enable(x); }
+        void reset_enable(bool x) { for (auto & buf : *this) buf.set_enable(x); }
+
+    private:
+        std::unique_ptr<Buffer[]> buffers_;
+        std::size_t sz_;
+    } buffers_;
+
+    DataLoader const & loader_;
+
+    DataSorted(std::vector<Definition> const & definitions, DataLoader const & loader)
+    : buffers_(definitions, loader.size())
+    , loader_(loader)
+    {
+        size_t i = 0;
+        for (Buffer const & buf : buffers_) {
+            std::sort(buf.begin(), buf.end(), [i](auto & a, auto & b) {
+                DataLoader::data_base const & data1 = a->datas[i];
+                DataLoader::data_base const & data2 = b->datas[i];
+                return data1.lt(data2);
+            });
+            ++i;
+        }
+    }
+
+    struct DefLtDatas
+    {
+        size_t i;
+        unsigned percent;
+
+        bool operator()(Definition const * a, DataLoader::Datas const & b) const
+        {
+            DataLoader::data_base const & data1 = a->datas[i];
+            DataLoader::data_base const & data2 = b[i];
+            return data1.relationship(data2) < this->percent;
+        }
+    };
+
+    std::vector<Definition const *>
+    get_same_definitions(DataLoader::Datas const & datas, unsigned percent = 100)
+    {
+        std::vector<Definition const *> ret;
+        std::vector<Definition const *> localret;
+
+        size_t i = 0;
+        for (Buffer const & buf : buffers_) {
+            if (buf) {
+                localret.clear();
+                //DefLtDatas lt{i, percent};
+                //auto first = std::lower_bound(buf.begin(), buf.end(), data, lt);
+                //for (; first != buf.end() && lt(*first, data); ++first) {
+                //    localret.push_back(*first);
+                //}
+                for (auto * def : buf) {
+                    DataLoader::data_base const & data1 = def->datas[i];
+                    DataLoader::data_base const & data2 = datas[i];
+                    if (data1.relationship(data2) >= percent) {
+                        localret.push_back(def);
+                    }
+                }
+//                 std::cout << localret.size() << "\n";
+
+                std::sort(localret.begin(), localret.end());
+                if (0 == i) {
+                    ret = localret;
+                }
+                else {
+                    auto it1 = ret.begin();
+                    auto end1 = ret.end();
+                    auto it2 = localret.begin();
+                    auto end2 = localret.end();
+                    auto out = it1;
+                    for (; it1 != end1; ++it1) {
+                        for (; it2 != end2 && *it2 < *it1; ++it2) {
+                        }
+                        if (it2 == end2) {
+                            break;
+                        }
+                        if (*it1 == *it2) {
+                            *out++ = *it1;
+                        }
+                    }
+                    ret.erase(out, ret.end());
+                }
+            }
+            ++i;
+        }
+
+        return ret;
+    }
+
+    std::vector<unsigned>
+    relationships(const DataLoader::Datas& a, const DataLoader::Datas& b) const
+    {
+        std::vector<unsigned> ret;
+        auto enable_it = this->buffers_.begin();
+        auto it2 = b.datas().begin();
+        for (DataLoader::data_base const & data : a.datas()) {
+            if (*enable_it) {
+                ret.push_back(data.relationship(*it2));
+            }
+            ++it2;
+            ++enable_it;
+        }
+        return ret;
+    }
+
+    bool print(std::ostream & os, const DataLoader::Datas& d, DataLoader const & loader) const
+    {
+        auto enable_it = this->buffers_.begin();
+        auto name_it = loader.names().begin();
+        for (DataLoader::data_base const & data : d.datas()) {
+//                 if (*enable_it) {
+                os << (*enable_it ? " + " : " - ") << *name_it << ": ";
+                data.write(os);
+                os << '\n';
+//                 }
+            ++name_it;
+            ++enable_it;
+        }
+        return true;
+    }
+
+    bool is_enable(size_t i) const { return this->buffers_[i]; }
+    void flip_enable(size_t i) { this->set_enable(i, !this->is_enable(i)); }
+    void set_enable(size_t i, bool x) { this->buffers_.set_enable(i, x); }
+    void reset_enable(bool x = true) { this->buffers_.reset_enable(x); }
+    void flip_enable() { for (auto & buf : this->buffers_) buf.set_enable(!bool(buf)); }
+};
 
 int main(int ac, char **av)
 {
@@ -31,84 +215,7 @@ int main(int ac, char **av)
     DataLoader loader;
     all_registy(loader);
 
-    struct DataCompareParametrable
-    {
-        std::vector<bool> enable_seq;
-
-        bool lt(const DataLoader::Data& a, const DataLoader::Data& b) const
-        {
-            auto enable_it = this->enable_seq.begin();
-            auto it2 = b.datas().begin();
-            for (DataLoader::data_base const & data : a.datas()) {
-                if (*enable_it) {
-                    if (data.less(*it2)) {
-                        return true;
-                    }
-                    if (!data.eq(*it2)) {
-                        return false;
-                    }
-                }
-                ++it2;
-                ++enable_it;
-            }
-            return false;
-        }
-
-        bool eq(const DataLoader::Data& a, const DataLoader::Data& b) const
-        {
-            auto enable_it = this->enable_seq.begin();
-            auto it2 = b.datas().begin();
-            for (DataLoader::data_base const & data : a.datas()) {
-                if (*enable_it) {
-                    if (!data.eq(*it2)) {
-                        return false;
-                    }
-                }
-                ++it2;
-                ++enable_it;
-            }
-            return true;
-        }
-
-        bool print(std::ostream & os, const DataLoader::Data& d, DataLoader const & loader) const
-        {
-            auto enable_it = this->enable_seq.begin();
-            auto name_it = loader.names().begin();
-            for (DataLoader::data_base const & data : d.datas()) {
-//                 if (*enable_it) {
-                    os << (*enable_it ? " + " : " - ") << *name_it << ": ";
-                    data.write(os);
-                    os << '\n';
-//                 }
-                ++name_it;
-                ++enable_it;
-            }
-            return true;
-        }
-
-        std::vector<unsigned>
-        relationships(const DataLoader::Data& a, const DataLoader::Data& b) const
-        {
-            std::vector<unsigned> ret;
-            auto enable_it = this->enable_seq.begin();
-            auto it2 = b.datas().begin();
-            for (DataLoader::data_base const & data : a.datas()) {
-                if (*enable_it) {
-                    ret.push_back(data.relationship(*it2));
-                }
-                ++it2;
-                ++enable_it;
-            }
-            return ret;
-        }
-    };
-
-    DataCompareParametrable data_compare;
-    data_compare.enable_seq.resize(loader.size(), true);
-
     std::vector<Definition> definitions;
-
-    Image img = image_from_file(av[2]);
     //std::cerr << img << '\n';
 
     {
@@ -127,6 +234,10 @@ int main(int ac, char **av)
         return 5;
     }
 
+    DataSorted data_sorted(definitions, loader);
+
+
+    Image img = image_from_file(av[2]);
     Bounds const bounds(img.width(), img.height());
 
     std::string s;
@@ -136,21 +247,19 @@ int main(int ac, char **av)
     bool search_baseline = true;
     bool show_data_if_empty_range = false;
     unsigned conformity = 100;
-    struct Proxy { Proxy() {} Definition const & operator()(Definition const & def) const { return def; } };
-    using range_definition = range_iterator<decltype(definitions.begin()), Proxy>;
-    std::vector<range_definition> def_ranges;
+    using ref_definitions_t = std::vector<Definition const *>;
 
     //unique_sort_definitions(definitions);
 
     struct CharInfo {
+        ref_definitions_t ref_definitions;
         Box box;
-        range_definition def_range;
         bool ok;
     };
     std::vector<CharInfo> char_infos;
 
     struct Line {
-        std::string s;
+        std::string c;
         unsigned i;
     };
     std::vector<Line> info_lines;
@@ -163,11 +272,7 @@ int main(int ac, char **av)
     }
 
     do {
-        def_ranges.clear();
         char_infos.clear();
-        std::sort(definitions.begin(), definitions.end(), [&data_compare](auto & a, auto & b) {
-            return data_compare.lt(a.data, b.data);
-        });
 
         size_t x = [&] {
             size_t x = 0;
@@ -205,92 +310,66 @@ int main(int ac, char **av)
                 std::cout << loader.writer(data);
             }
 
-            auto it = std::lower_bound(
-                definitions.begin(), definitions.end(), data
-              , [&data_compare](Definition const & a, DataLoader::Data const & b) {
-                return data_compare.lt(a.data, b);
-              }
-            );
-            if (it == definitions.end()) {
-                std::cout << "?\n";
-                char_infos.push_back({cbox, range_definition(), false});
+            auto defs = data_sorted.get_same_definitions(data, conformity);
+            bool ok = !defs.empty();
+            if (ok) {
+                std::string const & s = defs.front()->c;
+                auto it = defs.begin();
+                auto e = defs.end();
+                for (; it != e; ++it) {
+                    if ((*it)->c != s) {
+                        ok = false;
+                        break;
+                    }
+                }
+            }
+
+            if (num_word < 10) {
+                std::cout << "0";
+            }
+            if (defs.empty()) {
+                std::cout << num_word << " \033[00;31m000\033[0m []";
+
+                if (show_data_if_empty_range) {
+                    std::cout << "\n" << loader.writer(data);
+                }
             }
             else {
-                if (num_word < 10 && !show_one_line) {
-                    std::cout << "0";
+                std::cout << num_word << " ";
+                if (ok) {
+                    std::cout << "\033[00;32m";
                 }
-                auto first = it;
-                std::string * sref = &it->c;
-                bool ok = true;
-                {
-                    auto it_to_end = [&](auto f) {
-                        while (it != definitions.end() && f(it->data, data)) {
-                            if (ok && it->c != *sref) {
-                                ok = false;
-                            }
-                            sref = &it->c;
-                            ++it;
+                auto const sz = defs.size();
+                if (!show_one_line) {
+                    if (sz < 100) {
+                        std::cout << "0";
+                    }
+                    if (sz < 10) {
+                        std::cout << "0";
+                    }
+                }
+                std::cout << sz;
+                if (ok) {
+                    std::cout << "\033[0m";
+                }
+                std::cout << " [";
+                for (auto * def : defs) {
+                    if (conformity != 100 && !ok) {
+                        std::cout << "\n " << def->c << " ";
+                        for (auto percent : data_sorted.relationships(def->datas, data)) {
+                            std::cout << std::setw(3) << percent << "% ";
                         }
-                    };
-
-                    if (conformity == 100) {
-                        it_to_end([&](auto & a, auto & b) { return data_compare.eq(a, b); });
                     }
                     else {
-                        it_to_end([&](auto & a, auto & b) {
-                            for (auto percent : data_compare.relationships(a, b)) {
-                                if (percent < conformity) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        });
+                        std::cout << def->c << ' ';
                     }
                 }
-                def_ranges.push_back({first, it, Proxy()});
-                char_infos.push_back({cbox, def_ranges.back(), ok});
-                if (first == it) {
-                    std::cout << num_word << " \033[00;31m000\033[0m []";
-
-                    if (show_data_if_empty_range) {
-                        std::cout << "\n" << loader.writer(data);
-                    }
-                }
-                else {
-                    std::cout << num_word << " ";
-                    if (ok) {
-                        std::cout << "\033[00;32m";
-                    }
-                    auto const sz = it - first;
-                    if (!show_one_line) {
-                        if (sz < 100) {
-                            std::cout << "0";
-                        }
-                        if (sz < 10) {
-                            std::cout << "0";
-                        }
-                    }
-                    std::cout << sz;
-                    if (ok) {
-                        std::cout << "\033[0m";
-                    }
-                    std::cout << " [";
-                    for (; first !=  it; ++first) {
-                        if (conformity != 100 && !ok) {
-                            std::cout << "\n " << first->c << " ";
-                            for (auto percent : data_compare.relationships(first->data, data)) {
-                                std::cout << std::setw(3) << percent << "% ";
-                            }
-                        }
-                        else {
-                            std::cout << first->c << ' ';
-                        }
-                    }
-                    std::cout << "\b]";
-                }
-                std::cout << (show_one_line ? " " : "\n");
-                ++num_word;
+                std::cout << "\b]";
             }
+            std::cout << (show_one_line ? " " : "\n");
+            ++num_word;
+
+            char_infos.push_back({std::move(defs), cbox, ok});
 
             x = cbox.x() + cbox.w();
         }
@@ -317,10 +396,10 @@ int main(int ac, char **av)
 //                 std::cout << info.ok;
                 if (info.ok) {
                     Box const & box = info.box;
-                    Definition const & def = info.def_range.front();
+                    std::string const & c = info.ref_definitions.front()->c;
 //                     std::cout << "  " << def.c;
                     auto p = std::find_if(info_lines.begin(), info_lines.end(), [&](Line const & l) {
-                        return l.s == def.c;
+                        return l.c == c;
                     });
                     if (p != info_lines.end()) {
                         if (p->i == 1) {
@@ -350,17 +429,17 @@ int main(int ac, char **av)
             ;
 
             for (CharInfo const & info : char_infos) {
-                if (!info.ok && !info.def_range.empty()) {
+                if (!info.ok && !info.ref_definitions.empty()) {
                     Box const & box = info.box;
-                    std::cout << info.def_range.front().c << ':';
-                    for (Definition const & def : info.def_range) {
+                    std::cout << info.ref_definitions.front()->c << ':';
+                    for (Definition const * def : info.ref_definitions) {
                         auto p = std::find_if(info_lines.begin(), info_lines.end(), [&](Line const & l) {
-                            return l.s == def.c;
+                            return l.c == def->c;
                         });
                         if (p != info_lines.end()) {
                             if (p->i == 1) {
                                 if (meanline == box.top() && baseline == box.bottom()) {
-                                    std::cout << ' ' << def.c;
+                                    std::cout << ' ' << def->c;
                                 }
                             }
                             else if ((p->i & 0b00110) == 0) {
@@ -369,7 +448,7 @@ int main(int ac, char **av)
                                      ((p->i & 0b11000) == 0b01000 && box.bottom() < baseline)
                                   || ((p->i & 0b11000) == 0b10000 && box.bottom() > baseline)
                                 )) {
-                                    std::cout << ' ' << def.c;
+                                    std::cout << ' ' << def->c;
                                 }
                             }
                             else if ((p->i & 0b11000) == 0) {
@@ -378,7 +457,7 @@ int main(int ac, char **av)
                                      ((p->i & 0b00110) == 0b00010 && box.top() < meanline)
                                   || ((p->i & 0b00110) == 0b00100 && box.top() > meanline)
                                 )) {
-                                    std::cout << ' ' << def.c;
+                                    std::cout << ' ' << def->c;
                                 }
                             }
                         }
@@ -397,7 +476,7 @@ int main(int ac, char **av)
                 if (num_name < 10) {
                     std::cout << "0";
                 }
-                std::cout << num_name << (data_compare.enable_seq[num_name] ? " x " : "   ") << name << '\n';
+                std::cout << num_name << (data_sorted.is_enable(num_name) ? " x " : "   ") << name << '\n';
                 ++num_name;
             }
         };
@@ -414,8 +493,7 @@ int main(int ac, char **av)
         // interactive
         while (std::cin >> s && !s.empty()) {
             if (s[0] == 'r') {
-                data_compare.enable_seq.clear();
-                data_compare.enable_seq.resize(loader.size(), true);
+                data_sorted.reset_enable();
                 show_name();
             }
             else if (s[0] == 'e') {
@@ -425,7 +503,7 @@ int main(int ac, char **av)
                 size_t i;
                 while (iss >> i) {
                     if (i < loader.size()) {
-                        data_compare.enable_seq[i] = !data_compare.enable_seq[i];
+                        data_sorted.flip_enable(i);
                     }
                     else {
                         std::cerr << i << " unknow\n";
@@ -436,13 +514,13 @@ int main(int ac, char **av)
             else if (s[0] == 'p') {
                 size_t i;
                 std::cin >> i;
-                if (i < def_ranges.size()) {
-                    for (Definition const & def : def_ranges[i]) {
-                        std::cout << def.c << "  " << (&def - &definitions.front()) << '\n';
+                if (i < char_infos.size()) {
+                    for (Definition const * def : char_infos[i].ref_definitions) {
+                        std::cout << def->c << "  " << (def - &definitions.front()) << '\n';
                         if (display_char) {
-                            std::cout << def.img;
+                            std::cout << def->img;
                         }
-                        data_compare.print(std::cout, def.data, loader);
+                        data_sorted.print(std::cout, def->datas, loader);
                     }
                 }
                 else {
@@ -452,9 +530,9 @@ int main(int ac, char **av)
             else if (s[0] == 'i') {
                 size_t i;
                 std::cin >> i;
-                if (i < def_ranges.size()) {
-                    for (Definition const & def : def_ranges[i]) {
-                        std::cout << def.c << "  " << (&def - &definitions.front()) << "\n" << def.img;
+                if (i < char_infos.size()) {
+                    for (Definition const * def : char_infos[i].ref_definitions) {
+                        std::cout << def->c << "  " << (def - &definitions.front()) << "\n" << def->img;
                     }
                 }
                 else {
@@ -472,9 +550,7 @@ int main(int ac, char **av)
                 break;
             }
             else if (s[0] == 'x') {
-                for (auto && x : data_compare.enable_seq) {
-                    x = !x;
-                }
+                data_sorted.flip_enable();
                 show_name();
             }
             else if (s[0] == 'c') {

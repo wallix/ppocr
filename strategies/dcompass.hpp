@@ -33,6 +33,8 @@ namespace strategies
 
         dcompass() = default;
 
+        dcompass(cardinal_direction d) : d(d) {}
+
         dcompass(const Image & img, const Image & img90);
 
         bool operator<(dcompass const & other) const
@@ -52,6 +54,10 @@ namespace strategies
     };
 
     std::ostream & operator<<(std::ostream &, dcompass const &);
+
+    inline dcompass::cardinal_direction
+    operator|(dcompass::cardinal_direction a, dcompass::cardinal_direction b)
+    { return static_cast<dcompass::cardinal_direction>(a | b); }
 }
 
 #endif

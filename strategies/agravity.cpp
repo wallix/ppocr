@@ -83,7 +83,7 @@ unsigned agravity::relationship(const agravity& other) const
     // disable -Wfloat-equal
     std::equal_to<> const eq;
     if (eq(angle(), null_angle()) || eq(other.angle(), null_angle())) {
-        return !eq(other.angle(), angle());
+        return eq(other.angle(), angle()) ? 100 : 0;
     }
     return compute_relationship(angle(), other.angle(), M_PI);
 }

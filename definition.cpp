@@ -4,22 +4,22 @@
 #include <istream>
 
 
-Definition::Definition(std::string c, Image img, DataLoader::Data data)
+Definition::Definition(std::string c, Image img, DataLoader::Datas data)
 : c(std::move(c))
 , img(std::move(img))
-, data(std::move(data))
+, datas(std::move(data))
 {}
 
 Definition::Definition(std::string c, Image img, const DataLoader& loader)
 : c(std::move(c))
 , img(std::move(img))
-, data(loader.new_data(this->img, this->img.rotate90()))
+, datas(loader.new_data(this->img, this->img.rotate90()))
 {}
 
 void write_definition(std::ostream& os, Definition const & def, const DataLoader& loader)
 {
     os << def.c << " " << def.img.width() << " " << def.img.height() << " ";
-    os.write(def.img.data(), def.img.area()) << "\n" << loader.writer(def.data) << "\n";
+    os.write(def.img.data(), def.img.area()) << "\n" << loader.writer(def.datas) << "\n";
 }
 
 void read_definition(std::istream& is, Definition & def, const DataLoader& loader)
@@ -31,7 +31,7 @@ void read_definition(std::istream& is, Definition & def, const DataLoader& loade
         //decltype(file)::sentry sentry(file);
         is.rdbuf()->snextc();
         is.read(p.get(), bnd.area());
-        def.data = loader.new_data(is);
+        def.datas = loader.new_data(is);
         def.img = Image(bnd, std::move(p));
     }
 }

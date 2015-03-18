@@ -40,7 +40,7 @@ static int load_file(
         }
 
         definitions.emplace_back(s, img.section(cbox.index(), cbox.bounds()), loader);
-        assert(definitions.back().data == definitions.back().data);
+        assert(definitions.back().datas == definitions.back().datas);
 
         x = cbox.x() + cbox.w();
     }

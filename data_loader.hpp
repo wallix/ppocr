@@ -46,12 +46,28 @@ private:
     Proxy & proxy() { return static_cast<Proxy&>(*this); }
 };
 
-template<class Iterator, class Proxy>
+namespace detail {
+    struct DefaultProxy {
+        DefaultProxy() {}
+        template<class T> T const & operator()(T const & x) { return x; }
+        template<class T> T& operator()(T& x) { return x; }
+        template<class T> T operator()(T&& x) { return std::forward<T>(x); }
+    };
+}
+
+template<class Iterator, class Proxy = detail::DefaultProxy>
 struct range_iterator
 {
-    Iterator first_;
-    Iterator last_;
-    Proxy proxy_;
+    range_iterator(Iterator first, Iterator last)
+    : first_(first)
+    , last_(last)
+    {}
+
+    range_iterator(Iterator first, Iterator last, Proxy proxy)
+    : first_(first)
+    , last_(last)
+    , proxy_(proxy)
+    {}
 
     proxy_iterator<Iterator, Proxy> begin() const { return {this->first_, this->proxy_}; }
     proxy_iterator<Iterator, Proxy> end() const { return {this->last_, this->proxy_}; }
@@ -61,6 +77,11 @@ struct range_iterator
 
     auto size() const { return this->last_ - this->first_; }
     bool empty() const { return this->first_ == this->last_; }
+
+private:
+    Iterator first_;
+    Iterator last_;
+    Proxy proxy_;
 };
 
 
@@ -72,7 +93,7 @@ struct DataLoader
     {
         virtual ~data_base() {}
 
-        virtual bool less(data_base const & other) const = 0;
+        virtual bool lt(data_base const & other) const = 0;
         virtual bool eq(data_base const & other) const = 0;
         virtual void write(std::ostream & os) const = 0;
         virtual void read(std::istream & is) = 0;
@@ -94,7 +115,7 @@ struct DataLoader
         virtual bool eq(const data_base& other) const override
         { return this->strategy == static_cast<data const&>(other).strategy; }
 
-        virtual bool less(const data_base& other) const override
+        virtual bool lt(const data_base& other) const override
         { return this->strategy < static_cast<data const&>(other).strategy; }
 
         virtual unsigned relationship(const data_base& other) const
@@ -155,14 +176,14 @@ public:
     DataLoader(DataLoader const &) = delete;
     DataLoader operator=(DataLoader const &) = delete;
 
-    struct Data
+    struct Datas
     {
-        Data() = default;
+        Datas() = default;
 
-        bool operator<(const Data & other) const;
-        bool operator==(const Data & other) const;
+        bool operator<(const Datas & other) const;
+        bool operator==(const Datas & other) const;
 
-        std::vector<unsigned> relationships(const Data& other) const;
+        std::vector<unsigned> relationships(const Datas& other) const;
 
         data_base const & operator[](std::size_t i) const { return *this->datas_[i].get(); }
 
@@ -177,8 +198,11 @@ public:
         range_iterator<data_ptr_sequence::const_iterator, proxy> datas() const
         { return {this->datas_.begin(), this->datas_.end(), proxy()}; };
 
+        std::size_t size() const noexcept
+        { return this->datas_.size(); }
+
     private:
-        Data(data_ptr_sequence datas)
+        Datas(data_ptr_sequence datas)
         : datas_(std::move(datas))
         {}
 
@@ -193,18 +217,18 @@ public:
         this->loaders.emplace_back(name, std::make_unique<loader<Strategy>>());
     }
 
-    Data new_data() const;
-    Data new_data(std::istream & is) const;
-    Data new_data(Image const & img, Image const & img90) const;
+    Datas new_data() const;
+    Datas new_data(std::istream & is) const;
+    Datas new_data(Image const & img, Image const & img90) const;
 
-    void read(std::istream & is, Data & data) const;
-    void write(std::ostream & os, Data const & data) const;
+    void read(std::istream & is, Datas & data) const;
+    void write(std::ostream & os, Datas const & data) const;
 
-    struct DataReader { DataLoader const & loader; Data & data; };
-    DataReader reader(Data & data) const { return {*this, data}; }
+    struct DatasReader { DataLoader const & loader; Datas & data; };
+    DatasReader reader(Datas & data) const { return {*this, data}; }
 
-    struct DataWriter { DataLoader const & loader; Data const & data; };
-    DataWriter writer(Data const & data) const { return {*this, data}; }
+    struct DatasWriter { DataLoader const & loader; Datas const & data; };
+    DatasWriter writer(Datas const & data) const { return {*this, data}; }
 
     struct proxy
     {
@@ -234,10 +258,10 @@ inline std::ostream & operator<<(std::ostream & os, DataLoader::data_base const 
 { data.write(os); return os; }
 
 
-inline std::istream & operator>>(std::istream & is, DataLoader::DataReader r)
+inline std::istream & operator>>(std::istream & is, DataLoader::DatasReader r)
 { r.loader.read(is, r.data); return is; }
 
-inline std::ostream & operator<<(std::ostream & os, DataLoader::DataWriter w)
+inline std::ostream & operator<<(std::ostream & os, DataLoader::DatasWriter w)
 { w.loader.write(os, w.data); return os; }
 
 #endif

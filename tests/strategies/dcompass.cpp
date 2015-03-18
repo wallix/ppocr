@@ -164,10 +164,21 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
     id = to_dcompass_d({5, 6},
         "-----"
         "--x--"
-        "-----"
+        "-----" 
         "-----"
         "-----"
         "-----"
     );
     BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH);
+
+    using strategies::dcompass;
+    using D = CardinalDirection;
+
+    BOOST_CHECK_EQUAL(75, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::EAST)));
+    BOOST_CHECK_EQUAL(50, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::EAST | D::SOUTH)));
+    BOOST_CHECK_EQUAL(25, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::SOUTH)));
+    BOOST_CHECK_EQUAL(00, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::SOUTH | D::WEST)));
+
+    BOOST_CHECK_EQUAL(00, dcompass(D::EAST).relationship(dcompass(D::WEST)));
+    BOOST_CHECK_EQUAL(25, dcompass(D::NORTH).relationship(dcompass(D::EAST | D::SOUTH)));
 }

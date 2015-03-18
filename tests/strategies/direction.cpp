@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(TestDirection)
         "--x"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 5);
+    BOOST_CHECK_EQUAL(id, 8);
 
     id = to_directtion_id({3, 3},
         "---"
@@ -77,35 +77,35 @@ BOOST_AUTO_TEST_CASE(TestDirection)
         "x--"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 15);
+    BOOST_CHECK_EQUAL(id, 24);
 
     id = to_directtion_id({3, 3},
         "x--"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 16);
+    BOOST_CHECK_EQUAL(id, 25);
 
     id = to_directtion_id({3, 3},
         "--x"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 6);
+    BOOST_CHECK_EQUAL(id, 9);
 
     id = to_directtion_id({3, 3},
         "---"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 8);
+    BOOST_CHECK_EQUAL(id, 11);
 
     id = to_directtion_id({3, 3},
         "---"
         "---"
         "x--"
     );
-    BOOST_CHECK_EQUAL(id, 18);
+    BOOST_CHECK_EQUAL(id, 27);
 
     id = to_directtion_id({3, 3},
         "---"
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(TestDirection)
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 5);
+    BOOST_CHECK_EQUAL(id, 8);
 
     id = to_directtion_id({3, 5},
         "--x"
@@ -135,5 +135,7 @@ BOOST_AUTO_TEST_CASE(TestDirection)
         "--x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 10);
+    BOOST_CHECK_EQUAL(id, 16);
+
+    using strategies::direction;
 }

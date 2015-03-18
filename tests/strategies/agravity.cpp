@@ -34,99 +34,101 @@
 
 #define IMAGE_PATH "./images/"
 
-static strategies::agravity to_gravity(Bounds bnd, const char * data_text)
+using strategies::agravity;
+
+static agravity to_gravity(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::agravity(img, img.rotate90());
+    return agravity(img, img.rotate90());
 }
 
 BOOST_AUTO_TEST_CASE(TestAGravity)
 {
-    strategies::agravity ag;
+    agravity ag;
 
     ag = to_gravity({3, 3},
         "---"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(strategies::agravity::null_angle));
+    BOOST_CHECK_EQUAL(ag, agravity(agravity::null_angle()));
 
     ag = to_gravity({3, 3},
         "-x-"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(M_PI / 2));
+    BOOST_CHECK_EQUAL(ag, agravity(M_PI / 2));
 
     ag = to_gravity({3, 3},
         "---"
         "--x"
         "---"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(0));
+    BOOST_CHECK_EQUAL(ag, agravity(0));
 
     ag = to_gravity({3, 3},
         "---"
         "---"
         "-x-"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(-M_PI / 2));
+    BOOST_CHECK_EQUAL(ag, agravity(-M_PI / 2));
 
     ag = to_gravity({3, 3},
         "---"
         "x--"
         "---"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(0));
+    BOOST_CHECK_EQUAL(ag, agravity(0));
 
     ag = to_gravity({3, 3},
         "x--"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(M_PI/4));
+    BOOST_CHECK_EQUAL(ag, agravity(M_PI/4));
 
     ag = to_gravity({3, 3},
         "--x"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(M_PI/2-M_PI/4));
+    BOOST_CHECK_EQUAL(ag, agravity(M_PI/2-M_PI/4));
 
     ag = to_gravity({3, 3},
         "---"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(-M_PI/4));
+    BOOST_CHECK_EQUAL(ag, agravity(-M_PI/4));
 
     ag = to_gravity({3, 3},
         "---"
         "---"
         "x--"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(-M_PI/2+M_PI/4));
+    BOOST_CHECK_EQUAL(ag, agravity(-M_PI/2+M_PI/4));
 
     ag = to_gravity({3, 3},
         "---"
         "-x-"
         "---"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(strategies::agravity::null_angle));
+    BOOST_CHECK_EQUAL(ag, agravity(agravity::null_angle()));
 
     ag = to_gravity({3, 3},
         "---"
         "x--"
         "--x"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(-M_PI/2));
+    BOOST_CHECK_EQUAL(ag, agravity(-M_PI/2));
 
     ag = to_gravity({3, 3},
         "--x"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(0));
+    BOOST_CHECK_EQUAL(ag, agravity(0));
 
     ag = to_gravity({3, 5},
         "--x"
@@ -135,7 +137,7 @@ BOOST_AUTO_TEST_CASE(TestAGravity)
         "--x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(0));
+    BOOST_CHECK_EQUAL(ag, agravity(0));
 
     ag = to_gravity({5, 7},
         "-----"
@@ -146,5 +148,17 @@ BOOST_AUTO_TEST_CASE(TestAGravity)
         "-----"
         "---xx"
     );
-    BOOST_CHECK_EQUAL(ag, strategies::agravity(-0.588003));
+    {
+        long const hx = 1 + 1 + 2 + 2;
+        long const hy = 1 + 1 - 3 - 3;
+        BOOST_CHECK_EQUAL(ag, agravity(std::asin(double(hy) / std::sqrt(hy*hy+hx*hx))));
+    }
+
+    agravity const nullg(agravity::null_angle());
+    BOOST_CHECK_EQUAL(100, nullg.relationship(nullg));
+    BOOST_CHECK_EQUAL(0, nullg.relationship(agravity(0)));
+    BOOST_CHECK_EQUAL(0, nullg.relationship(agravity(M_PI/2)));
+    BOOST_CHECK_EQUAL(100, agravity(10).relationship(agravity(10)));
+    BOOST_CHECK_EQUAL(50, agravity(M_PI).relationship(agravity(M_PI/2)));
+    BOOST_CHECK_EQUAL(50, agravity(M_PI/2).relationship(agravity(M_PI)));
 }

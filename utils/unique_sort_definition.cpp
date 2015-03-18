@@ -27,9 +27,9 @@ void unique_sort_definitions(std::vector< Definition >& defs)
             }
         }
 
-        return a.data < b.data;
+        return a.datas < b.datas;
     });
     defs.erase(std::unique(defs.begin(), defs.end(), [](Definition const & a, Definition const & b) {
-        return a.c == b.c && a.img == b.img && a.data == b.data;
+        return a.c == b.c && a.img == b.img && a.datas == b.datas;
     }), defs.end());
 }

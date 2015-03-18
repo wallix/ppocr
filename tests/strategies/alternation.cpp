@@ -36,7 +36,7 @@
 
 BOOST_AUTO_TEST_CASE(TestAlternation)
 {
-    Image const img = image_from_string({6, 7},
+    Image img = image_from_string({6, 7},
         "-xxxx-"
         "xx--xx"
         "xx--xx"
@@ -55,4 +55,26 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
     BOOST_CHECK(alternations[4] == seq_t({1, 0, 1, 0, 1}));
     BOOST_CHECK(alternations[5] == seq_t({1}));
     BOOST_CHECK(alternations[6] == seq_t({1, 0, 1}));
+    BOOST_CHECK_EQUAL(100, alternations.relationship(alternations));
+
+    img = image_from_string({6, 7},
+        "-x--x-"
+        "xx--xx"
+        "xx--xx"
+        "xxxxxx"
+        "xx----"
+        "xx--xx"
+        "-xxxx-"
+    );
+
+    strategies::alternations alternations2(img, img.rotate90());
+    BOOST_CHECK(alternations2[0] == seq_t({1, 0, 1}));
+    BOOST_CHECK(alternations2[1] == seq_t({1, 0}));
+    BOOST_CHECK(alternations2[2] == seq_t({1, 0, 1}));
+    BOOST_CHECK(alternations2[3] == seq_t({1}));
+    BOOST_CHECK(alternations2[4] == seq_t({0, 1, 0, 1}));
+    BOOST_CHECK(alternations2[5] == seq_t({1}));
+    BOOST_CHECK(alternations2[6] == seq_t({1, 0, 1}));
+    BOOST_CHECK_EQUAL(5*100/7, alternations.relationship(alternations2));
+    BOOST_CHECK_EQUAL(5*100/7, alternations2.relationship(alternations));
 }

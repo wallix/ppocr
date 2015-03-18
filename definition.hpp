@@ -32,11 +32,11 @@ struct Definition
 {
     std::string c;
     Image img;
-    DataLoader::Data data;
+    DataLoader::Datas datas;
 
     Definition() = default;
     Definition(std::string c, Image img, DataLoader const & loader);
-    Definition(std::string c, Image img, DataLoader::Data data);
+    Definition(std::string c, Image img, DataLoader::Datas datas);
 
     explicit operator bool () const noexcept { return bool(this->img); }
 };

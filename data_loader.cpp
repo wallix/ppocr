@@ -5,12 +5,12 @@
 #include <ostream>
 
 
-bool DataLoader::Data::operator<(const DataLoader::Data& other) const
+bool DataLoader::Datas::operator<(const DataLoader::Datas& other) const
 {
     auto it2 = other.datas_.begin();
     for (data_ptr const & data : this->datas_) {
         // TODO compare (this is a default implementation)
-        if (data->less(**it2)) {
+        if (data->lt(**it2)) {
             return true;
         }
         if (!data->eq(**it2)) {
@@ -21,7 +21,7 @@ bool DataLoader::Data::operator<(const DataLoader::Data& other) const
     return false;
 }
 
-bool DataLoader::Data::operator==(const DataLoader::Data& other) const
+bool DataLoader::Datas::operator==(const DataLoader::Datas& other) const
 {
     auto it2 = other.datas_.begin();
     for (data_ptr const & data : this->datas_) {
@@ -33,7 +33,7 @@ bool DataLoader::Data::operator==(const DataLoader::Data& other) const
     return true;
 }
 
-std::vector<unsigned> DataLoader::Data::relationships(const DataLoader::Data& other) const
+std::vector<unsigned> DataLoader::Datas::relationships(const DataLoader::Datas& other) const
 {
     std::vector<unsigned> ret(datas_.size());
     auto itret = ret.begin();
@@ -46,7 +46,7 @@ std::vector<unsigned> DataLoader::Data::relationships(const DataLoader::Data& ot
     return ret;
 }
 
-DataLoader::Data DataLoader::new_data() const
+DataLoader::Datas DataLoader::new_data() const
 {
     std::vector<data_ptr> datas;
 
@@ -57,14 +57,14 @@ DataLoader::Data DataLoader::new_data() const
     return {std::move(datas)};
 }
 
-DataLoader::Data DataLoader::new_data(std::istream& is) const
+DataLoader::Datas DataLoader::new_data(std::istream& is) const
 {
     auto data = this->new_data();
     read(is, data);
     return data;
 }
 
-DataLoader::Data DataLoader::new_data(Image const & img, Image const & img90) const
+DataLoader::Datas DataLoader::new_data(Image const & img, Image const & img90) const
 {
     std::vector<data_ptr> datas;
 
@@ -75,7 +75,7 @@ DataLoader::Data DataLoader::new_data(Image const & img, Image const & img90) co
     return {std::move(datas)};
 }
 
-void DataLoader::read(std::istream& is, DataLoader::Data& data) const
+void DataLoader::read(std::istream& is, DataLoader::Datas& data) const
 {
     std::string s;
     // TODO dichotomic
@@ -85,7 +85,7 @@ void DataLoader::read(std::istream& is, DataLoader::Data& data) const
     }
 }
 
-void DataLoader::write(std::ostream& os, DataLoader::Data const & data) const
+void DataLoader::write(std::ostream& os, DataLoader::Datas const & data) const
 {
     auto it = this->loaders.begin();
     for (auto & p : data.datas_) {

@@ -29,7 +29,7 @@ namespace strategies
 {
     struct agravity
     {
-        static constexpr double null_angle() { return 1.0e5; }
+        static constexpr double null_angle() { return 100000.; }
 
         agravity() = default;
         agravity(double a) : a(a) {}
