@@ -3,6 +3,7 @@
 
 #include "math/almost_equal.hpp"
 #include "utils/relationship.hpp"
+#include "utils/horizontal_gravity.hpp"
 
 #include <ostream>
 #include <istream>
@@ -15,57 +16,15 @@
 namespace strategies
 {
 
-static inline int normalize_positif_agravity(const Image& img, unsigned d, int plus)
-{
-    if (d > img.height() / 4) {
-        if (d > img.height()) {
-            return plus+2;
-        }
-        return plus+1;
-    }
-    return 0;
-}
-
-static unsigned count_agravity(Bounds const & bnd, Pixel const * p, Pixel const * ep, bool is_top)
-{
-    long /*long*/ g = 0;
-    unsigned h = is_top ? bnd.h() : 1;
-    while (p != ep) {
-        for (auto epl = p + bnd.w(); p != epl; ++p) {
-            if (is_pix_letter(*p)) {
-                g += h;
-            }
-        }
-
-        if (is_top) {
-            --h;
-        }
-        else {
-            ++h;
-        }
-    }
-    return g;
-}
-
-static long horizontal_agravity(const Image& img)
-{
-    Bounds const bnd(img.width(), img.height() / 2);
-    auto p = img.data();
-    auto ep = img.data({0, bnd.h()});
-    long const top = count_agravity(bnd, p, ep, true);
-    p = ep;
-    if (img.height() & 1) {
-        p += img.width();
-    }
-    long const bottom = count_agravity(bnd, p, img.data_end(), false);
-
-    return top - bottom;
-}
-
 agravity::agravity(const Image& img, const Image& img90)
 {
-    auto const h1 = horizontal_agravity(img);
-    auto const h2 = horizontal_agravity(img90);
+    utils::TopBottom const g1 = utils::horizontal_gravity(img);
+    utils::TopBottom const g2 = utils::horizontal_gravity(img90);
+
+    using Signed = long;
+
+    auto const h1 = Signed(g1.top) - Signed(g1.bottom);
+    auto const h2 = Signed(g2.top) - Signed(g2.bottom);
 
     if (h1 || h2) {
         this->a = std::asin(double(h1) / std::sqrt(h1*h1+h2*h2));
@@ -85,7 +44,7 @@ unsigned agravity::relationship(const agravity& other) const
     if (eq(angle(), null_angle()) || eq(other.angle(), null_angle())) {
         return eq(other.angle(), angle()) ? 100 : 0;
     }
-    return compute_relationship(angle(), other.angle(), M_PI);
+    return utils::compute_relationship(angle(), other.angle(), M_PI);
 }
 
 std::istream& operator>>(std::istream& is, agravity& ag)

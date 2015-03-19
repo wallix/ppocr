@@ -28,13 +28,16 @@
 //#define LOGPRINT
 
 #include "strategies/direction.hpp"
+#include "strategies/utils/cardinal_direction_io.hpp"
 #include "image_from_string.hpp"
 #include "image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"
 
-static int to_directtion_id(Bounds bnd, const char * data_text)
+using D = strategies::direction::cardinal_direction;
+
+static D to_directtion_id(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
     return strategies::direction(img, img.rotate90()).id();
@@ -43,7 +46,7 @@ static int to_directtion_id(Bounds bnd, const char * data_text)
 BOOST_AUTO_TEST_CASE(TestDirection)
 {
     using D = strategies::direction::cardinal_direction;
-    int id;
+    D id;
 
     id = to_directtion_id({3, 3},
         "---"

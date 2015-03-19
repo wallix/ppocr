@@ -24,6 +24,11 @@
 #include <type_traits>
 #include <cassert>
 
+#include "cardinal_direction.hpp"
+
+
+namespace strategies { namespace utils {
+
 template<class T, class U>
 unsigned compute_relationship(T const & a, T const & b, U const & interval)
 {
@@ -48,5 +53,17 @@ unsigned mask_relationship(unsigned a, unsigned b, unsigned mask, unsigned d, un
     assert(dist <= 100);
     return dist;
 }
+
+
+inline
+unsigned cardinal_relationship(CardinalDirection a, CardinalDirection b)
+{ return mask_relationship(static_cast<unsigned>(a), static_cast<unsigned>(b), 0b11, 2, 2); }
+
+inline
+unsigned cardinal_relationship(CardinalDirection2 a, CardinalDirection2 b)
+{ return mask_relationship(static_cast<unsigned>(a), static_cast<unsigned>(b), 0b111, 3, 4); }
+
+
+} }
 
 #endif

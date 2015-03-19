@@ -29,22 +29,23 @@
 
 #include "strategies/dcompass.hpp"
 #include "image_from_string.hpp"
+#include "strategies/utils/cardinal_direction_io.hpp"
 #include "image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"
 
-static int to_dcompass_d(Bounds bnd, const char * data_text)
+using CardinalDirection = strategies::dcompass::cardinal_direction;
+
+static CardinalDirection to_dcompass_d(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
     return strategies::dcompass(img, img.rotate90()).direction();
 }
 
-using CardinalDirection = strategies::dcompass::cardinal_direction;
-
 BOOST_AUTO_TEST_CASE(TestDCompass)
 {
-    int id;
+    CardinalDirection id;
 
     id = to_dcompass_d({3, 3},
         "---"

@@ -29,12 +29,15 @@
 
 #include "strategies/gravity.hpp"
 #include "image_from_string.hpp"
+#include "strategies/utils/cardinal_direction_io.hpp"
 #include "image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"
 
-static int to_gravity_id(Bounds bnd, const char * data_text)
+using D = strategies::gravity::cardinal_direction;
+
+static D to_gravity_id(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
     return strategies::gravity(img, img.rotate90()).id();
@@ -42,8 +45,7 @@ static int to_gravity_id(Bounds bnd, const char * data_text)
 
 BOOST_AUTO_TEST_CASE(TestGravity)
 {
-    using D = strategies::gravity::cardinal_direction;
-    int id;
+    D id;
 
     id = to_gravity_id({3, 3},
         "---"

@@ -18,7 +18,7 @@ proportionality::proportionality(const Image& img, const Image& /*img90*/)
 {}
 
 unsigned proportionality::relationship(const proportionality& other) const
-{ return compute_relationship(proportion(), other.proportion(), 200); }
+{ return utils::compute_relationship(proportion(), other.proportion(), 200); }
 
 std::istream& operator>>(std::istream& is, proportionality& prop)
 { return is >> prop.proportion_; }

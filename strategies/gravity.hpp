@@ -23,39 +23,15 @@
 
 #include <iosfwd>
 
+#include "utils/cardinal_direction.hpp"
+
 class Image;
 
 namespace strategies
 {
     struct gravity
     {
-        enum cardinal_direction {
-            NONE   = 3 + (3 << 3),
-            NORTH2 = 5 + (3 << 3),
-            NORTH  = 4 + (3 << 3),
-            SOUTH  = 2 + (3 << 3),
-            SOUTH2 = 1 + (3 << 3),
-            EAST2  = 3 + (5 << 3),
-            EAST   = 3 + (4 << 3),
-            WEST   = 3 + (2 << 3),
-            WEST2  = 3 + (1 << 3),
-            NORTH_EAST   = (NORTH  & 0b111) | (EAST  & 0b111000),
-            NORTH2_EAST  = (NORTH2 & 0b111) | (EAST  & 0b111000),
-            NORTH_EAST2  = (NORTH  & 0b111) | (EAST2 & 0b111000),
-            NORTH2_EAST2 = (NORTH2 & 0b111) | (EAST2 & 0b111000),
-            NORTH_WEST   = (NORTH  & 0b111) | (WEST  & 0b111000),
-            NORTH2_WEST  = (NORTH2 & 0b111) | (WEST  & 0b111000),
-            NORTH_WEST2  = (NORTH  & 0b111) | (WEST2 & 0b111000),
-            NORTH2_WEST2 = (NORTH2 & 0b111) | (WEST2 & 0b111000),
-            SOUTH_EAST   = (SOUTH  & 0b111) | (EAST  & 0b111000),
-            SOUTH2_EAST  = (SOUTH2 & 0b111) | (EAST  & 0b111000),
-            SOUTH_EAST2  = (SOUTH  & 0b111) | (EAST2 & 0b111000),
-            SOUTH2_EAST2 = (SOUTH2 & 0b111) | (EAST2 & 0b111000),
-            SOUTH_WEST   = (SOUTH  & 0b111) | (WEST  & 0b111000),
-            SOUTH2_WEST  = (SOUTH2 & 0b111) | (WEST  & 0b111000),
-            SOUTH_WEST2  = (SOUTH  & 0b111) | (WEST2 & 0b111000),
-            SOUTH2_WEST2 = (SOUTH2 & 0b111) | (WEST2 & 0b111000),
-        };
+        using cardinal_direction = utils::CardinalDirection2;
 
         gravity() = default;
 
@@ -76,7 +52,7 @@ namespace strategies
         friend std::istream & operator>>(std::istream &, gravity &);
 
     private:
-        cardinal_direction d = NONE;
+        cardinal_direction d = cardinal_direction::NONE;
     };
 
     std::ostream & operator<<(std::ostream &, gravity const &);

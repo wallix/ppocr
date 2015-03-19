@@ -23,23 +23,15 @@
 
 #include <iosfwd>
 
+#include "utils/cardinal_direction.hpp"
+
 class Image;
 
 namespace strategies
 {
     struct dcompass
     {
-        enum cardinal_direction {
-            NONE  = 2 + (2 << 2),
-            SOUTH = 1 + (2 << 2),
-            NORTH = 3 + (2 << 2),
-            WEST  = 2 + (1 << 2),
-            EAST  = 2 + (3 << 2),
-            NORTH_EAST = 3 + (3 << 2),
-            NORTH_WEST = 3 + (1 << 2),
-            SOUTH_EAST = 1 + (3 << 2),
-            SOUTH_WEST = 1 + (1 << 2),
-        };
+        using cardinal_direction = utils::CardinalDirection;
 
         dcompass() = default;
 
@@ -60,7 +52,7 @@ namespace strategies
         friend std::istream & operator>>(std::istream &, dcompass &);
 
     private:
-        cardinal_direction d = NONE;
+        cardinal_direction d = cardinal_direction::NONE;
     };
 
     std::ostream & operator<<(std::ostream &, dcompass const &);

@@ -48,7 +48,7 @@ dcompass::dcompass(const Image& img, const Image& img90)
 {}
 
 unsigned dcompass::relationship(const dcompass& other) const
-{ return mask_relationship(d, other.d, 0b11, 2, 2); }
+{ return utils::cardinal_relationship(d, other.d); }
 
 std::istream& operator>>(std::istream& is, dcompass& d)
 { return is >> reinterpret_cast<std::underlying_type_t<dcompass::cardinal_direction>&>(d.d); }
