@@ -7,8 +7,12 @@ endif()
 set(IMAGE_FROM_FILE_SRC ../image.cpp ../image_from_file.cpp)
 set(IMAGE_FROM_STRING_SRC ../image.cpp ../image_from_string.cpp)
 
+enable_testing()
+
 add_executable(test_image ${IMAGE_FROM_FILE_SRC} image.cpp)
+add_test(test_image test_image)
 add_executable(test_box_char ${IMAGE_FROM_FILE_SRC} ../make_box_character.cpp make_box_character.cpp)
+add_test(test_box_char test_box_char)
 
 file(GLOB StrategyNames strategies/*.cpp)
 foreach(Name ${StrategyNames})
@@ -19,6 +23,7 @@ foreach(Name ${StrategyNames})
         ../strategies/${Filename}.cpp
         ${Name}
     )
+    add_test(test_strategy_${Filename} test_strategy_${Filename})
 endforeach()
 
 set(

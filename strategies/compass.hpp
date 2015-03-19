@@ -23,13 +23,15 @@
 
 #include <iosfwd>
 
+#include "utils/cardinal_direction.hpp"
+
 class Image;
 
 namespace strategies
 {
     struct compass
     {
-        enum cardinal_direction { NONE, NORT = 1, EAST = 2, SOUTH = 4, WEST = 8 };
+        using cardinal_direction = utils::CardinalDirection;
 
         compass() = default;
 
@@ -48,7 +50,7 @@ namespace strategies
         friend std::istream & operator>>(std::istream &, compass &);
 
     private:
-        cardinal_direction d = NONE;
+        cardinal_direction d = cardinal_direction::NONE;
     };
 
     std::ostream & operator<<(std::ostream &, compass const &);

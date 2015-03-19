@@ -3,6 +3,7 @@
 
 #include "utils/relationship.hpp"
 #include "utils/horizontal_direction.hpp"
+#include "utils/cardinal_direction_io.hpp"
 
 #include <ostream>
 #include <istream>
@@ -24,10 +25,10 @@ compass::compass(const Image& img, const Image& img90)
 {}
 
 unsigned int compass::relationship(const compass& other) const
-{ return utils::mask_relationship(d, other.d, 0b11, 2, 2); }
+{ return utils::cardinal_relationship(d, other.d); }
 
 std::istream& operator>>(std::istream& is, compass& d)
-{ return is >> reinterpret_cast<std::underlying_type_t<compass::cardinal_direction>&>(d.d); }
+{ return is >> d.d; }
 
 std::ostream& operator<<(std::ostream& os, const compass& d)
 { return os << d.direction(); }

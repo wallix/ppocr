@@ -26,6 +26,7 @@
 
 namespace strategies { namespace utils {
 
+inline
 TopBottom horizontal_direction(const Image& img)
 {
     unsigned top = 0;
