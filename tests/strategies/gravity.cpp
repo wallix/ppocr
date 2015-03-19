@@ -42,6 +42,7 @@ static int to_gravity_id(Bounds bnd, const char * data_text)
 
 BOOST_AUTO_TEST_CASE(TestGravity)
 {
+    using D = strategies::gravity::cardinal_direction;
     int id;
 
     id = to_gravity_id({3, 3},
@@ -49,84 +50,84 @@ BOOST_AUTO_TEST_CASE(TestGravity)
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 0);
+    BOOST_CHECK_EQUAL(id, D::NONE);
 
     id = to_gravity_id({3, 3},
         "-x-"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 1);
+    BOOST_CHECK_EQUAL(id, D::NORTH);
 
     id = to_gravity_id({3, 3},
         "---"
         "--x"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 8);
+    BOOST_CHECK_EQUAL(id, D::EAST);
 
     id = to_gravity_id({3, 3},
         "---"
         "---"
         "-x-"
     );
-    BOOST_CHECK_EQUAL(id, 3);
+    BOOST_CHECK_EQUAL(id, D::SOUTH);
 
     id = to_gravity_id({3, 3},
         "---"
         "x--"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 24);
+    BOOST_CHECK_EQUAL(id, D::WEST);
 
     id = to_gravity_id({3, 3},
         "x--"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 25);
+    BOOST_CHECK_EQUAL(id, D::NORTH_WEST);
 
     id = to_gravity_id({3, 3},
         "--x"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 9);
+    BOOST_CHECK_EQUAL(id, D::NORTH_EAST);
 
     id = to_gravity_id({3, 3},
         "---"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 11);
+    BOOST_CHECK_EQUAL(id, D::SOUTH_EAST);
 
     id = to_gravity_id({3, 3},
         "---"
         "---"
         "x--"
     );
-    BOOST_CHECK_EQUAL(id, 27);
+    BOOST_CHECK_EQUAL(id, D::SOUTH_WEST);
 
     id = to_gravity_id({3, 3},
         "---"
         "-x-"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 0);
+    BOOST_CHECK_EQUAL(id, D::NONE);
 
     id = to_gravity_id({3, 3},
         "---"
         "x--"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 3);
+    BOOST_CHECK_EQUAL(id, D::SOUTH);
 
     id = to_gravity_id({3, 3},
         "--x"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 8);
+    BOOST_CHECK_EQUAL(id, D::EAST);
 
     id = to_gravity_id({3, 5},
         "--x"
@@ -135,7 +136,7 @@ BOOST_AUTO_TEST_CASE(TestGravity)
         "--x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 16);
+    BOOST_CHECK_EQUAL(id, D::EAST2);
 
     id = to_gravity_id({5, 7},
         "-----"
@@ -146,5 +147,18 @@ BOOST_AUTO_TEST_CASE(TestGravity)
         "-----"
         "---xx"
     );
-    BOOST_CHECK_EQUAL(id, 19);
+    BOOST_CHECK_EQUAL(id, D::SOUTH_EAST2);
+
+    using strategies::gravity;
+
+    BOOST_CHECK_EQUAL(100, gravity(D::EAST).relationship(gravity(D::EAST)));
+    BOOST_CHECK_EQUAL(88,  gravity(D::EAST).relationship(gravity(D::NONE)));
+    BOOST_CHECK_EQUAL(88,  gravity(D::NORTH_EAST).relationship(gravity(D::EAST)));
+    BOOST_CHECK_EQUAL(75,  gravity(D::NORTH2_EAST).relationship(gravity(D::EAST)));
+    BOOST_CHECK_EQUAL(63,  gravity(D::NORTH2_EAST).relationship(gravity(D::NONE)));
+    BOOST_CHECK_EQUAL(50,  gravity(D::NORTH2_EAST).relationship(gravity(D::WEST)));
+    BOOST_CHECK_EQUAL(75,  gravity(D::NORTH).relationship(gravity(D::SOUTH)));
+    BOOST_CHECK_EQUAL(0,   gravity(D::NORTH2_EAST2).relationship(gravity(D::SOUTH2_WEST2)));
+    BOOST_CHECK_EQUAL(50,  gravity(D::NORTH2).relationship(gravity(D::SOUTH2)));
+    BOOST_CHECK_EQUAL(50,  gravity(D::NORTH_EAST).relationship(gravity(D::SOUTH_WEST)));
 }

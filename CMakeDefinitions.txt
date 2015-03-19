@@ -46,7 +46,7 @@ add_definitions(
 #   -Wno-unused-function
 
 #   -Werror
-#   -pedantic
+    -pedantic
 
     -std=c++1y
 

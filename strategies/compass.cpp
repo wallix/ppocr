@@ -29,8 +29,8 @@ static int horizontal_compass(const Image& img)
     }
 
     return (top > bottom) ? 1
-        : (top < bottom) ? 2
-        : 0;
+        : (top < bottom) ? 3
+        : 2;
 }
 
 compass::compass(const Image& img, const Image& img90)
@@ -38,7 +38,7 @@ compass::compass(const Image& img, const Image& img90)
 {}
 
 unsigned int compass::relationship(const compass& other) const
-{ return mask_relationship(d, other.d, 0b11, 2, 25); }
+{ return mask_relationship(d, other.d, 0b11, 2, 2); }
 
 std::istream& operator>>(std::istream& is, compass& d)
 { return is >> reinterpret_cast<std::underlying_type_t<compass::cardinal_direction>&>(d.d); }

@@ -6,16 +6,18 @@
 #include <ostream>
 #include <istream>
 
+#include <type_traits>
+
 namespace strategies
 {
 
-static inline int normalize_positif_gravity(const Image& img, unsigned d, int plus)
+static inline unsigned normalize_positif_gravity(const Image& img, unsigned d)
 {
     if (d > img.height() / 4) {
         if (d > img.height()) {
-            return plus+2;
+            return 2;
         }
-        return plus+1;
+        return 1;
     }
     return 0;
 }
@@ -41,7 +43,7 @@ static unsigned count_gravity(Bounds const & bnd, Pixel const * p, Pixel const *
     return g;
 }
 
-static int horizontal_gravity(const Image& img)
+static unsigned horizontal_gravity(const Image& img)
 {
     Bounds const bnd(img.width(), img.height() / 2);
     auto p = img.data();
@@ -53,20 +55,20 @@ static int horizontal_gravity(const Image& img)
     }
     unsigned const bottom = count_gravity(bnd, p, img.data_end(), false);
 
-    return (top > bottom) ? normalize_positif_gravity(img, top - bottom, 0)
-        : (top < bottom) ? normalize_positif_gravity(img, bottom - top, 2)
-        : 0;
+    return (top > bottom) ? 3 + normalize_positif_gravity(img, top - bottom)
+        : (top < bottom) ? 3 - normalize_positif_gravity(img, bottom - top)
+        : 3;
 }
 
 gravity::gravity(const Image& img, const Image& img90)
-: d(horizontal_gravity(img) | (horizontal_gravity(img90) << 3))
+: d(static_cast<cardinal_direction>(horizontal_gravity(img) | (horizontal_gravity(img90) << 3)))
 {}
 
 unsigned gravity::relationship(const gravity& other) const
-{ return mask_relationship(d, other.d, 0b111, 3, 10); }
+{ return mask_relationship(d, other.d, 0b111, 3, 4); }
 
 std::istream& operator>>(std::istream& is, gravity& d)
-{ return is >> d.d; }
+{ return is >> reinterpret_cast<std::underlying_type_t<decltype(d.d)>&>(d.d); }
 
 std::ostream& operator<<(std::ostream& os, const gravity& d)
 { return os << d.id(); }

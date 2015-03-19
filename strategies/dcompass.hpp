@@ -29,7 +29,17 @@ namespace strategies
 {
     struct dcompass
     {
-        enum cardinal_direction { NONE = 0, SOUTH = 1, NORTH = 2, WEST = 4, EAST = 8 };
+        enum cardinal_direction {
+            NONE  = 2 + (2 << 2),
+            SOUTH = 1 + (2 << 2),
+            NORTH = 3 + (2 << 2),
+            WEST  = 2 + (1 << 2),
+            EAST  = 2 + (3 << 2),
+            NORTH_EAST = 3 + (3 << 2),
+            NORTH_WEST = 3 + (1 << 2),
+            SOUTH_EAST = 1 + (3 << 2),
+            SOUTH_WEST = 1 + (1 << 2),
+        };
 
         dcompass() = default;
 
@@ -54,10 +64,6 @@ namespace strategies
     };
 
     std::ostream & operator<<(std::ostream &, dcompass const &);
-
-    inline dcompass::cardinal_direction
-    operator|(dcompass::cardinal_direction a, dcompass::cardinal_direction b)
-    { return static_cast<dcompass::cardinal_direction>(a | b); }
 }
 
 #endif

@@ -86,28 +86,28 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH | CardinalDirection::WEST);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH_WEST);
 
     id = to_dcompass_d({3, 3},
         "--x"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH | CardinalDirection::EAST);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::NORTH_EAST);
 
     id = to_dcompass_d({3, 3},
         "---"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH | CardinalDirection::EAST);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH_EAST);
 
     id = to_dcompass_d({3, 3},
         "---"
         "---"
         "x--"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH | CardinalDirection::WEST);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH_WEST);
 
     id = to_dcompass_d({3, 3},
         "---"
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
         "-----"
         "---xx"
     );
-    BOOST_CHECK_EQUAL(id, CardinalDirection::EAST | CardinalDirection::SOUTH);
+    BOOST_CHECK_EQUAL(id, CardinalDirection::SOUTH_EAST);
 
     id = to_dcompass_d({5, 7},
         "--xx-"
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
     id = to_dcompass_d({5, 6},
         "-----"
         "--x--"
-        "-----" 
+        "-----"
         "-----"
         "-----"
         "-----"
@@ -174,11 +174,11 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
     using strategies::dcompass;
     using D = CardinalDirection;
 
-    BOOST_CHECK_EQUAL(75, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::EAST)));
-    BOOST_CHECK_EQUAL(50, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::EAST | D::SOUTH)));
-    BOOST_CHECK_EQUAL(25, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::SOUTH)));
-    BOOST_CHECK_EQUAL(00, dcompass(D::NORTH | D::EAST).relationship(dcompass(D::SOUTH | D::WEST)));
+    BOOST_CHECK_EQUAL(75, dcompass(D::NORTH_EAST).relationship(dcompass(D::EAST)));
+    BOOST_CHECK_EQUAL(50, dcompass(D::NORTH_EAST).relationship(dcompass(D::SOUTH_EAST)));
+    BOOST_CHECK_EQUAL(25, dcompass(D::NORTH_EAST).relationship(dcompass(D::SOUTH)));
+    BOOST_CHECK_EQUAL(00, dcompass(D::NORTH_EAST).relationship(dcompass(D::SOUTH_WEST)));
 
-    BOOST_CHECK_EQUAL(00, dcompass(D::EAST).relationship(dcompass(D::WEST)));
-    BOOST_CHECK_EQUAL(25, dcompass(D::NORTH).relationship(dcompass(D::EAST | D::SOUTH)));
+    BOOST_CHECK_EQUAL(50, dcompass(D::EAST).relationship(dcompass(D::WEST)));
+    BOOST_CHECK_EQUAL(25, dcompass(D::NORTH).relationship(dcompass(D::SOUTH_EAST)));
 }

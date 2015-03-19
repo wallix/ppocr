@@ -28,7 +28,7 @@ template<class T, class U>
 unsigned compute_relationship(T const & a, T const & b, U const & interval)
 {
     using integer = std::conditional_t<std::is_signed<T>::value, int, unsigned>;
-    auto d = integer{100} - ((a < b) ? b-a : a-b) * integer{100} /  interval;
+    auto d = integer{100} - ((a < b) ? b-a : a-b) * integer{100} / interval;
     assert(0 <= d && d <= 100);
     return d;
 }
@@ -42,9 +42,9 @@ unsigned mask_relationship(unsigned a, unsigned b, unsigned mask, unsigned d, un
     unsigned const b2 = (b & (mask << d)) >> d;
 
     unsigned dist = 100 - (
-        (a1 < a2 ? a2 - a1 : a1 - a2) * interval
-      + (b1 < b2 ? b2 - b1 : b1 - b2) * interval
-    );
+        (a1 < a2 ? a2 - a1 : a1 - a2)
+      + (b1 < b2 ? b2 - b1 : b1 - b2)
+    ) * 50 / interval;
     assert(dist <= 100);
     return dist;
 }

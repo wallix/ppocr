@@ -42,6 +42,7 @@ static int to_directtion_id(Bounds bnd, const char * data_text)
 
 BOOST_AUTO_TEST_CASE(TestDirection)
 {
+    using D = strategies::direction::cardinal_direction;
     int id;
 
     id = to_directtion_id({3, 3},
@@ -49,84 +50,84 @@ BOOST_AUTO_TEST_CASE(TestDirection)
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 0);
+    BOOST_CHECK_EQUAL(id, D::NONE);
 
     id = to_directtion_id({3, 3},
         "-x-"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 1);
+    BOOST_CHECK_EQUAL(id, D::NORTH);
 
     id = to_directtion_id({3, 3},
         "---"
         "--x"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 8);
+    BOOST_CHECK_EQUAL(id, D::EAST);
 
     id = to_directtion_id({3, 3},
         "---"
         "---"
         "-x-"
     );
-    BOOST_CHECK_EQUAL(id, 3);
+    BOOST_CHECK_EQUAL(id, D::SOUTH);
 
     id = to_directtion_id({3, 3},
         "---"
         "x--"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 24);
+    BOOST_CHECK_EQUAL(id, D::WEST);
 
     id = to_directtion_id({3, 3},
         "x--"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 25);
+    BOOST_CHECK_EQUAL(id, D::NORTH_WEST);
 
     id = to_directtion_id({3, 3},
         "--x"
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 9);
+    BOOST_CHECK_EQUAL(id, D::NORTH_EAST);
 
     id = to_directtion_id({3, 3},
         "---"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 11);
+    BOOST_CHECK_EQUAL(id, D::SOUTH_EAST);
 
     id = to_directtion_id({3, 3},
         "---"
         "---"
         "x--"
     );
-    BOOST_CHECK_EQUAL(id, 27);
+    BOOST_CHECK_EQUAL(id, D::SOUTH_WEST);
 
     id = to_directtion_id({3, 3},
         "---"
         "-x-"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 0);
+    BOOST_CHECK_EQUAL(id, D::NONE);
 
     id = to_directtion_id({3, 3},
         "---"
         "x--"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 3);
+    BOOST_CHECK_EQUAL(id, D::SOUTH);
 
     id = to_directtion_id({3, 3},
         "--x"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 8);
+    BOOST_CHECK_EQUAL(id, D::EAST);
 
     id = to_directtion_id({3, 5},
         "--x"
@@ -135,7 +136,18 @@ BOOST_AUTO_TEST_CASE(TestDirection)
         "--x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 16);
+    BOOST_CHECK_EQUAL(id, D::EAST2);
 
     using strategies::direction;
+
+    BOOST_CHECK_EQUAL(100, direction(D::EAST).relationship(direction(D::EAST)));
+    BOOST_CHECK_EQUAL(88,  direction(D::EAST).relationship(direction(D::NONE)));
+    BOOST_CHECK_EQUAL(88,  direction(D::NORTH_EAST).relationship(direction(D::EAST)));
+    BOOST_CHECK_EQUAL(75,  direction(D::NORTH2_EAST).relationship(direction(D::EAST)));
+    BOOST_CHECK_EQUAL(63,  direction(D::NORTH2_EAST).relationship(direction(D::NONE)));
+    BOOST_CHECK_EQUAL(50,  direction(D::NORTH2_EAST).relationship(direction(D::WEST)));
+    BOOST_CHECK_EQUAL(75,  direction(D::NORTH).relationship(direction(D::SOUTH)));
+    BOOST_CHECK_EQUAL(0,   direction(D::NORTH2_EAST2).relationship(direction(D::SOUTH2_WEST2)));
+    BOOST_CHECK_EQUAL(50,  direction(D::NORTH2).relationship(direction(D::SOUTH2)));
+    BOOST_CHECK_EQUAL(50,  direction(D::NORTH_EAST).relationship(direction(D::SOUTH_WEST)));
 }

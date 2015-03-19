@@ -29,9 +29,39 @@ namespace strategies
 {
     struct direction
     {
+        enum cardinal_direction {
+            NONE   = 3 + (3 << 3),
+            NORTH2 = 5 + (3 << 3),
+            NORTH  = 4 + (3 << 3),
+            SOUTH  = 2 + (3 << 3),
+            SOUTH2 = 1 + (3 << 3),
+            EAST2  = 3 + (5 << 3),
+            EAST   = 3 + (4 << 3),
+            WEST   = 3 + (2 << 3),
+            WEST2  = 3 + (1 << 3),
+            NORTH_EAST   = (NORTH  & 0b111) | (EAST  & 0b111000),
+            NORTH2_EAST  = (NORTH2 & 0b111) | (EAST  & 0b111000),
+            NORTH_EAST2  = (NORTH  & 0b111) | (EAST2 & 0b111000),
+            NORTH2_EAST2 = (NORTH2 & 0b111) | (EAST2 & 0b111000),
+            NORTH_WEST   = (NORTH  & 0b111) | (WEST  & 0b111000),
+            NORTH2_WEST  = (NORTH2 & 0b111) | (WEST  & 0b111000),
+            NORTH_WEST2  = (NORTH  & 0b111) | (WEST2 & 0b111000),
+            NORTH2_WEST2 = (NORTH2 & 0b111) | (WEST2 & 0b111000),
+            SOUTH_EAST   = (SOUTH  & 0b111) | (EAST  & 0b111000),
+            SOUTH2_EAST  = (SOUTH2 & 0b111) | (EAST  & 0b111000),
+            SOUTH_EAST2  = (SOUTH  & 0b111) | (EAST2 & 0b111000),
+            SOUTH2_EAST2 = (SOUTH2 & 0b111) | (EAST2 & 0b111000),
+            SOUTH_WEST   = (SOUTH  & 0b111) | (WEST  & 0b111000),
+            SOUTH2_WEST  = (SOUTH2 & 0b111) | (WEST  & 0b111000),
+            SOUTH_WEST2  = (SOUTH  & 0b111) | (WEST2 & 0b111000),
+            SOUTH2_WEST2 = (SOUTH2 & 0b111) | (WEST2 & 0b111000),
+        };
+
         direction() = default;
 
         direction(const Image & img, const Image & img90);
+
+        direction(cardinal_direction direction) : d(direction) {}
 
         bool operator<(direction const & other) const
         { return d < other.d; }
@@ -41,12 +71,12 @@ namespace strategies
 
         unsigned relationship(const direction& other) const;
 
-        int id() const noexcept { return d; }
+        cardinal_direction id() const noexcept { return d; }
 
         friend std::istream & operator>>(std::istream &, direction &);
 
     private:
-        int d = 0;
+        cardinal_direction d = NONE;
     };
 
     std::ostream & operator<<(std::ostream &, direction const &);

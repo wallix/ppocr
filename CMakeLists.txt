@@ -11,11 +11,14 @@ endif()
 include_directories(${MILENA_INCLUDE_PATH})
 
 if(NOT DEFINED NO_ASAN)
-#     find_library(LIB_ASAN asan)
-    find_library(LIB_ASAN asan HINTS /usr/lib/gcc/x86_64-linux-gnu/4.9/)
+    find_library(LIB_ASAN asan)
 
     if(${LIB_ASAN} STREQUAL "LIB_ASAN-NOTFOUND")
-        message(FATAL_ERROR "Couldn't find the 'libasan' library")
+       find_library(LIB_ASAN asan HINTS /usr/lib/gcc/x86_64-linux-gnu/4.9/)
+
+        if(${LIB_ASAN} STREQUAL "LIB_ASAN-NOTFOUND")
+            message(FATAL_ERROR "Couldn't find the 'libasan' library")
+        endif()
     endif()
 
     add_definitions(-fsanitize=address)
@@ -37,7 +40,6 @@ set(OCR_SRC ${BASIC_OCR_SRC} ${DATA_REGISTRY_SRC} ${DEFINITION_SRC})
 
 add_executable(learning2 learning2.cpp ${OCR_SRC} ${UTILS_DEFINITION_SRC})
 add_executable(extract_text2 extract_text2.cpp ${OCR_SRC})
-add_executable(print_alternation print_alternation.cpp ${OCR_SRC})
 
 # Put all variables
 # get_cmake_property(_variableNames VARIABLES)

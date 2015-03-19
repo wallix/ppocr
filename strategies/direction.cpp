@@ -6,21 +6,24 @@
 #include <ostream>
 #include <istream>
 
+#include <type_traits>
+
+
 namespace strategies
 {
 
-static inline int normalize_positif_direction(const Image& img, unsigned d, int plus)
+static inline unsigned normalize_positif_direction(const Image& img, unsigned d)
 {
     if (d > img.height() / 4) {
         if (d > img.height()) {
-            return plus+2;
+            return 2;
         }
-        return plus+1;
+        return 1;
     }
     return 0;
 }
 
-static int horizontal_direction(const Image& img)
+static unsigned horizontal_direction(const Image& img)
 {
     unsigned top = 0;
     unsigned bottom = 0;
@@ -39,20 +42,20 @@ static int horizontal_direction(const Image& img)
         }
     }
 
-    return (top > bottom) ? normalize_positif_direction(img, top - bottom, 0)
-        : (top < bottom) ? normalize_positif_direction(img, bottom - top, 2)
-        : 0;
+    return (top > bottom) ? 3 + normalize_positif_direction(img, top - bottom)
+        : (top < bottom) ? 3 - normalize_positif_direction(img, bottom - top)
+        : 3;
 }
 
 direction::direction(const Image& img, const Image& img90)
-: d(horizontal_direction(img) | (horizontal_direction(img90) << 3))
+: d(static_cast<cardinal_direction>(horizontal_direction(img) | (horizontal_direction(img90) << 3)))
 {}
 
 unsigned direction::relationship(const direction& other) const
-{ return mask_relationship(d, other.d, 0b111, 3, 10); }
+{ return mask_relationship(d, other.d, 0b111, 3, 4); }
 
 std::istream& operator>>(std::istream& is, direction& d)
-{ return is >> d.d; }
+{ return is >> reinterpret_cast<std::underlying_type_t<decltype(d.d)>&>(d.d); }
 
 std::ostream& operator<<(std::ostream& os, const direction& d)
 { return os << d.id(); }

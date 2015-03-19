@@ -6,33 +6,19 @@
 #include <ostream>
 #include <istream>
 
-// #include <iostream>
 
 namespace strategies
 {
 
 static unsigned count_dcompass(Bounds const & bnd, Pixel const * p, Pixel const * ep, bool is_top)
 {
-    // TODO /!\ uint(0) - 1u is undefinid
     unsigned d = 0;
     size_t ih = 0;
     size_t const wdiv2 = bnd.w()/2;
-//     std::cout << "bnd: " << bnd.w() <<  ' ' << bnd.h() << std::endl;
     for (; p != ep; p += bnd.w(), ++ih) {
-// //         if (!is_top) {
-// //             std::cout << wdiv2 << " * (" << bnd.h() << " - " << ih << ") / " << bnd.h() << '\n';
-// //         }
-// //         else {
-// //             std::cout << wdiv2 << " * (1 + " << ih << ") / " << bnd.h() << '\n';
-// //         }
         size_t x = wdiv2 - bnd.w() / (!is_top ? bnd.h() - ih : 1 + ih) / 2;
-//         if (is_top) {
-//             std::cout << "x = wdiv2 - x = " << wdiv2 <<'-' << x << '\n';
-//             x = wdiv2 - x;
-//         }
         auto leftp = p + x;
         auto rightp = p + bnd.w() - x;
-//         std::cout << x << ' ' << (bnd.w() - x) << std::endl;
         for (; leftp != rightp; ++leftp) {
             if (is_pix_letter(*leftp)) {
                 ++d;
@@ -54,9 +40,7 @@ static int horizontal_dcompass(const Image& img)
     }
     long const bottom = count_dcompass(bnd, p, img.data_end(), false);
 
-//     std::cout << img<< top << ' ' << bottom << "\n----" << std::endl;
-
-    return top < bottom ? 1 : top > bottom ? 2 : 0;
+    return top < bottom ? 1 : top > bottom ? 3 : 2;
 }
 
 dcompass::dcompass(const Image& img, const Image& img90)
@@ -64,7 +48,7 @@ dcompass::dcompass(const Image& img, const Image& img90)
 {}
 
 unsigned dcompass::relationship(const dcompass& other) const
-{ return mask_relationship(d, other.d, 0b11, 2, 25); }
+{ return mask_relationship(d, other.d, 0b11, 2, 2); }
 
 std::istream& operator>>(std::istream& is, dcompass& d)
 { return is >> reinterpret_cast<std::underlying_type_t<dcompass::cardinal_direction>&>(d.d); }

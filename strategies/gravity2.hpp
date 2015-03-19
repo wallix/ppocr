@@ -33,6 +33,8 @@ namespace strategies
 
         gravity2(const Image & img, const Image & img90);
 
+        gravity2(int d) : d(d) {}
+
         bool operator<(gravity2 const & other) const
         { return d < other.d; }
 
@@ -41,12 +43,12 @@ namespace strategies
 
         unsigned relationship(const gravity2& other) const;
 
-        int id() const noexcept { return d; }
+        unsigned id() const noexcept { return d; }
 
         friend std::istream & operator>>(std::istream &, gravity2 &);
 
     private:
-        int d = 0;
+        unsigned d = 0;
     };
 
     std::ostream & operator<<(std::ostream &, gravity2 const &);

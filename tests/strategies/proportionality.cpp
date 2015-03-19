@@ -79,4 +79,8 @@ BOOST_AUTO_TEST_CASE(TestProportionality)
         "-------"
     );
     BOOST_CHECK_EQUAL(proportion.proportion(), 71);
+
+    using strategies::proportionality;
+    BOOST_CHECK_EQUAL(92, proportionality(10).relationship(-6));
+    BOOST_CHECK_EQUAL(92, proportionality(-6).relationship(10));
 }
