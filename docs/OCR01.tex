@@ -393,7 +393,9 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
     \begin{center}\textbf{\Large Proportionnalité}\end{center}
   \end{alertblock}\end{center}
 
-  \only<2>{Détermine si la lettre est plus large ou plus haute}
+  \begin{center}
+    \only<2>{Détermine si la lettre est plus large ou plus haute}
+  \end{center}
   
 \end{frame}
 
@@ -405,16 +407,16 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
     \begin{center}\textbf{\Large Orientation des pixels}\end{center}
   \end{alertblock}\end{center}
 
-  \only<2->{
+  \only<2-3>{
     \begin{center}
       \alt<2>{
 	Le caractère est coupé en 4 pour savoir quel partie est la plus peuplé.
 	
-	image
+	\includegraphics[width=100px]{chmoll-orientation.png}
       }{
 	Variante en diagonale
 	
-	image
+	\includegraphics[width=100px]{chmoll-dorientation.png}
       }
     \end{center}
   }
@@ -429,7 +431,11 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
   \end{alertblock}\end{center}
 
   \begin{center}
-   Les pixels les plus éloigné du centre sont plus lourd
+    \includegraphics[width=100px]{chmoll-gravity.png}
+    
+    \only<2>{
+      Variante: les pixels les plus éloignés du centre sont plus lourd
+    }
   \end{center}
 
 \end{frame}
@@ -443,9 +449,9 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
   \end{alertblock}\end{center}
 
   \begin{center}
-   L'image est traversée par des lignes verticales et horizontales
+    L'image est traversée par des lignes verticales et horizontales
    
-   image1,image2,image3,image4,
+	\includegraphics[width=350px]{chmoll-alternation.png}
   \end{center}
   
 \end{frame}
