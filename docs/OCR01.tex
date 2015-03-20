@@ -33,6 +33,10 @@
 \end{frame}
 
 
+
+\setbeamercolor{block body alerted}{fg=white,bg=blue}
+
+
 \begin{frame}
 \frametitle{l'OCR dans le WAB: pour quoi faire ?}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
@@ -345,7 +349,7 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
 \begin{frame}
 \frametitle{OCR maison : Reconnaître le caractère }
     \setbeamercolor{block body alerted}{fg=white,bg=blue}   
-       \includesvg[width=350px]{Typography_Line_Terms}
+%        \includesvg[width=350px]{Typography_Line_Terms}
       \begin{alertblock}{}
             \begin{center}
                   \textbf{\Large Un peu de vocabulaire}
@@ -355,7 +359,6 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
 
 \begin{frame}
 \frametitle{OCR maison : Reconnaître le caractère }
-    \setbeamercolor{block body alerted}{fg=white,bg=blue}   
       \begin{alertblock}{}
     \begin{center}
               \textbf{\Large Les exemples utiliseront la lettre cyrillique}
@@ -369,4 +372,108 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{OCR maison : Reconnaître le caractère}
+
+  \begin{center}\begin{alertblock}{}
+    \begin{center}\textbf{\Large Algorithmes isolés}\end{center}
+  \end{alertblock}\end{center}
+  
+  \begin{itemize}[<+->]
+   \item Indépendant
+   \item La comparaison des résultats d'un même algorithme retourne un pourcentage de correspondance.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{OCR maison : Reconnaître le caractère : Algorithmes isolés}
+
+  \begin{center}\begin{alertblock}{}
+    \begin{center}\textbf{\Large Proportionnalité}\end{center}
+  \end{alertblock}\end{center}
+
+  \only<2>{Détermine si la lettre est plus large ou plus haute}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{OCR maison : Reconnaître le caractère : Algorithmes isolés}
+
+  \begin{center}\begin{alertblock}{}
+    \begin{center}\textbf{\Large Orientation des pixels}\end{center}
+  \end{alertblock}\end{center}
+
+  \only<2->{
+    \begin{center}
+      \alt<2>{
+	Le caractère est coupé en 4 pour savoir quel partie est la plus peuplé.
+	
+	image
+      }{
+	Variante en diagonale
+	
+	image
+      }
+    \end{center}
+  }
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{OCR maison : Reconnaître le caractère : Algorithmes isolés}
+
+  \begin{center}\begin{alertblock}{}
+    \begin{center}\textbf{\Large Centre de gravité}\end{center}
+  \end{alertblock}\end{center}
+
+  \begin{center}
+   Les pixels les plus éloigné du centre sont plus lourd
+  \end{center}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{OCR maison : Reconnaître le caractère : Algorithmes isolés}
+
+  \begin{center}\begin{alertblock}{}
+    \begin{center}\textbf{\Large Alternance noir/blanc}\end{center}
+  \end{alertblock}\end{center}
+
+  \begin{center}
+   L'image est traversée par des lignes verticales et horizontales
+   
+   image1,image2,image3,image4,
+  \end{center}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{OCR maison : Reconnaître le caractère}
+
+  \begin{center}\begin{alertblock}{}
+    \begin{center}\textbf{\Large Algorithme utilisant les informations des caractères précédents}\end{center}
+  \end{alertblock}\end{center}
+  
+  \begin{center}
+    Filtre les caractères en fonction de
+
+    \begin{itemize}
+    \item la ligne de pied
+    \item la hauteur d'x
+    \item le jambage
+    \item la hauteur de capitale
+    \end{itemize}
+  \end{center}
+
+  \begin{center}
+    Reconnaissance de la langue: usage de dictionnaire
+  \end{center}
+  
+\end{frame}
+
+  
 \end{document}
