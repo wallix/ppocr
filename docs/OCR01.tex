@@ -22,6 +22,8 @@
 \usepackage[underline=true,rounded corners=false]{pgf-umlsd}
 \usepackage{pgf-umlsd}
 \usepackage{listings}
+\usepackage{svg}
+\usepackage{amsmath}
 
 %\graphicspath{{illustrations/}}
 
@@ -294,49 +296,63 @@
             \textbf{\Large Séparation des caractères}
             \end{center}
 
-La première phase consiste à transformer l'image en noir et blanc et supprimer l'aliasing. Ensuite, les caractères sont coupés via des lignes verticales. Si aucuns pixels de caractère à gauche n'est proche d'un pixel de caractère à droite.
+La première phase consiste à transformer l'image en noir et blanc et supprimer l'aliasing. Ensuite, les caractères sont coupés via des lignes verticales. Si aucun pixel de caractère à gauche n'est proche d'un pixel de caractère à droite.
 
     \end{alertblock}\end{center}
 \end{frame}
 
 \begin{frame}
-\frametitle{OCR maison}
+\frametitle{OCR maison : séparation des caractères}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}   
-\texttt{Exemple: 2 lettres\newline
-           .......... ......|....\newline
-           .......... ......|....\newline
-           .......... ......|....\newline
-           ...OOO.O.. ...OOO|.O..\newline
-           ..O....O.. ..O...|.O..\newline
-           .O....OOO. ..O....|OOO.\newline
-           .O.....O.. .O....|.O..\newline
-           .O.....O.. .O....|.O..\newline
-           ..O....O.. ..O...|.O..\newline
-           ...OOO.OO. ...OOO|.OO.\newline
-           .......... ......|....\newline
-}
+       \includegraphics[width=150px]{10x9_Ct_split.png}
+      \begin{alertblock}{}
+            \begin{center}
+                  \textbf{\Large Correctement détecté comme deux lettres}
+            \end{center}
+      \end{alertblock}
+\end{frame}
+
+\begin{frame}
+\frametitle{OCR maison : séparation des caractères }
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}   
+       \includegraphics[width=120px]{9x9_bt_conflit.png}
+      \begin{alertblock}{}
+            \begin{center}
+                  \textbf{\Large Ces deux caractères sont vus comme une seule lettre (à cause du pixel voisin en diagonale)}
+            \end{center}
+      \end{alertblock}
+
+On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou incohérent après OCR. A voir plus tard.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{OCR maison : Reconnaître le caractère }
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}   
+      \begin{alertblock}{}
+            \begin{center}
+                  \textbf{\Large Les méthodes dépendent du contexte}
+            \end{center}
+            \begin{itemize}
+            \item pour un caractère isolé
+            \item avec une connaissance typographique (on connaît la police)
+            \item en utilisant des informations venant des caractères précédents
+            \end{itemize}
+      \end{alertblock}
 \end{frame}
 
 
+\begin{frame}
+\frametitle{OCR maison : Reconnaître le caractère }
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}   
+       \includesvg[width=350px]{Typography_Line_Terms}
+      \begin{alertblock}{}
+            \begin{center}
+                  \textbf{\Large Un peu de vocabulaire}
+            \end{center}
+      \end{alertblock}
+\end{frame}
 
-%....
-%..?. (x+1, y-1) or
-%.@?. (x+1, y  ) or
-%..?. (x+1, y+1)
-%....
-
-%.........            .........
-%.@....@..            .@....@..
-%.@....@..            .@....@..
-%.@...@@@.            .@...o@@.
-%.@@@@.@..  1 lettre  .@@@o.@..
-%.@..@.@..            .@..@.@..
-%.@..@.@..            .@..@.@..
-%.@@@@.@@.            .@@@@.@@.
-%.........            .........
-
-
-%Pour le moment, il n'y a pas de travail sur ce point. Mais le caractère pourrait être redécoupé si la largeur est considérée comme trop grande, ou quand les résultats obtenus sont incohérents.
 
 
 \end{document}
