@@ -92,9 +92,9 @@
 \begin{frame}
 \frametitle{OCR: solution actuelle}
     \begin{itemize}
-    \item Localiser les barres de titre dans l'image (à partir de la couleur de fond)
-    \item une fois la barre de titre repérée isoler chaque lettre par un balyage horizontal
-    \item la reconnaîssance du texte dans les barres de titre se base sur les pixels exacts des polices reconnues
+    \item Localiser les barres de titre dans l'image (à partir de la couleur de fond)\pause
+    \item une fois la barre de titre repérée isoler chaque lettre par un balyage horizontal\pause
+    \item la reconnaîssance du texte dans les barres de titre se base sur les pixels exacts des polices reconnues\pause
     \item on ne regarde même pas tous les pixels, juste ceux nécessaires pour différencier les lettres
     \end{itemize}
 \end{frame}
@@ -104,21 +104,21 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \begin{center}\textbf{\Large Avantages}\end{center}
-    \end{alertblock}\end{center}
+    \end{alertblock}\end{center}\pause
     \begin{itemize}
-    \item très rapide: > 1000 barres de titre par seconde
-    \item code pas trop compliqué (après gros nettoyage pour enlever Milena)
-    \item code maitrisé, on peut ajouter ou enlever des polices, 
-    \item supporte désormais les caractères cyrilliques
+    \item très rapide: > 1000 barres de titre par seconde\pause
+    \item code pas trop compliqué \pause(après gros nettoyage pour enlever Milena)\pause
+    \item code maitrisé, on peut ajouter ou enlever des polices, \pause
+    \item supporte désormais les caractères cyrilliques\pause
     \end{itemize}
     \begin{center}\begin{alertblock}{}
-            \begin{center}\textbf{\Large Inconvénients}\end{center}
+            \begin{center}\textbf{\Large Inconvénients}\end{center}\pause
     \end{alertblock}\end{center}
     \begin{itemize}
-    \item faux positifs
-    \item ne marche pas sur des polices inconnues (même ressemblantes)
-    \item ne marche pas sur des polices de taille différente
-    \item problèmes avec le lissage et l'anti-aliasing (débrayable en RDP... mais pas complètement)
+    \item faux positifs\pause
+    \item ne marche pas sur des polices inconnues (même ressemblantes)\pause
+    \item ne marche pas sur des polices de taille différente\pause
+    \item problèmes avec le lissage et l'anti-aliasing (débrayable en RDP... mais pas complètement)\pause
     \item problème avec les caractères collés (ligatures)
     \end{itemize}
 \end{frame}
@@ -127,18 +127,18 @@
 \frametitle{Utiliser un OCR du marché}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \textbf{\Large Contraintes}
+            \textbf{\Large Contraintes}\pause
         \begin{itemize}
-        \item Logiciels Libres
-        \item sous Linux
-        \item actif et maintenus        
-        \item bonne qualité de reconnaissance
-        \item rapide
-        \item configurable, on voudrait pouvoir fournir des polices de référence
-        \item simple
-        \item intégrables sous forme de librairie
-        \item juste la partie reconnaissance de caractères, on a pas besoin du reste
-        \item et solide, faudrait pas que ça plante ou qu'il y ait des fuites mémoire
+        \item Logiciels Libres\pause
+        \item sous Linux\pause
+        \item actif et maintenus\pause
+        \item bonne qualité de reconnaissance\pause
+        \item rapide\pause
+        \item configurable, on voudrait pouvoir fournir des polices de référence\pause
+        \item simple\pause
+        \item intégrables sous forme de librairie\pause
+        \item juste la partie reconnaissance de caractères, on a pas besoin du reste\pause
+        \item et solide, faudrait pas que ça plante ou qu'il y ait des fuites mémoire\pause
         \end{itemize}
     \end{alertblock}\end{center}
     \setbeamercolor{block body alerted}{fg=white,bg=red}
@@ -152,15 +152,15 @@
 \frametitle{Utiliser un OCR du marché}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \textbf{\Large Les candidats}
+            \textbf{\Large Les candidats}\pause
         \begin{itemize}
-        \item Omnipage Pro SDK 19: Windows, KO
-        \item PaperPort SDK: Windows, KO
-        \item ABBYY Finereader Engine 11 SDK: Linux, Propriétaire, peut-être ?
-        \item Tesseract: Libre, Linux, bonne qualité, à voir
-        \item gOCR : Libre, Linux, bonne qualité, à voir
-        \item Ocropus : Libre, Linux, reconnaissance pas terrible, KO
-        \item OCrad : Libre, Linux, projet arrêté, KO
+        \item Omnipage Pro SDK 19: Windows, KO\pause
+        \item PaperPort SDK: Windows, KO\pause
+        \item ABBYY Finereader Engine 11 SDK: Linux, Propriétaire, peut-être ?\pause
+        \item Tesseract: Libre, Linux, bonne qualité, à voir\pause
+        \item gOCR : Libre, Linux, bonne qualité, à voir\pause
+        \item Ocropus : Libre, Linux, reconnaissance pas terrible, KO\pause
+        \item OCrad : Libre, Linux, projet arrêté, KO\pause
         \item Cuneiform : Libre, Linux, projet arrêté, KO
         \end{itemize}
     \end{alertblock}\end{center}
@@ -170,12 +170,12 @@
 \frametitle{Utiliser un OCR du marché : Tesseract}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \textbf{\Large Avantages}
+            \textbf{\Large Avantages}\pause
         \begin{itemize}
-        \item projet leader en libre
-        \item projet soutenu par google (pour leur numérisation massive de livres)
-        \item bonne qualité de reconnaissance <5\% de caractères mal reconnus
-        \item on peut l'alimenter avec des polices inconnues
+        \item projet leader en libre\pause
+        \item projet soutenu par google (pour leur numérisation massive de livres)\pause
+        \item bonne qualité de reconnaissance <5\% de caractères mal reconnus\pause
+        \item on peut l'alimenter avec des polices inconnues\pause
         \item beaucoup de paramètres possibles (plusieurs centaines)
         \end{itemize}
     \end{alertblock}\end{center}
@@ -185,21 +185,21 @@
 \frametitle{Utiliser un OCR du marché : Tesseract}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \textbf{\Large Inconvénients}
+            \textbf{\Large Inconvénients}\pause
         \begin{itemize}
-        \item trop de paramètres, complexes, parfois très impactants
-        \item a du mal sur des polices < 12 pixels... dommage pour les titres
-        \item (on peut grossir artificiellement les polices)
-        \item optimisé pour des besoins qu'on a pas
+        \item trop de paramètres, complexes, parfois très impactants\pause
+        \item a du mal sur des polices < 12 pixels... dommage pour les titres\pause
+        \item (on peut grossir artificiellement les polices)\pause
+        \item optimisé pour des besoins qu'on a pas\pause
         \begin{itemize}
-        \item reconnaissance de livres scannés
-        \item redresser le texte, antiparasite
-        \item inutile pour de l'OCR écran
+        \item reconnaissance de livres scannés\pause
+        \item redresser le texte, antiparasite\pause
+        \item inutile pour de l'OCR écran\pause
         \end{itemize}
-        \item il y a surement la gestion de l'anti-aliasing quelque part... mais où?
-        \item code très compliqués, passages de structures contenant à la fois les paramètres et les résultats
-        \item code très gros : environ 200 000 lignes de C++
-        \item très lent: de 3 à 5 barres de titre par seconde
+        \item il y a surement la gestion de l'anti-aliasing quelque part... mais où?\pause
+        \item code très compliqués, passages de structures contenant à la fois les paramètres et les résultats\pause
+        \item code très gros : environ 200 000 lignes de C++\pause
+        \item très lent: de 3 à 5 barres de titre par seconde\pause
         \item difficile à intégrer sous forme de librairie
         \end{itemize}
     \end{alertblock}\end{center}
@@ -209,11 +209,11 @@
 \frametitle{Utiliser un OCR du marché : gOCR}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \textbf{\Large Avantages}
+            \textbf{\Large Avantages}\pause
         \begin{itemize}
-        \item plutôt bon (<10\% de caractères mal reconnus sur polices simples)
-        \item fonctionne aussi avec de petites polices
-        \item quasiment aucun paramètre
+        \item plutôt bon (<10\% de caractères mal reconnus sur polices simples)\pause
+        \item fonctionne aussi avec de petites polices\pause
+        \item quasiment aucun paramètre\pause
         \item code relativement simple ( < 25 000 lignes)
         \end{itemize}
     \end{alertblock}\end{center}
@@ -223,12 +223,12 @@
 \frametitle{Utiliser un OCR du marché : gOCR}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \textbf{\Large Inconvénients}
+            \textbf{\Large Inconvénients}\pause
         \begin{itemize}
-        \item on ne peut pas l'alimenter avec des polices spécifiques
-        \item une fonction par lettre, tout codé à la main
-        \item compliqué à intégrer (mais moins que Tesseract)
-        \item pas très extensible quand les polices ne marchent pas bien
+        \item on ne peut pas l'alimenter avec des polices spécifiques\pause
+        \item une fonction par lettre, tout codé à la main\pause
+        \item compliqué à intégrer (mais moins que Tesseract)\pause
+        \item pas très extensible quand les polices ne marchent pas bien\pause
         \item plus rapide que Tesseract: environ 100 barres de titre par seconde
         \end{itemize}
     \end{alertblock}\end{center}
@@ -238,11 +238,11 @@
 \frametitle{Bilan du marché}
     \setbeamercolor{block body alerted}{fg=white,bg=red}
     \begin{center}\begin{alertblock}{}
-            \begin{center}\textbf{\Large ni Tesseract ni gOCR ne sont très convainquants}
+            \begin{center}\textbf{\Large ni Tesseract ni gOCR ne sont très convainquants}\pause
                 \begin{itemize}
-                \item tous les deux sont une régression sur l'existant
-                \item inquiètants pour la tenue de charge
-                \item Essayer éventuellement ABBYY Fine Reader?
+                \item tous les deux sont une régression sur l'existant\pause
+                \item inquiètants pour la tenue de charge\pause
+                \item Essayer éventuellement ABBYY Fine Reader?\pause
                 \end{itemize}
             \end{center}
     \end{alertblock}\end{center}
@@ -255,20 +255,20 @@
 
 \begin{frame}
 \frametitle{Solution : on jette et on recommence}
-    \setbeamercolor{block body alerted}{fg=white,bg=red}
+    \setbeamercolor{block body alerted}{fg=white,bg=red}\pause
     \begin{center}\begin{alertblock}{}
-            \begin{center}\textbf{\Large Pas de panique: on ne jette pas tout}\end{center}
+            \begin{center}\textbf{\Large Pas de panique: on ne jette pas tout}\end{center}\pause
     \end{alertblock}\end{center}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \begin{center}\textbf{\Large On garde}\end{center}
+            \begin{center}\textbf{\Large On garde}\end{center}\pause
     \end{alertblock}\end{center}
     \begin{itemize}
-    \item la détection de la barre de titre
-    \item la séparation des caractères (on devra peut-être l'améliorer par la suite pour les ligatures)
+    \item la détection de la barre de titre\pause
+    \item la séparation des caractères (on devra peut-être l'améliorer par la suite pour les ligatures)\pause
     \end{itemize}
     \begin{center}\begin{alertblock}{}
-            \begin{center}\textbf{\Large On remplace}\end{center}
+            \begin{center}\textbf{\Large On remplace}\end{center}\pause
     \end{alertblock}\end{center}
     \begin{itemize}
     \item la reconnaissance des caractères individuels
@@ -281,11 +281,12 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \begin{center}
-            \textbf{\Large Architecture}
+            \textbf{\Large Architecture}\pause
             \begin{itemize}
-            \item utiliser différents algorithmes simples pour reconnaître le caractère
-            \item puis aggréger les résultats pour obtenir une évaluation
-            \item on peut configurer le comportement
+            \item utiliser différents algorithmes simples (heuristiques) pour reconnaître le caractère\pause
+            \item puis aggréger les résultats pour obtenir une évaluation\pause
+            \item on peut configurer le comportement\pause
+            \item on peut intégrer l'OCR existant dans les heuristiques
             \end{itemize}
             \end{center}
     \end{alertblock}\end{center}
@@ -325,8 +326,9 @@ La première phase consiste à transformer l'image en noir et blanc et supprimer
                   \textbf{\Large Ces deux caractères sont vus comme une seule lettre (à cause du pixel voisin en diagonale)}
             \end{center}
       \end{alertblock}
-
-On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou incohérent après OCR. A voir plus tard.
+\pause
+On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou incohérent après OCR\pause.
+A voir plus tard.
 
 \end{frame}
 
@@ -335,12 +337,12 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
     \setbeamercolor{block body alerted}{fg=white,bg=blue}   
       \begin{alertblock}{}
             \begin{center}
-                  \textbf{\Large Les méthodes dépendent du contexte}
+                  \textbf{\Large Les méthodes dépendent du contexte}\pause
             \end{center}
             \begin{itemize}
-            \item pour un caractère isolé
-            \item avec une connaissance typographique (on connaît la police)
-            \item en utilisant des informations venant des caractères précédents
+            \item soit pour un caractère isolé\pause
+            \item soit avec une connaissance typographique \pause (on connaît la police)\pause
+            \item en utilisant les informations des caractères/barres de titre précédents
             \end{itemize}
       \end{alertblock}
 \end{frame}
@@ -349,7 +351,8 @@ On pourrait relaxer les contraintes, ou redécouper un caractère trop large, ou
 \begin{frame}
 \frametitle{OCR maison : Reconnaître le caractère }
     \setbeamercolor{block body alerted}{fg=white,bg=blue}   
-%        \includesvg[width=350px]{Typography_Line_Terms}
+       % \includesvg[width=350px]{Typography_Line_Terms}
+        \includegraphics[width=350px]{Typography_Line_Terms.png}
       \begin{alertblock}{}
             \begin{center}
                   \textbf{\Large Un peu de vocabulaire}
