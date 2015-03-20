@@ -34,7 +34,7 @@
 
 BOOST_AUTO_TEST_CASE(TestImage)
 {
-    Image img = image_from_file(IMAGE_PATH "image1.pbm");
+    Image img = image_from_file(IMAGE_PATH "image_a1.pbm");
     std::ostringstream oss;
     oss << img;
     BOOST_CHECK_EQUAL(oss.str(),
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(TestImage)
     "::::::::::\n"
     );
 
-    img = image_from_file(IMAGE_PATH "image2.pnm");
+    img = image_from_file(IMAGE_PATH "image_e1.pbm");
     oss.str("");
     oss << img;
     BOOST_CHECK_EQUAL(oss.str(),

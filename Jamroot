@@ -1,0 +1,157 @@
+import os ;
+
+# below feature rule come from http://www.boost.org/doc/tools/build/doc/html/bbv2/extending/features.html
+
+path-constant TOP : . ;
+
+project ppocr
+    : requirements
+    <include>src
+    <include>src/ocr
+#    <toolset>gcc:<cxxflags>-Wno-cpp
+    #<cxxflags>-Wno-unused-but-set-variable
+
+    <cxxflags>-finline-functions
+    <toolset>gcc:<cxxflags>-funswitch-loops
+    <toolset>gcc:<cxxflags>-fpredictive-commoning
+    <toolset>gcc:<cxxflags>-fgcse-after-reload
+    <toolset>gcc:<cxxflags>-ftree-vectorize
+    <toolset>gcc:<cxxflags>-fvect-cost-model
+    #<cxxflags>-ftree-partial-pre
+    <toolset>gcc:<cxxflags>-fipa-cp-clone #enabled by default at -O3
+    <cxxflags>-std=c++14
+#    <cxxflags>-pedantic
+#    <cxxflags>-Wconversion
+    <cxxflags>-Wvla
+    <cxxflags>-Wstrict-aliasing=2
+#    <cxxflags>-Wold-style-cast
+#    <cxxflags>-Wlong-long
+    <cxxflags>-O3
+    <variant>debug:<cxxflags>-g
+#     <variant>release:<cxxflags>-march=native
+    <cxxflags>-Wuninitialized
+    <cxxflags>-Wnon-virtual-dtor
+    <cxxflags>-Wall
+    <cxxflags>-Wextra
+    <cxxflags>-Wno-unused-parameter
+    <cxxflags>-Wno-long-long
+    <cxxflags>-Wtype-limits
+    <cxxflags>-Wundef
+    <cxxflags>-Wcast-align
+    <cxxflags>-Wchar-subscripts
+#     <cxxflags>-Wformat
+#     <cxxflags>-Wformat=2
+#     <cxxflags>-Wformat-security
+#     <cxxflags>-Wmissing-format-attribute
+#    <cxxflags>-Werror-implicit-function-declaration
+    <cxxflags>-Wsequence-point
+    <cxxflags>-Wreturn-type
+    <cxxflags>-Wfloat-equal
+#     <cxxflags>-Wshadow
+    <cxxflags>-Wpointer-arith
+    <cxxflags>-Wsign-compare
+#     <cxxflags>-Wmissing-declarations
+    <cxxflags>-Wpacked
+    <cxxflags>-Wredundant-decls
+#     <cxxflags>-Winline
+    <cxxflags>-Winit-self
+    <cxxflags>-Wcast-qual
+    <cxxflags>-Woverloaded-virtual
+#     <cxxflags>-Wunused-variable
+
+#     <toolset>gcc:<cxxflags>-Wdouble-promotion
+#     <toolset>gcc:<cxxflags>-Wmaybe-uninitialized
+
+    <toolset>clang:<cxxflags>-Wno-mismatched-tags
+#    <toolset>clang:<cxxflags>-Wno-overloaded-virtual
+    <toolset>clang:<cxxflags>-Wno-char-subscripts
+#     <toolset>clang:<cxxflags>-Wno-array-bounds
+    <toolset>clang:<cxxflags>-Wno-unused-variable
+    <toolset>clang:<cxxflags>-Wno-unused-private-field
+    <toolset>clang:<cxxflags>-Wno-dynamic-class-memaccess #memcpy (class 'Capability'; vtable pointer will be overwritten)
+
+    <define>_FILE_OFFSET_BITS=64
+    <define>_LARGEFILE64_SOURCE
+
+    <define>__STDC_FORMAT_MACROS
+
+    : default-build release
+;
+
+#lib libboost_unit_test : : <name>boost_unit_test_framework-mt <link>shared ;
+lib libboost_unit_test : : <name>boost_unit_test_framework <link>shared ;
+
+#lib dl : : <name>dl <link>shared ;
+#lib pthread : : <name>pthread <link>shared ;
+
+obj coordinate      : src/coordinate.cpp ;
+obj box             : src/box.cpp ;
+obj image           : src/image.cpp ;
+obj image_from_file : src/image_from_file.cpp ;
+obj definition      : src/definition.cpp ;
+
+#exe test_image : tests/image.cpp src/image.cpp src/image_from_file.cpp libboost_unit_test : ;
+
+#
+# Unit Tests
+#
+
+import testing ;
+
+unit-test test_image : 
+    tests/image.cpp 
+    src/image.cpp 
+    src/image_from_file.cpp 
+    libboost_unit_test : ;
+
+unit-test test_make_box_character : 
+    tests/make_box_character.cpp 
+    src/make_box_character.cpp 
+    src/image.cpp src/image_from_file.cpp 
+    libboost_unit_test : ;
+
+unit-test test_gravity : 
+    tests/strategies/gravity.cpp 
+    src/strategies/gravity.cpp 
+    src/image.cpp src/image_from_string.cpp 
+    libboost_unit_test : ;
+
+unit-test test_gravity2 : 
+    tests/strategies/gravity2.cpp 
+    src/strategies/gravity2.cpp 
+    src/image.cpp src/image_from_string.cpp 
+    libboost_unit_test : ;
+
+unit-test test_proportionality : 
+    tests/strategies/proportionality.cpp 
+    src/strategies/proportionality.cpp 
+    src/image.cpp src/image_from_string.cpp 
+    libboost_unit_test : ;
+
+
+unit-test test_agravity : 
+    tests/strategies/agravity.cpp 
+    src/strategies/agravity.cpp 
+    src/image.cpp src/image_from_string.cpp 
+    libboost_unit_test : ;
+
+unit-test test_alternation : 
+    tests/strategies/alternation.cpp 
+    src/strategies/alternation.cpp 
+    src/image.cpp src/image_from_string.cpp 
+    libboost_unit_test : ;
+
+unit-test test_dcompass : 
+    tests/strategies/dcompass.cpp 
+    src/strategies/dcompass.cpp 
+    src/image.cpp src/image_from_string.cpp 
+    libboost_unit_test : ;
+
+unit-test test_direction : 
+    tests/strategies/direction.cpp 
+    src/strategies/direction.cpp 
+    src/image.cpp src/image_from_string.cpp 
+    libboost_unit_test : ;
+
+#unit-test test_new_ocr : tests/test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
+

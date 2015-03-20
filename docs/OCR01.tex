@@ -21,6 +21,7 @@
 \usetikzlibrary{arrows,shadows} % for pgf-umlsd
 \usepackage[underline=true,rounded corners=false]{pgf-umlsd}
 \usepackage{pgf-umlsd}
+\usepackage{listings}
 
 %\graphicspath{{illustrations/}}
 
@@ -34,10 +35,49 @@
 \frametitle{l'OCR dans le WAB: pour quoi faire ?}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}
-       \includegraphics[width=200px]{DesktopRoom.jpg}
+       \includegraphics[width=200px]{TBar2.png}
       \begin{alertblock}{}
             \begin{center}
                   \textbf{\Large Détecter les textes des barres de titre des applications Windows}
+            \end{center}
+      \end{alertblock}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{l'OCR dans le WAB: pour quoi faire ?}
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}
+    \begin{center}
+       \includegraphics[width=200px]{PosteDeTravail.png}
+      \begin{alertblock}{}
+            \begin{center}
+                  \textbf{\Large Mais elles peuvent aussi ressembler à ça}
+            \end{center}
+      \end{alertblock}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{l'OCR dans le WAB: pour quoi faire ?}
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}
+    \begin{center}
+       \includegraphics[width=200px]{TBar1.png}
+      \begin{alertblock}{}
+            \begin{center}
+                  \textbf{\Large ou à ça}
+            \end{center}
+      \end{alertblock}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{l'OCR dans le WAB: pour quoi faire ?}
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}
+    \begin{center}
+       \includegraphics[width=200px]{TBar3.png}
+      \begin{alertblock}{}
+            \begin{center}
+                  \textbf{\Large ou encore à ça}
             \end{center}
       \end{alertblock}
     \end{center}
@@ -232,7 +272,6 @@
 
 \begin{frame}
 \frametitle{OCR maison}
-    \setbeamercolor{block body alerted}{fg=white,bg=red}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \begin{center}
@@ -245,6 +284,59 @@
             \end{center}
     \end{alertblock}\end{center}
 \end{frame}
+
+
+\begin{frame}
+\frametitle{OCR maison}
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}
+    \begin{center}\begin{alertblock}{}
+            \begin{center}
+            \textbf{\Large Séparation des caractères}
+            \end{center}
+
+La première phase consiste à transformer l'image en noir et blanc et supprimer l'aliasing. Ensuite, les caractères sont coupés via des lignes verticales. Si aucuns pixels de caractère à gauche n'est proche d'un pixel de caractère à droite.
+
+    \end{alertblock}\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{OCR maison}
+    \setbeamercolor{block body alerted}{fg=white,bg=blue}   
+\texttt{Exemple: 2 lettres\newline
+           .......... ......|....\newline
+           .......... ......|....\newline
+           .......... ......|....\newline
+           ...OOO.O.. ...OOO|.O..\newline
+           ..O....O.. ..O...|.O..\newline
+           .O....OOO. ..O....|OOO.\newline
+           .O.....O.. .O....|.O..\newline
+           .O.....O.. .O....|.O..\newline
+           ..O....O.. ..O...|.O..\newline
+           ...OOO.OO. ...OOO|.OO.\newline
+           .......... ......|....\newline
+}
+\end{frame}
+
+
+
+%....
+%..?. (x+1, y-1) or
+%.@?. (x+1, y  ) or
+%..?. (x+1, y+1)
+%....
+
+%.........            .........
+%.@....@..            .@....@..
+%.@....@..            .@....@..
+%.@...@@@.            .@...o@@.
+%.@@@@.@..  1 lettre  .@@@o.@..
+%.@..@.@..            .@..@.@..
+%.@..@.@..            .@..@.@..
+%.@@@@.@@.            .@@@@.@@.
+%.........            .........
+
+
+%Pour le moment, il n'y a pas de travail sur ce point. Mais le caractère pourrait être redécoupé si la largeur est considérée comme trop grande, ou quand les résultats obtenus sont incohérents.
 
 
 \end{document}
