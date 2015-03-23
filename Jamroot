@@ -9,7 +9,7 @@ project ppocr
     <include>src
     <include>src/ocr
 #    <toolset>gcc:<cxxflags>-Wno-cpp
-    #<cxxflags>-Wno-unused-but-set-variable
+    <cxxflags>-Wno-unused-but-set-variable
 
     <cxxflags>-finline-functions
     <toolset>gcc:<cxxflags>-funswitch-loops
@@ -18,13 +18,12 @@ project ppocr
     <toolset>gcc:<cxxflags>-ftree-vectorize
     <toolset>gcc:<cxxflags>-fvect-cost-model
     #<cxxflags>-ftree-partial-pre
-    <toolset>gcc:<cxxflags>-fipa-cp-clone #enabled by default at -O3
     <cxxflags>-std=c++14
-#    <cxxflags>-pedantic
+   <cxxflags>-pedantic
 #    <cxxflags>-Wconversion
     <cxxflags>-Wvla
     <cxxflags>-Wstrict-aliasing=2
-#    <cxxflags>-Wold-style-cast
+   <cxxflags>-Wold-style-cast
 #    <cxxflags>-Wlong-long
     <cxxflags>-O3
     <variant>debug:<cxxflags>-g
@@ -57,23 +56,22 @@ project ppocr
     <cxxflags>-Winit-self
     <cxxflags>-Wcast-qual
     <cxxflags>-Woverloaded-virtual
-#     <cxxflags>-Wunused-variable
+    <cxxflags>-Wunused-variable
 
 #     <toolset>gcc:<cxxflags>-Wdouble-promotion
-#     <toolset>gcc:<cxxflags>-Wmaybe-uninitialized
+    <toolset>gcc:<cxxflags>-Wmaybe-uninitialized
 
-    <toolset>clang:<cxxflags>-Wno-mismatched-tags
+#     <toolset>clang:<cxxflags>-Wno-mismatched-tags
 #    <toolset>clang:<cxxflags>-Wno-overloaded-virtual
-    <toolset>clang:<cxxflags>-Wno-char-subscripts
+#     <toolset>clang:<cxxflags>-Wno-char-subscripts
 #     <toolset>clang:<cxxflags>-Wno-array-bounds
-    <toolset>clang:<cxxflags>-Wno-unused-variable
-    <toolset>clang:<cxxflags>-Wno-unused-private-field
-    <toolset>clang:<cxxflags>-Wno-dynamic-class-memaccess #memcpy (class 'Capability'; vtable pointer will be overwritten)
+#     <toolset>clang:<cxxflags>-Wno-unused-variable
+#     <toolset>clang:<cxxflags>-Wno-unused-private-field
 
-    <define>_FILE_OFFSET_BITS=64
-    <define>_LARGEFILE64_SOURCE
-
-    <define>__STDC_FORMAT_MACROS
+#     <define>_FILE_OFFSET_BITS=64
+#     <define>_LARGEFILE64_SOURCE
+#
+#     <define>__STDC_FORMAT_MACROS
 
     : default-build release
 ;
@@ -92,65 +90,117 @@ obj definition      : src/definition.cpp ;
 
 #exe test_image : tests/image.cpp src/image.cpp src/image_from_file.cpp libboost_unit_test : ;
 
+exe extract_text2 :
+    src/extract_text2.cpp
+    src/box.cpp
+    src/coordinate.cpp
+    src/data_loader.cpp
+    src/definition.cpp
+    src/image.cpp
+    src/image_from_file.cpp
+    src/image_from_string.cpp
+    src/make_box_character.cpp
+    src/registry.cpp
+    src/strategies/agravity.cpp
+    src/strategies/alternation.cpp
+    src/strategies/compass.cpp
+    src/strategies/dcompass.cpp
+    src/strategies/direction.cpp
+    src/strategies/gravity2.cpp
+    src/strategies/gravity.cpp
+    src/strategies/hdirection2.cpp
+    src/strategies/hdirection.cpp
+    src/strategies/proportionality.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    src/utils/image_compare.cpp
+    src/utils/unique_sort_definition.cpp
+: ;
+
+exe learning2 :
+    src/learning2.cpp
+    src/box.cpp
+    src/coordinate.cpp
+    src/data_loader.cpp
+    src/definition.cpp
+    src/image.cpp
+    src/image_from_file.cpp
+    src/image_from_string.cpp
+    src/make_box_character.cpp
+    src/registry.cpp
+    src/strategies/agravity.cpp
+    src/strategies/alternation.cpp
+    src/strategies/compass.cpp
+    src/strategies/dcompass.cpp
+    src/strategies/direction.cpp
+    src/strategies/gravity2.cpp
+    src/strategies/gravity.cpp
+    src/strategies/hdirection2.cpp
+    src/strategies/hdirection.cpp
+    src/strategies/proportionality.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    src/utils/image_compare.cpp
+    src/utils/unique_sort_definition.cpp
+: ;
+
 #
 # Unit Tests
 #
 
 import testing ;
 
-unit-test test_image : 
-    tests/image.cpp 
-    src/image.cpp 
-    src/image_from_file.cpp 
+unit-test test_image :
+    tests/image.cpp
+    src/image.cpp
+    src/image_from_file.cpp
     libboost_unit_test : ;
 
-unit-test test_make_box_character : 
-    tests/make_box_character.cpp 
-    src/make_box_character.cpp 
-    src/image.cpp src/image_from_file.cpp 
+unit-test test_make_box_character :
+    tests/make_box_character.cpp
+    src/make_box_character.cpp
+    src/image.cpp src/image_from_file.cpp
     libboost_unit_test : ;
 
-unit-test test_gravity : 
-    tests/strategies/gravity.cpp 
-    src/strategies/gravity.cpp 
-    src/image.cpp src/image_from_string.cpp 
+unit-test test_gravity :
+    tests/strategies/gravity.cpp
+    src/strategies/gravity.cpp
+    src/image.cpp src/image_from_string.cpp
     libboost_unit_test : ;
 
-unit-test test_gravity2 : 
-    tests/strategies/gravity2.cpp 
-    src/strategies/gravity2.cpp 
-    src/image.cpp src/image_from_string.cpp 
+unit-test test_gravity2 :
+    tests/strategies/gravity2.cpp
+    src/strategies/gravity2.cpp
+    src/image.cpp src/image_from_string.cpp
     libboost_unit_test : ;
 
-unit-test test_proportionality : 
-    tests/strategies/proportionality.cpp 
-    src/strategies/proportionality.cpp 
-    src/image.cpp src/image_from_string.cpp 
+unit-test test_proportionality :
+    tests/strategies/proportionality.cpp
+    src/strategies/proportionality.cpp
+    src/image.cpp src/image_from_string.cpp
     libboost_unit_test : ;
 
 
-unit-test test_agravity : 
-    tests/strategies/agravity.cpp 
-    src/strategies/agravity.cpp 
-    src/image.cpp src/image_from_string.cpp 
+unit-test test_agravity :
+    tests/strategies/agravity.cpp
+    src/strategies/agravity.cpp
+    src/image.cpp src/image_from_string.cpp
     libboost_unit_test : ;
 
-unit-test test_alternation : 
-    tests/strategies/alternation.cpp 
-    src/strategies/alternation.cpp 
-    src/image.cpp src/image_from_string.cpp 
+unit-test test_alternation :
+    tests/strategies/alternation.cpp
+    src/strategies/alternation.cpp
+    src/image.cpp src/image_from_string.cpp
     libboost_unit_test : ;
 
-unit-test test_dcompass : 
-    tests/strategies/dcompass.cpp 
-    src/strategies/dcompass.cpp 
-    src/image.cpp src/image_from_string.cpp 
+unit-test test_dcompass :
+    tests/strategies/dcompass.cpp
+    src/strategies/dcompass.cpp
+    src/image.cpp src/image_from_string.cpp
     libboost_unit_test : ;
 
-unit-test test_direction : 
-    tests/strategies/direction.cpp 
-    src/strategies/direction.cpp 
-    src/image.cpp src/image_from_string.cpp 
+unit-test test_direction :
+    tests/strategies/direction.cpp
+    src/strategies/direction.cpp
+    src/image.cpp src/image_from_string.cpp
     libboost_unit_test : ;
 
 #unit-test test_new_ocr : tests/test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
