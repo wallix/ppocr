@@ -128,7 +128,8 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \textbf{\Large Contraintes}\pause
-        \begin{itemize}
+    \end{alertblock}\end{center}
+    \begin{itemize}
         \item Logiciels Libres\pause
         \item sous Linux\pause
         \item actif et maintenus\pause
@@ -136,11 +137,10 @@
         \item rapide\pause
         \item configurable, on voudrait pouvoir fournir des polices de référence\pause
         \item simple\pause
-        \item intégrables sous forme de librairie\pause
+        \item intégrables sous forme de bibliothèque\pause
         \item juste la partie reconnaissance de caractères, on a pas besoin du reste\pause
         \item et solide, faudrait pas que ça plante ou qu'il y ait des fuites mémoire\pause
-        \end{itemize}
-    \end{alertblock}\end{center}
+    \end{itemize}
     \setbeamercolor{block body alerted}{fg=white,bg=red}
     \begin{center}\begin{alertblock}{}
             \begin{center}\textbf{\Large On ne serait pas un peu exigeant...}\end{center}
@@ -153,7 +153,8 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \textbf{\Large Les candidats}\pause
-        \begin{itemize}
+    \end{alertblock}\end{center}
+      \begin{itemize}
         \item Omnipage Pro SDK 19: Windows, KO\pause
         \item PaperPort SDK: Windows, KO\pause
         \item ABBYY Finereader Engine 11 SDK: Linux, Propriétaire, peut-être ?\pause
@@ -162,8 +163,7 @@
         \item Ocropus : Libre, Linux, reconnaissance pas terrible, KO\pause
         \item OCrad : Libre, Linux, projet arrêté, KO\pause
         \item Cuneiform : Libre, Linux, projet arrêté, KO
-        \end{itemize}
-    \end{alertblock}\end{center}
+      \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -171,14 +171,14 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \textbf{\Large Avantages}\pause
-        \begin{itemize}
+    \end{alertblock}\end{center}
+    \begin{itemize}
         \item projet leader en libre\pause
         \item projet soutenu par google (pour leur numérisation massive de livres)\pause
         \item bonne qualité de reconnaissance <5\% de caractères mal reconnus\pause
         \item on peut l'alimenter avec des polices inconnues\pause
         \item beaucoup de paramètres possibles (plusieurs centaines)
-        \end{itemize}
-    \end{alertblock}\end{center}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -186,7 +186,8 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \textbf{\Large Inconvénients}\pause
-        \begin{itemize}
+    \end{alertblock}\end{center}
+    \begin{itemize}
         \item trop de paramètres, complexes, parfois très impactants\pause
         \item a du mal sur des polices < 12 pixels... dommage pour les titres\pause
         \item (on peut grossir artificiellement les polices)\pause
@@ -201,8 +202,7 @@
         \item code très gros : environ 200 000 lignes de C++\pause
         \item très lent: de 3 à 5 barres de titre par seconde\pause
         \item difficile à intégrer sous forme de librairie
-        \end{itemize}
-    \end{alertblock}\end{center}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -210,13 +210,13 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \textbf{\Large Avantages}\pause
-        \begin{itemize}
+    \end{alertblock}\end{center}
+    \begin{itemize}
         \item plutôt bon (<10\% de caractères mal reconnus sur polices simples)\pause
         \item fonctionne aussi avec de petites polices\pause
         \item quasiment aucun paramètre\pause
         \item code relativement simple ( < 25 000 lignes)
-        \end{itemize}
-    \end{alertblock}\end{center}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -224,28 +224,27 @@
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \textbf{\Large Inconvénients}\pause
-        \begin{itemize}
+    \end{alertblock}\end{center}
+    \begin{itemize}
         \item on ne peut pas l'alimenter avec des polices spécifiques\pause
         \item une fonction par lettre, tout codé à la main\pause
         \item compliqué à intégrer (mais moins que Tesseract)\pause
         \item pas très extensible quand les polices ne marchent pas bien\pause
         \item plus rapide que Tesseract: environ 100 barres de titre par seconde
-        \end{itemize}
-    \end{alertblock}\end{center}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Bilan du marché}
     \setbeamercolor{block body alerted}{fg=white,bg=red}
     \begin{center}\begin{alertblock}{}
-            \begin{center}\textbf{\Large ni Tesseract ni gOCR ne sont très convainquants}\pause
-                \begin{itemize}
-                \item tous les deux sont une régression sur l'existant\pause
-                \item inquiètants pour la tenue de charge\pause
-                \item Essayer éventuellement ABBYY Fine Reader?\pause
-                \end{itemize}
-            \end{center}
+	\textbf{\Large ni Tesseract ni gOCR ne sont très convainquants}\pause
     \end{alertblock}\end{center}
+    \begin{itemize}
+	    \item tous les deux sont une régression sur l'existant\pause
+	    \item inquiètants pour la tenue de charge\pause
+	    \item Essayer éventuellement ABBYY Fine Reader?\pause
+    \end{itemize}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
             \begin{center}\textbf{\Large Et si on essayait de résoudre le problème?}\end{center}
@@ -280,16 +279,14 @@
 \frametitle{OCR maison}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}
     \begin{center}\begin{alertblock}{}
-            \begin{center}
             \textbf{\Large Architecture}\pause
-            \begin{itemize}
+    \end{alertblock}\end{center}
+    \begin{itemize}
             \item utiliser différents algorithmes simples (heuristiques) pour reconnaître le caractère\pause
             \item puis aggréger les résultats pour obtenir une évaluation\pause
             \item on peut configurer le comportement\pause
             \item on peut intégrer l'OCR existant dans les heuristiques
-            \end{itemize}
-            \end{center}
-    \end{alertblock}\end{center}
+    \end{itemize}
 \end{frame}
 
 
@@ -300,16 +297,18 @@
             \begin{center}
             \textbf{\Large Séparation des caractères}
             \end{center}
+    \end{alertblock}\end{center}
 
 La première phase consiste à transformer l'image en noir et blanc et supprimer l'aliasing. Ensuite, les caractères sont coupés via des lignes verticales. Si aucun pixel de caractère à gauche n'est proche d'un pixel de caractère à droite.
 
-    \end{alertblock}\end{center}
 \end{frame}
 
 \begin{frame}
 \frametitle{OCR maison : séparation des caractères}
     \setbeamercolor{block body alerted}{fg=white,bg=blue}   
+    \begin{center}
        \includegraphics[width=150px]{10x9_Ct_split.png}
+    \end{center}
       \begin{alertblock}{}
             \begin{center}
                   \textbf{\Large Correctement détecté comme deux lettres}
@@ -320,7 +319,9 @@ La première phase consiste à transformer l'image en noir et blanc et supprimer
 \begin{frame}
 \frametitle{OCR maison : séparation des caractères }
     \setbeamercolor{block body alerted}{fg=white,bg=blue}   
+    \begin{center}
        \includegraphics[width=120px]{9x9_bt_conflit.png}
+    \end{center}
       \begin{alertblock}{}
             \begin{center}
                   \textbf{\Large Ces deux caractères sont vus comme une seule lettre (à cause du pixel voisin en diagonale)}
@@ -339,12 +340,12 @@ A voir plus tard.
             \begin{center}
                   \textbf{\Large Les méthodes dépendent du contexte}\pause
             \end{center}
-            \begin{itemize}
+      \end{alertblock}
+      \begin{itemize}
             \item soit pour un caractère isolé\pause
             \item soit avec une connaissance typographique \pause (on connaît la police)\pause
             \item en utilisant les informations des caractères/barres de titre précédents
-            \end{itemize}
-      \end{alertblock}
+      \end{itemize}
 \end{frame}
 
 
@@ -371,7 +372,9 @@ A voir plus tard.
        \pause
        \includegraphics[width=100px]{chmoll.png}
     \end{center}
-      \pause Désolé on ne sait pas comment elle se prononce
+    \begin{center}
+      \pause Désolé, on ne sait pas comment elle se prononce
+    \end{center}
 \end{frame}
 
 
@@ -397,7 +400,9 @@ A voir plus tard.
   \end{alertblock}\end{center}
 
   \begin{center}
-    \only<2>{Détermine si la lettre est plus large ou plus haute}
+%     \only<2>{
+      Détermine si la lettre est plus large ou plus haute
+%     }
   \end{center}
   
 \end{frame}
@@ -410,18 +415,18 @@ A voir plus tard.
     \begin{center}\textbf{\Large Orientation des pixels}\end{center}
   \end{alertblock}\end{center}
 
-  \only<2-3>{
-    \begin{center}
-      \alt<2>{
-	Le caractère est coupé en 4 pour savoir quel partie est la plus peuplé.
-	
-	\includegraphics[width=100px]{chmoll-orientation.png}
-      }{
-	Variante en diagonale
-	
-	\includegraphics[width=100px]{chmoll-dorientation.png}
-      }
-    \end{center}
+  \only<1-2>{
+  \begin{center}
+    \alt<1>{
+      Le caractère est coupé en 4 pour savoir quelle partie est la plus peuplée.
+      
+      \includegraphics[width=100px]{chmoll-orientation.png}
+    }{
+      Variante en diagonale
+      
+      \includegraphics[width=100px]{chmoll-dorientation.png}
+    }
+  \end{center}
   }
 \end{frame}
 
@@ -437,7 +442,7 @@ A voir plus tard.
     \includegraphics[width=100px]{chmoll-gravity.png}
     
     \only<2>{
-      Variante: les pixels les plus éloignés du centre sont plus lourd
+      Variante: les pixels les plus éloignés du centre sont plus lourds
     }
   \end{center}
 
@@ -467,20 +472,26 @@ A voir plus tard.
     \begin{center}\textbf{\Large Algorithme utilisant les informations des caractères précédents}\end{center}
   \end{alertblock}\end{center}
   
-  \begin{center}
-    Filtre les caractères en fonction de
+  Filtre les caractères en fonction de
 
-    \begin{itemize}
-    \item la ligne de pied
-    \item la hauteur d'x
-    \item le jambage
-    \item la hauteur de capitale
-    \end{itemize}
-  \end{center}
+  \begin{itemize}
+    \item<2-> la ligne de pied
+    \item<3-> la hauteur d'x
+    \item<4-> le jambage
+    \item<5-> la hauteur de capitale
+  \end{itemize}
 
-  \begin{center}
-    Reconnaissance de la langue: usage de dictionnaire
-  \end{center}
+  \only<6>{Reconnaissance de la langue: usage de dictionnaire}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Questions ?}
+
+  \begin{alertblock}{}\begin{center}
+    Des questions ?
+  \end{center}\end{alertblock}
   
 \end{frame}
 
