@@ -7,6 +7,8 @@
 #include <ostream>
 #include <istream>
 
+#include <cassert>
+
 
 namespace strategies
 {

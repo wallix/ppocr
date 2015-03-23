@@ -22,9 +22,9 @@
 #define REDEMPTION_UTILS_RELATIONSHIP_HPP
 
 #include <type_traits>
-#include <cassert>
 
 #include "cardinal_direction.hpp"
+#include "sassert.hpp"
 
 
 namespace strategies { namespace utils {

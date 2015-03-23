@@ -286,6 +286,7 @@ int main(int ac, char **av)
             return x;
         }();
         size_t num_word = 0;
+        size_t num_word_ok = 0;
 
         size_t const min_x = x;
         size_t min_y = img.height();
@@ -338,6 +339,7 @@ int main(int ac, char **av)
             else {
                 std::cout << num_word << " ";
                 if (ok) {
+                    ++num_word_ok;
                     std::cout << "\033[00;32m";
                 }
                 auto const sz = defs.size();
@@ -374,6 +376,8 @@ int main(int ac, char **av)
 
             x = cbox.x() + cbox.w();
         }
+
+        std::cout << "\nok: " << num_word_ok << " / " << num_word << "\n";
 
         if (search_baseline)
         {
@@ -487,12 +491,10 @@ int main(int ac, char **av)
             std::cout << "\n conformity: " << conformity << "\n";
         }
 
-        std::cout << "\n> ";
-
         std::cin.clear();
 
         // interactive
-        while (std::cin >> s && !s.empty()) {
+        while ((std::cout << "\ninteractive >>>\n") && std::cin >> s && !s.empty()) {
             if (s[0] == 'r') {
                 data_sorted.reset_enable();
                 show_name();
@@ -586,9 +588,8 @@ int main(int ac, char **av)
             else {
                 std::cerr << "Unknow\n";
             }
-
-            std::cout << "\n> ";
         }
+        std::cout << std::endl;
 
         std::cin.ignore(10000, '\n');
     } while (!std::cin.eof());

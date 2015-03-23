@@ -178,7 +178,10 @@ BOOST_AUTO_TEST_CASE(TestDCompass)
     BOOST_CHECK_EQUAL(75, dcompass(D::NORTH_EAST).relationship(dcompass(D::EAST)));
     BOOST_CHECK_EQUAL(50, dcompass(D::NORTH_EAST).relationship(dcompass(D::SOUTH_EAST)));
     BOOST_CHECK_EQUAL(25, dcompass(D::NORTH_EAST).relationship(dcompass(D::SOUTH)));
+    BOOST_CHECK_EQUAL(25, dcompass(D::NORTH_EAST).relationship(dcompass(D::WEST)));
     BOOST_CHECK_EQUAL(00, dcompass(D::NORTH_EAST).relationship(dcompass(D::SOUTH_WEST)));
+    BOOST_CHECK_EQUAL(50, dcompass(D::NORTH_EAST).relationship(dcompass(D::NONE)));
+    BOOST_CHECK_EQUAL(75, dcompass(D::EAST).relationship(dcompass(D::NONE)));
 
     BOOST_CHECK_EQUAL(50, dcompass(D::EAST).relationship(dcompass(D::WEST)));
     BOOST_CHECK_EQUAL(25, dcompass(D::NORTH).relationship(dcompass(D::SOUTH_EAST)));

@@ -18,20 +18,28 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_PROPORTIONALITY_HPP
-#define REDEMPTION_STRATEGIES_PROPORTIONALITY_HPP
+#include "hdirection.hpp"
 
-#include "utils/basic_proportionality.hpp"
+#include "utils/horizontal_direction.hpp"
+
+#include "image.hpp"
 
 namespace strategies {
 
-struct proportionality_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-};
-
-using proportionality = basic_proportionality<proportionality_traits>;
-
+static unsigned compute_hdirection(const Image& img)
+{
+    auto const top_bottom = utils::horizontal_direction(img);
+    auto const sum = top_bottom.top + top_bottom.bottom;
+    return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-#endif
+unsigned hdirection_traits::compute(const Image&, const Image& img90)
+{ return compute_hdirection(img90); }
+
+unsigned hdirection90_traits::compute(const Image& img, const Image&)
+{ return compute_hdirection(img); }
+
+unsigned int hdirection_traits::get_interval() { return 200; }
+unsigned int hdirection90_traits::get_interval() { return 200; }
+
+}

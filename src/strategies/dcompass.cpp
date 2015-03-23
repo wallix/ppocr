@@ -2,6 +2,7 @@
 #include "image.hpp"
 
 #include "utils/relationship.hpp"
+#include "utils/cardinal_direction_io.hpp"
 
 #include <ostream>
 #include <istream>
@@ -51,7 +52,7 @@ unsigned dcompass::relationship(const dcompass& other) const
 { return utils::cardinal_relationship(d, other.d); }
 
 std::istream& operator>>(std::istream& is, dcompass& d)
-{ return is >> reinterpret_cast<std::underlying_type_t<dcompass::cardinal_direction>&>(d.d); }
+{ return is >> d.d; }
 
 std::ostream& operator<<(std::ostream& os, const dcompass& d)
 { return os << d.direction(); }

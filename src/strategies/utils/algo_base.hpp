@@ -18,20 +18,38 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_PROPORTIONALITY_HPP
-#define REDEMPTION_STRATEGIES_PROPORTIONALITY_HPP
+#ifndef REDEMPTION_SRC_STRATEGIES_UTILS_ALGO_BASE_HPP
+#define REDEMPTION_SRC_STRATEGIES_UTILS_ALGO_BASE_HPP
 
-#include "utils/basic_proportionality.hpp"
+class Image;
 
-namespace strategies {
+namespace strategies { namespace utils {
 
-struct proportionality_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
+class linear_comparable;
+class circular_comparable;
+class no_comparable;
+
+template<class Algo>
+struct to_comparable;
+
+template<class Algo>
+struct algo_base
+{
+    using value_type = typename Algo::value_type;
+    using comparable = typename to_comparable<value_type>::type;;
+
+    algo_base() = default;
+    algo_base(Image const & img);
+    algo_base(zone3 z) : z(z) {}
+
+    bool operator < (algo_base const & other) const noexcept { return x < other.x; }
+
+    value_type get() const noexcept { return x; }
+
+private:
+    value_type x;
 };
 
-using proportionality = basic_proportionality<proportionality_traits>;
-
-}
+} }
 
 #endif

@@ -18,20 +18,16 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_PROPORTIONALITY_HPP
-#define REDEMPTION_STRATEGIES_PROPORTIONALITY_HPP
+#ifndef REDEMPTION_SRC_SASSERT_HPP
+#define REDEMPTION_SRC_SASSERT_HPP
 
-#include "utils/basic_proportionality.hpp"
+#include <cassert>
 
-namespace strategies {
+#undef assert
 
-struct proportionality_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-};
+#define SASSERT_COLOR
+#include "sassert/sassert.hpp"
 
-using proportionality = basic_proportionality<proportionality_traits>;
-
-}
+#define assert sassert
 
 #endif
