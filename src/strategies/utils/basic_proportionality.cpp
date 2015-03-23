@@ -1,5 +1,6 @@
 #include "basic_proportionality.hpp"
 #include "relationship.hpp"
+#include "sassert.hpp"
 
 #include <ostream>
 #include <istream>
@@ -7,6 +8,8 @@
 
 namespace strategies
 {
+
+void details_::check_interval(unsigned x, unsigned interval) { sassert(x <= interval); }
 
 unsigned proportionality_base::relationship(const proportionality_base& other, unsigned interval) const
 { return utils::compute_relationship(proportion(), other.proportion(), interval); }

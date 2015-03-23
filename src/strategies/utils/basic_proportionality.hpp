@@ -51,10 +51,16 @@ namespace strategies
 
     std::ostream & operator<<(std::ostream &, proportionality_base const &);
 
+    namespace details_ {
+        void check_interval(unsigned x, unsigned interval);
+    }
+
     template<class Traits>
     struct basic_proportionality : proportionality_base
     {
-        using proportionality_base::proportionality_base;
+        basic_proportionality(unsigned proportion)
+        : proportionality_base(proportion)
+        { details_::check_interval(proportion, Traits::get_interval()); }
 
         basic_proportionality() = default;
 
