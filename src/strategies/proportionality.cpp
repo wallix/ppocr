@@ -29,6 +29,6 @@ unsigned int proportionality_traits::compute(const Image& img, const Image& /*im
 { return img.width() * 100 / (img.width() + img.height()); }
 
 unsigned int proportionality_traits::get_interval()
-{ return 200; }
+{ return 100; }
 
 }

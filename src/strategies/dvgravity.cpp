@@ -33,11 +33,11 @@ static unsigned compute_dvgravity(const Image& img)
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-unsigned dvgravity_traits::compute(const Image&, const Image& img90)
-{ return compute_dvgravity(img90); }
-
-unsigned dvgravity90_traits::compute(const Image& img, const Image&)
+unsigned dvgravity_traits::compute(const Image& img, const Image&)
 { return compute_dvgravity(img); }
+
+unsigned dvgravity90_traits::compute(const Image&, const Image& img90)
+{ return compute_dvgravity(img90); }
 
 unsigned int dvgravity_traits::get_interval() { return 200; }
 unsigned int dvgravity90_traits::get_interval() { return 200; }

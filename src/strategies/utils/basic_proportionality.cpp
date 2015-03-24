@@ -12,17 +12,17 @@ namespace strategies
 void details_::check_interval(unsigned x, unsigned interval) { sassert(x <= interval); }
 
 unsigned proportionality_base::relationship(const proportionality_base& other, unsigned interval) const
-{ return utils::compute_relationship(proportion(), other.proportion(), interval); }
+{ return utils::compute_relationship(value(), other.value(), interval); }
 
 std::istream& operator>>(std::istream& is, proportionality_base & prop)
 {
-    decltype(prop.proportion()) proportion;
+    decltype(prop.value()) proportion;
     is >> proportion;
     prop = proportionality_base(proportion);
     return is;
 }
 
 std::ostream& operator<<(std::ostream& os, const proportionality_base & prop)
-{ return os << prop.proportion(); }
+{ return os << prop.value(); }
 
 }

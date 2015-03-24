@@ -38,11 +38,11 @@ static unsigned compute_dvgravity2(const Image& img)
     return ret;
 }
 
-unsigned dvgravity2_traits::compute(const Image&, const Image& img90)
-{ return compute_dvgravity2(img90); }
-
-unsigned dvgravity290_traits::compute(const Image& img, const Image&)
+unsigned dvgravity2_traits::compute(const Image& img, const Image&)
 { return compute_dvgravity2(img); }
+
+unsigned dvgravity290_traits::compute(const Image&, const Image& img90)
+{ return compute_dvgravity2(img90); }
 
 unsigned int dvgravity2_traits::get_interval() { return 100; }
 unsigned int dvgravity290_traits::get_interval() { return 100; }

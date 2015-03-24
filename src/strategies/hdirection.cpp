@@ -33,11 +33,11 @@ static unsigned compute_hdirection(const Image& img)
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-unsigned hdirection_traits::compute(const Image&, const Image& img90)
-{ return compute_hdirection(img90); }
-
-unsigned hdirection90_traits::compute(const Image& img, const Image&)
+unsigned hdirection_traits::compute(const Image& img, const Image&)
 { return compute_hdirection(img); }
+
+unsigned hdirection90_traits::compute(const Image&, const Image& img90)
+{ return compute_hdirection(img90); }
 
 unsigned int hdirection_traits::get_interval() { return 200; }
 unsigned int hdirection90_traits::get_interval() { return 200; }

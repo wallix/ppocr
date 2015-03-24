@@ -38,7 +38,7 @@ namespace strategies
         bool operator==(proportionality_base const & other) const
         { return this->proportion_ == other.proportion_; }
 
-        unsigned proportion() const noexcept { return proportion_; }
+        unsigned value() const noexcept { return proportion_; }
 
         friend std::istream & operator>>(std::istream &, proportionality_base &);
 
@@ -58,18 +58,20 @@ namespace strategies
     template<class Traits>
     struct basic_proportionality : proportionality_base
     {
+        using traits = Traits;
+
         basic_proportionality(unsigned proportion)
         : proportionality_base(proportion)
-        { details_::check_interval(proportion, Traits::get_interval()); }
+        { details_::check_interval(proportion, traits::get_interval()); }
 
         basic_proportionality() = default;
 
         basic_proportionality(const Image & img, const Image & img90)
-        : proportionality_base(Traits::compute(img, img90))
+        : proportionality_base(traits::compute(img, img90))
         {}
 
         unsigned relationship(basic_proportionality const & other) const
-        { return proportionality_base::relationship(other, Traits::get_interval()); }
+        { return proportionality_base::relationship(other, traits::get_interval()); }
     };
 }
 

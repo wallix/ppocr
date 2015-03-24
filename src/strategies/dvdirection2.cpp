@@ -38,11 +38,11 @@ static unsigned compute_dvdirection2(const Image& img)
     return ret;
 }
 
-unsigned dvdirection2_traits::compute(const Image&, const Image& img90)
-{ return compute_dvdirection2(img90); }
-
-unsigned dvdirection290_traits::compute(const Image& img, const Image&)
+unsigned dvdirection2_traits::compute(const Image& img, const Image&)
 { return compute_dvdirection2(img); }
+
+unsigned dvdirection290_traits::compute(const Image&, const Image& img90)
+{ return compute_dvdirection2(img90); }
 
 unsigned int dvdirection2_traits::get_interval() { return 100; }
 unsigned int dvdirection290_traits::get_interval() { return 100; }

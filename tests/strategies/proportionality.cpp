@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(TestProportionality)
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(proportion.proportion(), 50);
+    BOOST_CHECK_EQUAL(proportion.value(), 50);
 
     proportion = to_proportion({3, 5},
         "--x"
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(TestProportionality)
         "--x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(proportion.proportion(), 37);
+    BOOST_CHECK_EQUAL(proportion.value(), 37);
 
     proportion = to_proportion({5, 7},
         "-----"
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(TestProportionality)
         "-----"
         "---xx"
     );
-    BOOST_CHECK_EQUAL(proportion.proportion(), 41);
+    BOOST_CHECK_EQUAL(proportion.value(), 41);
 
     proportion = to_proportion({7, 5},
         "-------"
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(TestProportionality)
         "-------"
         "-------"
     );
-    BOOST_CHECK_EQUAL(proportion.proportion(), 58);
+    BOOST_CHECK_EQUAL(proportion.value(), 58);
 
     proportion = to_proportion({6, 4},
         "------"
@@ -86,9 +86,9 @@ BOOST_AUTO_TEST_CASE(TestProportionality)
         "------"
         "------"
     );
-    BOOST_CHECK_EQUAL(proportion.proportion(), 60);
+    BOOST_CHECK_EQUAL(proportion.value(), 60);
 
     using strategies::proportionality;
-    BOOST_CHECK_EQUAL(93, proportionality(20).relationship(6));
-    BOOST_CHECK_EQUAL(93, proportionality(6).relationship(20));
+    BOOST_CHECK_EQUAL(86, proportionality(20).relationship(6));
+    BOOST_CHECK_EQUAL(86, proportionality(6).relationship(20));
 }

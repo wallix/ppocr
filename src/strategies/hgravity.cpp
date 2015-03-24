@@ -33,11 +33,11 @@ static unsigned compute_hgravity(const Image& img)
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-unsigned hgravity_traits::compute(const Image&, const Image& img90)
-{ return compute_hgravity(img90); }
-
-unsigned hgravity90_traits::compute(const Image& img, const Image&)
+unsigned hgravity_traits::compute(const Image& img, const Image&)
 { return compute_hgravity(img); }
+
+unsigned hgravity90_traits::compute(const Image&, const Image& img90)
+{ return compute_hgravity(img90); }
 
 unsigned int hgravity_traits::get_interval() { return 200; }
 unsigned int hgravity90_traits::get_interval() { return 200; }

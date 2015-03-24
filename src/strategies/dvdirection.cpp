@@ -33,11 +33,11 @@ static unsigned compute_dvdirection(const Image& img)
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-unsigned dvdirection_traits::compute(const Image&, const Image& img90)
-{ return compute_dvdirection(img90); }
-
-unsigned dvdirection90_traits::compute(const Image& img, const Image&)
+unsigned dvdirection_traits::compute(const Image& img, const Image&)
 { return compute_dvdirection(img); }
+
+unsigned dvdirection90_traits::compute(const Image&, const Image& img90)
+{ return compute_dvdirection(img90); }
 
 unsigned int dvdirection_traits::get_interval() { return 200; }
 unsigned int dvdirection90_traits::get_interval() { return 200; }
