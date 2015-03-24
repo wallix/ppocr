@@ -4,12 +4,14 @@
 // #include "strategies/direction.hpp"
 #include "strategies/hdirection.hpp"
 #include "strategies/hdirection2.hpp"
-#include "strategies/agravity.hpp"
-#include "strategies/gravity.hpp"
-#include "strategies/compass.hpp"
-#include "strategies/dcompass.hpp"
+// #include "strategies/agravity.hpp"
+// #include "strategies/gravity.hpp"
+// #include "strategies/compass.hpp"
+// #include "strategies/dcompass.hpp"
 #include "strategies/proportionality.hpp"
-#include "strategies/gravity2.hpp"
+// #include "strategies/gravity2.hpp"
+#include "strategies/hgravity.hpp"
+#include "strategies/hgravity2.hpp"
 
 
 void all_registy(DataLoader& loader)
@@ -18,14 +20,18 @@ void all_registy(DataLoader& loader)
     REGISTRY(alternations); // good
     //REGISTRY(direction);
     REGISTRY(hdirection);
-    REGISTRY(hdirection2);
     REGISTRY(hdirection90);
+    REGISTRY(hdirection2);
     REGISTRY(hdirection290);
-    REGISTRY(agravity); // good
-    REGISTRY(gravity);
-    REGISTRY(compass);
-    REGISTRY(dcompass); // good
+//     REGISTRY(agravity); // good
+    //REGISTRY(gravity);
+    REGISTRY(hgravity);
+    REGISTRY(hgravity90);
+    REGISTRY(hgravity2);
+    REGISTRY(hgravity290);
+//     REGISTRY(compass);
+//     REGISTRY(dcompass); // good
     REGISTRY(proportionality); // good
-    REGISTRY(gravity2);
+//     REGISTRY(gravity2);
 #undef REGISTRY
 }

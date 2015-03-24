@@ -4,7 +4,6 @@
 
 #include "image.hpp"
 
-#include "sassert.hpp"
 
 namespace strategies {
 
@@ -17,7 +16,6 @@ static unsigned compute_hdirection2(const Image& img)
     }
     auto const sum = top_bottom.top + top_bottom.bottom;
     auto const ret = (sum + top_bottom.top - top_bottom.bottom) * 100 / area;
-    assert(ret <= 100);
     return ret;
 }
 

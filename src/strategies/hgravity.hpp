@@ -18,17 +18,26 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "proportionality.hpp"
-#include "utils/relationship.hpp"
-#include "image.hpp"
+#ifndef REDEMPTION_SRC_STRATEGIES_HGRAVITY_HPP
+#define REDEMPTION_SRC_STRATEGIES_HGRAVITY_HPP
 
+#include "utils/basic_proportionality.hpp"
 
 namespace strategies {
 
-unsigned int proportionality_traits::compute(const Image& img, const Image& /*img90*/)
-{ return img.width() * 100 / (img.width() + img.height()); }
+struct hgravity_traits {
+    static unsigned get_interval();
+    static unsigned compute(Image const & img, Image const & img90);
+};
 
-unsigned int proportionality_traits::get_interval()
-{ return 200; }
+struct hgravity90_traits {
+    static unsigned get_interval();
+    static unsigned compute(Image const & img, Image const & img90);
+};
+
+using hgravity = basic_proportionality<hgravity_traits>;
+using hgravity90 = basic_proportionality<hgravity90_traits>;
 
 }
+
+#endif

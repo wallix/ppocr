@@ -4,6 +4,7 @@
 #include "utils/relationship.hpp"
 #include "utils/horizontal_zone.hpp"
 #include "utils/horizontal_direction.hpp"
+#include "utils/cardinal_direction_io.hpp"
 
 #include <ostream>
 #include <istream>
@@ -25,7 +26,7 @@ unsigned direction::relationship(const direction& other) const
 { return utils::cardinal_relationship(d, other.d); }
 
 std::istream& operator>>(std::istream& is, direction& d)
-{ return is >> reinterpret_cast<std::underlying_type_t<decltype(d.d)>&>(d.d); }
+{ return is >> d.d; }
 
 std::ostream& operator<<(std::ostream& os, const direction& d)
 { return os << d.id(); }

@@ -18,17 +18,28 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "proportionality.hpp"
-#include "utils/relationship.hpp"
-#include "image.hpp"
+#include "hgravity.hpp"
 
+#include "utils/horizontal_gravity.hpp"
+
+#include "image.hpp"
 
 namespace strategies {
 
-unsigned int proportionality_traits::compute(const Image& img, const Image& /*img90*/)
-{ return img.width() * 100 / (img.width() + img.height()); }
+static unsigned compute_hgravity(const Image& img)
+{
+    auto const top_bottom = utils::horizontal_gravity(img);
+    auto const sum = top_bottom.top + top_bottom.bottom;
+    return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
+}
 
-unsigned int proportionality_traits::get_interval()
-{ return 200; }
+unsigned hgravity_traits::compute(const Image&, const Image& img90)
+{ return compute_hgravity(img90); }
+
+unsigned hgravity90_traits::compute(const Image& img, const Image&)
+{ return compute_hgravity(img); }
+
+unsigned int hgravity_traits::get_interval() { return 200; }
+unsigned int hgravity90_traits::get_interval() { return 200; }
 
 }
