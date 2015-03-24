@@ -82,34 +82,40 @@ lib libboost_unit_test : : <name>boost_unit_test_framework <link>shared ;
 #lib dl : : <name>dl <link>shared ;
 #lib pthread : : <name>pthread <link>shared ;
 
-obj coordinate      : src/coordinate.cpp ;
-obj box             : src/box.cpp ;
-obj image           : src/image.cpp ;
-obj image_from_file : src/image_from_file.cpp ;
-obj definition      : src/definition.cpp ;
+obj coordinate      : src/image/coordinate.cpp ;
+obj box             : src/box_char/box.cpp ;
+obj image           : src/image/image.cpp ;
+obj image_from_file : src/image/image_from_file.cpp ;
+obj definition      : src/factory/definition.cpp ;
 
-#exe test_image : tests/image.cpp src/image.cpp src/image_from_file.cpp libboost_unit_test : ;
+#exe test_image : tests/test_image.cpp src/image/image.cpp src/image/image_from_file.cpp libboost_unit_test : ;
 
 exe extract_text2 :
     src/extract_text2.cpp
-    src/box.cpp
-    src/coordinate.cpp
-    src/data_loader.cpp
-    src/definition.cpp
-    src/image.cpp
-    src/image_from_file.cpp
-    src/image_from_string.cpp
-    src/make_box_character.cpp
-    src/registry.cpp
+    src/box_char/box.cpp
+    src/box_char/make_box_character.cpp
+    src/factory/data_loader.cpp
+    src/factory/definition.cpp
+    src/factory/registry.cpp
+    src/image/coordinate.cpp
+    src/image/image.cpp
+    src/image/image_from_file.cpp
+    src/image/image_from_string.cpp
     src/strategies/agravity.cpp
     src/strategies/alternation.cpp
     src/strategies/compass.cpp
     src/strategies/dcompass.cpp
     src/strategies/direction.cpp
+    src/strategies/dvdirection2.cpp
+    src/strategies/dvdirection.cpp
+    src/strategies/dvgravity2.cpp
+    src/strategies/dvgravity.cpp
     src/strategies/gravity2.cpp
     src/strategies/gravity.cpp
     src/strategies/hdirection2.cpp
     src/strategies/hdirection.cpp
+    src/strategies/hgravity2.cpp
+    src/strategies/hgravity.cpp
     src/strategies/proportionality.cpp
     src/strategies/utils/basic_proportionality.cpp
     src/utils/image_compare.cpp
@@ -118,24 +124,30 @@ exe extract_text2 :
 
 exe learning2 :
     src/learning2.cpp
-    src/box.cpp
-    src/coordinate.cpp
-    src/data_loader.cpp
-    src/definition.cpp
-    src/image.cpp
-    src/image_from_file.cpp
-    src/image_from_string.cpp
-    src/make_box_character.cpp
-    src/registry.cpp
+    src/box_char/box.cpp
+    src/box_char/make_box_character.cpp
+    src/factory/data_loader.cpp
+    src/factory/definition.cpp
+    src/factory/registry.cpp
+    src/image/coordinate.cpp
+    src/image/image.cpp
+    src/image/image_from_file.cpp
+    src/image/image_from_string.cpp
     src/strategies/agravity.cpp
     src/strategies/alternation.cpp
     src/strategies/compass.cpp
     src/strategies/dcompass.cpp
     src/strategies/direction.cpp
+    src/strategies/dvdirection2.cpp
+    src/strategies/dvdirection.cpp
+    src/strategies/dvgravity2.cpp
+    src/strategies/dvgravity.cpp
     src/strategies/gravity2.cpp
     src/strategies/gravity.cpp
     src/strategies/hdirection2.cpp
     src/strategies/hdirection.cpp
+    src/strategies/hgravity2.cpp
+    src/strategies/hgravity.cpp
     src/strategies/proportionality.cpp
     src/strategies/utils/basic_proportionality.cpp
     src/utils/image_compare.cpp
@@ -149,59 +161,88 @@ exe learning2 :
 import testing ;
 
 unit-test test_image :
-    tests/image.cpp
-    src/image.cpp
-    src/image_from_file.cpp
+    tests/test_image.cpp
+    src/image/image.cpp
+    src/image/image_from_file.cpp
     libboost_unit_test : ;
 
 unit-test test_make_box_character :
-    tests/make_box_character.cpp
-    src/make_box_character.cpp
-    src/image.cpp src/image_from_file.cpp
+    tests/test_make_box_character.cpp
+    src/box_char/make_box_character.cpp
+    src/image/image.cpp src/image/image_from_file.cpp
     libboost_unit_test : ;
 
 unit-test test_gravity :
-    tests/strategies/gravity.cpp
+    tests/strategies/test_gravity.cpp
     src/strategies/gravity.cpp
-    src/image.cpp src/image_from_string.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
     libboost_unit_test : ;
 
 unit-test test_gravity2 :
-    tests/strategies/gravity2.cpp
+    tests/strategies/test_gravity2.cpp
     src/strategies/gravity2.cpp
-    src/image.cpp src/image_from_string.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
     libboost_unit_test : ;
 
 unit-test test_proportionality :
-    tests/strategies/proportionality.cpp
+    tests/strategies/test_proportionality.cpp
     src/strategies/proportionality.cpp
-    src/image.cpp src/image_from_string.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
+    src/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 
 unit-test test_agravity :
-    tests/strategies/agravity.cpp
+    tests/strategies/test_agravity.cpp
     src/strategies/agravity.cpp
-    src/image.cpp src/image_from_string.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
     libboost_unit_test : ;
 
 unit-test test_alternation :
-    tests/strategies/alternation.cpp
+    tests/strategies/test_alternation.cpp
     src/strategies/alternation.cpp
-    src/image.cpp src/image_from_string.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
     libboost_unit_test : ;
 
 unit-test test_dcompass :
-    tests/strategies/dcompass.cpp
+    tests/strategies/test_dcompass.cpp
     src/strategies/dcompass.cpp
-    src/image.cpp src/image_from_string.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
     libboost_unit_test : ;
 
 unit-test test_direction :
-    tests/strategies/direction.cpp
+    tests/strategies/test_direction.cpp
     src/strategies/direction.cpp
-    src/image.cpp src/image_from_string.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
     libboost_unit_test : ;
 
-#unit-test test_new_ocr : tests/test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
+unit-test test_hdirection :
+    tests/strategies/test_hdirection.cpp
+    src/strategies/hdirection.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    libboost_unit_test : ;
+
+unit-test test_hdirection2 :
+    tests/strategies/test_hdirection2.cpp
+    src/strategies/hdirection2.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    libboost_unit_test : ;
+
+unit-test test_hgravity :
+    tests/strategies/test_hgravity.cpp
+    src/strategies/hgravity.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    libboost_unit_test : ;
+
+unit-test test_hgravity2 :
+    tests/strategies/test_hgravity2.cpp
+    src/strategies/hgravity2.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    libboost_unit_test : ;
+
+#unit-test test_new_ocr : tests/test_test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
 
