@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(TestHGravity2)
         "x-x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(value, (6 + 2 - 4) *100/12);
+    BOOST_CHECK_EQUAL(value, (9 + 2 - 4) *100/18);
 
     using strategies::hgravity2;
 
