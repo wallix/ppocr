@@ -1,5 +1,5 @@
 #include "agravity.hpp"
-#include "image.hpp"
+#include "image/image.hpp"
 
 #include "math/almost_equal.hpp"
 #include "utils/relationship.hpp"

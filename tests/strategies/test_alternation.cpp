@@ -28,8 +28,8 @@
 //#define LOGPRINT
 
 #include "strategies/alternation.hpp"
-#include "image_from_string.hpp"
-#include "image.hpp"
+#include "image/image_from_string.hpp"
+#include "image/image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"

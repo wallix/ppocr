@@ -20,7 +20,7 @@
 
 #include "proportionality.hpp"
 #include "utils/relationship.hpp"
-#include "image.hpp"
+#include "image/image.hpp"
 
 
 namespace strategies {

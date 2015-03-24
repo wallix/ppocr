@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_GRAVITY_HPP
 #define REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_GRAVITY_HPP
 
-#include "image.hpp"
+#include "image/image.hpp"
 #include "top_bottom.hpp"
 
 

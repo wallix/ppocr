@@ -1,5 +1,5 @@
 #include "dcompass.hpp"
-#include "image.hpp"
+#include "image/image.hpp"
 
 #include "utils/relationship.hpp"
 #include "utils/cardinal_direction_io.hpp"

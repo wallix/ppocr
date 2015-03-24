@@ -1,9 +1,9 @@
-#include "image.hpp"
-#include "data_loader.hpp"
-#include "make_box_character.hpp"
-#include "registry.hpp"
-#include "definition.hpp"
-#include "box.hpp"
+#include "image/image.hpp"
+#include "factory/data_loader.hpp"
+#include "box_char/make_box_character.hpp"
+#include "factory/registry.hpp"
+#include "factory/definition.hpp"
+#include "box_char/box.hpp"
 // #include "utils/unique_sort_definition.hpp"
 
 #include <iostream>

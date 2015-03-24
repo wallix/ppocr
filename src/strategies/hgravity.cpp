@@ -22,7 +22,7 @@
 
 #include "utils/horizontal_gravity.hpp"
 
-#include "image.hpp"
+#include "image/image.hpp"
 
 namespace strategies {
 

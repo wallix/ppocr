@@ -28,9 +28,9 @@
 //#define LOGPRINT
 
 #include "strategies/dcompass.hpp"
-#include "image_from_string.hpp"
+#include "image/image_from_string.hpp"
 #include "strategies/utils/cardinal_direction_io.hpp"
-#include "image.hpp"
+#include "image/image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"

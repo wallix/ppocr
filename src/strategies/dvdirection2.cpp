@@ -22,7 +22,7 @@
 
 #include "utils/diagonal_vertical_direction.hpp"
 
-#include "image.hpp"
+#include "image/image.hpp"
 
 namespace strategies {
 

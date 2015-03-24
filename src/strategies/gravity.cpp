@@ -1,5 +1,5 @@
 #include "gravity.hpp"
-#include "image.hpp"
+#include "image/image.hpp"
 
 #include "utils/relationship.hpp"
 #include "utils/horizontal_gravity.hpp"

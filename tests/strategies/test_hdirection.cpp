@@ -18,7 +18,7 @@
 
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestHorizontalGravity
+#define BOOST_TEST_MODULE TestHorizontalDirection
 #include <boost/test/auto_unit_test.hpp>
 
 #undef SHARE_PATH
@@ -27,85 +27,85 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/hgravity.hpp"
-#include "image_from_string.hpp"
-#include "image.hpp"
+#include "strategies/hdirection.hpp"
+#include "image/image_from_string.hpp"
+#include "image/image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"
 
 using D = unsigned;
 
-static D to_hgravity_value(Bounds bnd, const char * data_text)
+static D to_hdirection_value(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::hgravity(img, img.rotate90()).value();
+    return strategies::hdirection(img, img.rotate90()).value();
 }
 
-BOOST_AUTO_TEST_CASE(TestHGravity)
+BOOST_AUTO_TEST_CASE(TestHDirection)
 {
     D value;
-    auto hInterval = strategies::hgravity::traits::get_interval() / 2;
+    auto hInterval = strategies::hdirection::traits::get_interval() / 2;
 
-    value = to_hgravity_value({3, 3},
+    value = to_hdirection_value({3, 3},
         "---"
         "---"
         "---"
     );
     BOOST_CHECK_EQUAL(value, hInterval);
 
-    value = to_hgravity_value({3, 3},
+    value = to_hdirection_value({3, 3},
         "-x-"
         "---"
         "---"
     );
     BOOST_CHECK_EQUAL(value, hInterval*2);
 
-    value = to_hgravity_value({3, 3},
+    value = to_hdirection_value({3, 3},
         "---"
         "---"
         "-x-"
     );
     BOOST_CHECK_EQUAL(value, 0);
 
-    value = to_hgravity_value({3, 3},
+    value = to_hdirection_value({3, 3},
         "---"
         "-x-"
         "---"
     );
     BOOST_CHECK_EQUAL(value, hInterval);
 
-    value = to_hgravity_value({3, 3},
+    value = to_hdirection_value({3, 3},
         "--x"
         "x--"
         "--x"
     );
     BOOST_CHECK_EQUAL(value, hInterval);
 
-    value = to_hgravity_value({3, 3},
+    value = to_hdirection_value({3, 3},
         "--x"
         "---"
         "--x"
     );
     BOOST_CHECK_EQUAL(value, 100);
 
-    value = to_hgravity_value({3, 5},
+    value = to_hdirection_value({3, 5},
         "--x"
         "---"
         "---"
         "x-x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(value, (6 + 2 - 4) *100/6);
+    BOOST_CHECK_EQUAL(value, (hInterval*2) / 4);
 
-    using strategies::hgravity;
+    using strategies::hdirection;
 
-    BOOST_CHECK_EQUAL(100, hgravity(hInterval).relationship(hInterval));
-    BOOST_CHECK_EQUAL(50, hgravity(hInterval*2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75, hgravity(hInterval+hInterval/2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75, hgravity(hInterval/2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75,  hgravity(hInterval/2).relationship(0));
-    BOOST_CHECK_EQUAL(25,  hgravity(hInterval/2).relationship(hInterval*2));
-    BOOST_CHECK_EQUAL(92,  hgravity(hInterval/2).relationship(hInterval/3));
-    BOOST_CHECK_EQUAL(79,  hgravity(88).relationship(45));
+    BOOST_CHECK_EQUAL(100, hdirection(hInterval).relationship(hInterval));
+    BOOST_CHECK_EQUAL(50, hdirection(hInterval*2).relationship(hInterval));
+    BOOST_CHECK_EQUAL(75, hdirection(hInterval+hInterval/2).relationship(hInterval));
+    BOOST_CHECK_EQUAL(75, hdirection(hInterval/2).relationship(hInterval));
+    BOOST_CHECK_EQUAL(75,  hdirection(hInterval/2).relationship(0));
+    BOOST_CHECK_EQUAL(25,  hdirection(hInterval/2).relationship(hInterval*2));
+    BOOST_CHECK_EQUAL(92,  hdirection(hInterval/2).relationship(hInterval/3));
+    BOOST_CHECK_EQUAL(79,  hdirection(88).relationship(45));
 }

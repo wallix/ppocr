@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_DIRECTION_HPP
 #define REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_DIRECTION_HPP
 
-#include "image.hpp"
+#include "image/image.hpp"
 #include "top_bottom.hpp"
 
 namespace strategies { namespace utils {

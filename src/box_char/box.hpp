@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_BOX_HPP
 #define REDEMPTION_BOX_HPP
 
-#include "coordinate.hpp"
+#include "image/coordinate.hpp"
 
 #include <iosfwd>
 

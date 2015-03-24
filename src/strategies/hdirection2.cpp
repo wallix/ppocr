@@ -2,7 +2,7 @@
 
 #include "utils/horizontal_direction.hpp"
 
-#include "image.hpp"
+#include "image/image.hpp"
 
 
 namespace strategies {

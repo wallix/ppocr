@@ -22,7 +22,7 @@
 
 #include "utils/diagonal_vertical_gravity.hpp"
 
-#include "image.hpp"
+#include "image/image.hpp"
 
 namespace strategies {
 

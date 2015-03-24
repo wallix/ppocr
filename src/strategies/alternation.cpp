@@ -1,5 +1,5 @@
 #include "alternation.hpp"
-#include "image.hpp"
+#include "image/image.hpp"
 
 #include <ostream>
 #include <istream>

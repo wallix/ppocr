@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_SRC_STRATEGIES_UTILS_DIAGONAL_VERTICAL_DIRECTION_HPP
 #define REDEMPTION_SRC_STRATEGIES_UTILS_DIAGONAL_VERTICAL_DIRECTION_HPP
 
-#include "image.hpp"
+#include "image/image.hpp"
 #include "top_bottom.hpp"
 
 #include "sassert.hpp"

@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_UTILS_UNIQUE_SORT_DEFINITION_HPP
 #define REDEMPTION_UTILS_UNIQUE_SORT_DEFINITION_HPP
 
-#include "definition.hpp"
+#include "factory/definition.hpp"
 
 #include <vector>
 

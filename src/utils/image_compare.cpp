@@ -1,5 +1,5 @@
 #include "image_compare.hpp"
-#include "image.hpp"
+#include "image/image.hpp"
 
 #include <algorithm>
 

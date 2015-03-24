@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_DEFINITION_HPP
 #define REDEMPTION_DEFINITION_HPP
 
-#include "image.hpp"
+#include "image/image.hpp"
 #include "data_loader.hpp"
 
 #include <string>

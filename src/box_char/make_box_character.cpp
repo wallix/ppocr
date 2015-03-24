@@ -21,8 +21,8 @@
 #ifndef REDEMPTION_MAKE_BOX_CHARACTER_CPP
 #define REDEMPTION_MAKE_BOX_CHARACTER_CPP
 
-#include "box.hpp"
-#include "image.hpp"
+#include "box_char/box.hpp"
+#include "image/image.hpp"
 
 namespace utils {
     bool horizontal_empty(Pixel const * d, size_t w) {
