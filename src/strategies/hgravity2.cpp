@@ -9,11 +9,11 @@ namespace strategies {
 
 static unsigned compute_hgravity2(const Image& img)
 {
-    auto const top_bottom = utils::horizontal_gravity(img);
     auto const hby2 = img.height() / 2;
     if (!hby2) {
         return 50;
     }
+    auto const top_bottom = utils::horizontal_gravity(img);
     auto const area = ((hby2 * (hby2 + 1)) / 2) * img.width() * 2;
     auto const sum = top_bottom.top + top_bottom.bottom;
     auto const ret = (sum + top_bottom.top - top_bottom.bottom) * 100 / area;

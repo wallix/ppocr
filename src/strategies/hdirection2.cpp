@@ -9,11 +9,11 @@ namespace strategies {
 
 static unsigned compute_hdirection2(const Image& img)
 {
-    auto const top_bottom = utils::horizontal_direction(img);
     auto const area = img.height() / 2 * img.width() * 2;
     if (!area) {
         return 50;
     }
+    auto const top_bottom = utils::horizontal_direction(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     auto const ret = (sum + top_bottom.top - top_bottom.bottom) * 100 / area;
     return ret;
