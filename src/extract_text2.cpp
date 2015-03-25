@@ -11,6 +11,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <chrono>
 
 #include <cstring>
 #include <cerrno>
@@ -113,7 +114,6 @@ struct DataSorted
     {
         std::vector<Definition const *> ret;
         std::vector<Definition const *> localret;
-        bool is_init = false;
 
         size_t i = 0;
         for (Buffer const & buf : buffers_) {
@@ -125,35 +125,35 @@ struct DataSorted
                 //    localret.push_back(*first);
                 //}
                 for (auto * def : buf) {
-                    DataLoader::data_base const & data1 = def->datas[i];
-                    DataLoader::data_base const & data2 = datas[i];
-                    if (data1.relationship(data2) >= percent) {
+                    if (def->datas[i].relationship(datas[i]) >= percent) {
                         localret.push_back(def);
                     }
                 }
 
                 std::sort(localret.begin(), localret.end());
-                if (!is_init) {
-                    ret = localret;
-                    is_init = true;
+                if (ret.empty()) {
+                    ret = std::move(localret);
                 }
                 else {
-                    auto it1 = ret.begin();
-                    auto end1 = ret.end();
-                    auto it2 = localret.begin();
-                    auto end2 = localret.end();
-                    auto out = it1;
-                    for (; it1 != end1; ++it1) {
-                       for (; it2 != end2 && *it2 < *it1; ++it2) {
-                       }
-                       if (it2 == end2) {
-                           break;
-                       }
-                       if (*it1 == *it2) {
-                           *out++ = *it1;
-                       }
-                    }
-                    ret.erase(out, ret.end());
+                    auto pair_it = std::mismatch(
+                        ret.begin(),
+                        ret.begin() + std::min(ret.size(), localret.size()),
+                        localret.begin()
+                    );
+                    ret.erase(
+                        std::set_intersection(
+                            pair_it.first,
+                            ret.end(),
+                            pair_it.second,
+                            localret.end(),
+                            pair_it.first
+                        ),
+                        ret.end()
+                    );
+                }
+
+                if (ret.empty()) {
+                    break;
                 }
             }
             ++i;
@@ -246,8 +246,9 @@ int main(int ac, char **av)
     std::istringstream iss;
     bool display_char = false;
     bool show_one_line = false;
-    bool search_baseline = true;
+    bool search_baseline = false;
     bool show_data_if_empty_range = false;
+    bool show_percent = false;
     unsigned conformity = 100;
     using ref_definitions_t = std::vector<Definition const *>;
 
@@ -294,6 +295,8 @@ int main(int ac, char **av)
         size_t bounds_x = 0;
         size_t bounds_y = 0;
 
+        using resolution_clock = std::chrono::high_resolution_clock;
+        auto t1 = resolution_clock::now();
         while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
             min_y = std::min(cbox.y(), min_y);
             bounds_y = std::max(cbox.y() + cbox.h(), bounds_y);
@@ -358,7 +361,7 @@ int main(int ac, char **av)
                 }
                 std::cout << " [";
                 for (auto * def : defs) {
-                    if (conformity != 100 && !ok) {
+                    if (show_percent && conformity != 100 && !ok) {
                         std::cout << "\n " << def->c << " ";
                         for (auto percent : data_sorted.relationships(def->datas, data)) {
                             std::cout << std::setw(3) << percent << "% ";
@@ -378,7 +381,12 @@ int main(int ac, char **av)
             x = cbox.x() + cbox.w();
         }
 
-        std::cout << "\nok: " << num_word_ok << " / " << num_word << "\n";
+        {
+            auto t2 = resolution_clock::now();
+            std::cout << "\nok: " << num_word_ok << " / " << num_word
+              << " : " << std::chrono::duration<double>(t2-t1).count() << "s\n"
+            ;
+        }
 
         if (search_baseline)
         {
@@ -570,6 +578,9 @@ int main(int ac, char **av)
                 std::cin >> conformity;
                 conformity = std::min(100u, conformity);
             }
+            else if (s[0] == '%') {
+                show_percent = !show_percent;
+            }
             else if (s[0] == 'h') {
                 std::cout <<
                   "r: reset strategies\n"
@@ -582,7 +593,8 @@ int main(int ac, char **av)
                   "l: enable/disable search_baseline\n"
                   "f: enable/disable show_data_if_empty_range\n"
                   "c: continue\n"
-                  "% conformity: percent min\n"
+                  "% percent: percent min\n"
+                  "P: enable/disable show_percent\n"
                   "q: quit\n"
                   "h: help\n";
             }
