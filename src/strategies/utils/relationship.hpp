@@ -32,7 +32,7 @@ namespace strategies { namespace utils {
 template<class T, class U>
 unsigned compute_relationship(T const & a, T const & b, U const & interval)
 {
-    using integer = std::conditional_t<std::is_signed<T>::value, int, unsigned>;
+    using integer = typename std::conditional<std::is_signed<T>::value, int, unsigned>::type;
     auto d = integer{100} - ((a < b) ? b-a : a-b) * integer{100} / interval;
     assert(0 <= d && d <= 100);
     return d;
@@ -57,11 +57,11 @@ unsigned mask_relationship(unsigned a, unsigned b, unsigned mask, unsigned d, un
 
 inline
 unsigned cardinal_relationship(CardinalDirection a, CardinalDirection b)
-{ return mask_relationship(static_cast<unsigned>(a), static_cast<unsigned>(b), 0b11, 2, 2); }
+{ return mask_relationship(static_cast<unsigned>(a), static_cast<unsigned>(b), 3, 2, 2); }
 
 inline
 unsigned cardinal_relationship(CardinalDirection2 a, CardinalDirection2 b)
-{ return mask_relationship(static_cast<unsigned>(a), static_cast<unsigned>(b), 0b111, 3, 4); }
+{ return mask_relationship(static_cast<unsigned>(a), static_cast<unsigned>(b), 7, 3, 4); }
 
 
 } }

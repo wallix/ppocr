@@ -30,11 +30,11 @@
 #include "image/image.hpp"
 #include <sstream>
 
-#define IMAGE_PATH "./images/"
+#define IMAGE_PATH "./tests/images/"
 
 BOOST_AUTO_TEST_CASE(TestImage)
 {
-    Image img = image_from_file(IMAGE_PATH "image_a1.pbm");
+    Image img = image_from_file(IMAGE_PATH "image1.pbm");
     std::ostringstream oss;
     oss << img;
     BOOST_CHECK_EQUAL(oss.str(),
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(TestImage)
     "::::::::::\n"
     );
 
-    img = image_from_file(IMAGE_PATH "image_e1.pbm");
+    img = image_from_file(IMAGE_PATH "image2.pnm");
     oss.str("");
     oss << img;
     BOOST_CHECK_EQUAL(oss.str(),

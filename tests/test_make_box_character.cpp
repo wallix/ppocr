@@ -32,7 +32,7 @@
 #include <type_traits>
 #include <string>
 
-#define IMAGE_PATH "./images/"
+#define IMAGE_PATH "./tests/images/"
 
 BOOST_AUTO_TEST_CASE(TestImage)
 {

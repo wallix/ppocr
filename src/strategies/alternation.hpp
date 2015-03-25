@@ -93,9 +93,12 @@ namespace strategies
         sequence_type const & operator[](size_t i) const /*noexcept*/
         { return seq_alternations[i]; }
 
-        size_t size() const noexcept { return seq_alternations.size(); }
-        auto begin() const noexcept { return seq_alternations.begin(); }
-        auto end() const noexcept { return seq_alternations.end(); }
+        std::size_t size() const noexcept { return seq_alternations.size(); }
+
+        std::array<sequence_type, 7>::const_iterator begin() const noexcept
+        { return seq_alternations.begin(); }
+        std::array<sequence_type, 7>::const_iterator end() const noexcept
+        { return seq_alternations.end(); }
 
         bool operator<(alternations const & other) const
         { return seq_alternations < other.seq_alternations; }

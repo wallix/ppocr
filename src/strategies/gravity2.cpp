@@ -32,7 +32,7 @@ gravity2::gravity2(const Image& img, const Image& img90)
 }
 
 unsigned gravity2::relationship(const gravity2& other) const
-{ return utils::mask_relationship(d, other.d, 0b111111111, 9, 400); }
+{ return utils::mask_relationship(d, other.d, (1 << 9)-1, 9, 400); }
 
 std::istream& operator>>(std::istream& is, gravity2& d)
 { return is >> d.d; }

@@ -18,7 +18,7 @@ project ppocr
     <toolset>gcc:<cxxflags>-ftree-vectorize
     <toolset>gcc:<cxxflags>-fvect-cost-model
     #<cxxflags>-ftree-partial-pre
-    <cxxflags>-std=c++14
+    <cxxflags>-std=c++11
    <cxxflags>-pedantic
 #    <cxxflags>-Wconversion
     <cxxflags>-Wvla

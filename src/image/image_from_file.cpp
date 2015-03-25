@@ -31,7 +31,13 @@ Image image_from_file(const char * filename)
     if (!mln::io::ppm::load(img, filename)) {
         mln::image2d<bool> img;
         if (!mln::io::pbm::load(img, filename)) {
-            throw std::runtime_error(errno ? strerror(errno) : "image_from_file");
+            std::string desc = "image_from_file: ";
+            desc += filename;
+            if (errno) {
+                desc += ": ";
+                desc += strerror(errno);
+            }
+            throw std::runtime_error(std::move(desc));
         }
 
         return image2d_to_Image(img, [&](bool x){ return x ? 'x' : '-'; });

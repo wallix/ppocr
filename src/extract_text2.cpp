@@ -23,6 +23,7 @@ struct DataSorted
 {
     struct Buffer
     {
+        using value_type = Definition const *;
         using iterator = Definition const * *;
 
         Buffer(std::vector<Definition> const & definitions)
@@ -85,7 +86,7 @@ struct DataSorted
     {
         size_t i = 0;
         for (Buffer const & buf : buffers_) {
-            std::sort(buf.begin(), buf.end(), [i](auto & a, auto & b) {
+            std::sort(buf.begin(), buf.end(), [i](Buffer::value_type & a, Buffer::value_type & b) {
                 DataLoader::data_base const & data1 = a->datas[i];
                 DataLoader::data_base const & data2 = b->datas[i];
                 return data1.lt(data2);
@@ -412,10 +413,10 @@ int main(int ac, char **av)
                             baseline = box.bottom();
                             break;
                         }
-                        else if ((p->i & 0b00110) == 0) {
+                        else if ((p->i & (3 << 1)) == 0) {
                             meanline = box.top();
                         }
-                        else if ((p->i & 0b11000) == 0) {
+                        else if ((p->i & (3 << 3)) == 0) {
                             baseline = box.bottom();
                         }
 
@@ -447,20 +448,20 @@ int main(int ac, char **av)
                                     std::cout << ' ' << def->c;
                                 }
                             }
-                            else if ((p->i & 0b00110) == 0) {
+                            else if ((p->i & (3 << 1)) == 0) {
                                 if (meanline == box.top()
                                  && (
-                                     ((p->i & 0b11000) == 0b01000 && box.bottom() < baseline)
-                                  || ((p->i & 0b11000) == 0b10000 && box.bottom() > baseline)
+                                     ((p->i & (3 << 3)) == (1 << 3) && box.bottom() < baseline)
+                                  || ((p->i & (3 << 3)) == (1 << 4) && box.bottom() > baseline)
                                 )) {
                                     std::cout << ' ' << def->c;
                                 }
                             }
-                            else if ((p->i & 0b11000) == 0) {
+                            else if ((p->i & (3 << 3)) == 0) {
                                 if (baseline == box.bottom()
                                  && (
-                                     ((p->i & 0b00110) == 0b00010 && box.top() < meanline)
-                                  || ((p->i & 0b00110) == 0b00100 && box.top() > meanline)
+                                     ((p->i & (3 << 1)) == (1 << 1) && box.top() < meanline)
+                                  || ((p->i & (3 << 1)) == (1 << 3) && box.top() > meanline)
                                 )) {
                                     std::cout << ' ' << def->c;
                                 }

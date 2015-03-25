@@ -31,22 +31,22 @@
 namespace strategies { namespace utils {
 
 inline std::ostream & operator<<(std::ostream & os, CardinalDirection d)
-{ return os << static_cast<std::underlying_type_t<decltype(d)>>(d); }
+{ return os << static_cast<std::underlying_type<decltype(d)>::type>(d); }
 
 inline std::istream & operator>>(std::istream & is, CardinalDirection & d)
 {
-    std::underlying_type_t<CardinalDirection> i;
+    std::underlying_type<CardinalDirection>::type i;
     is >> i;
     d = static_cast<CardinalDirection>(i);
     return is;
 }
 
 inline std::ostream & operator<<(std::ostream & os, CardinalDirection2 d)
-{ return os << static_cast<std::underlying_type_t<decltype(d)>>(d); }
+{ return os << static_cast<std::underlying_type<decltype(d)>::type>(d); }
 
 inline std::istream & operator>>(std::istream & is, CardinalDirection2 & d)
 {
-    std::underlying_type_t<CardinalDirection2> i;
+    std::underlying_type<CardinalDirection2>::type i;
     is >> i;
     d = static_cast<CardinalDirection2>(i);
     return is;

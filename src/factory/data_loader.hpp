@@ -21,9 +21,12 @@
 #ifndef REDEMPTION_STRATEGIES_HPP
 #define REDEMPTION_STRATEGIES_HPP
 
+#include "utils/make_unique.hpp"
+
 #include <vector>
 #include <memory>
 #include <iosfwd>
+
 
 template<class IteratorBase, class Proxy>
 struct proxy_iterator : IteratorBase, private Proxy
@@ -37,13 +40,19 @@ struct proxy_iterator : IteratorBase, private Proxy
     : IteratorBase(base)
     {}
 
-    decltype(auto) operator*() { return this->proxy()(*this->base()); }
-    decltype(auto) operator->() { return &this->proxy()(*this->base()); }
-    decltype(auto) operator[](std::size_t i) { return this->proxy()(*(this->base()+i)); }
-
 private:
     IteratorBase & base() { return static_cast<IteratorBase&>(*this); }
     Proxy & proxy() { return static_cast<Proxy&>(*this); }
+
+public:
+    auto operator*() -> decltype(this->proxy()(*this->base()))
+    { return this->proxy()(*this->base()); }
+
+    auto operator->() -> decltype(&this->proxy()(*this->base()))
+    { return &this->proxy()(*this->base()); }
+
+    auto operator[](std::size_t i) -> decltype(this->proxy()(*(this->base()+i)))
+    { return this->proxy()(*(this->base()+i)); }
 };
 
 namespace detail {
@@ -56,8 +65,13 @@ namespace detail {
 }
 
 template<class Iterator, class Proxy = detail::DefaultProxy>
-struct range_iterator
+class range_iterator
 {
+    Iterator first_;
+    Iterator last_;
+    Proxy proxy_;
+
+public:
     range_iterator(Iterator first, Iterator last)
     : first_(first)
     , last_(last)
@@ -71,17 +85,20 @@ struct range_iterator
 
     proxy_iterator<Iterator, Proxy> begin() const { return {this->first_, this->proxy_}; }
     proxy_iterator<Iterator, Proxy> end() const { return {this->last_, this->proxy_}; }
-    decltype(auto) operator[](std::size_t i) const { return this->proxy_(*(this->first_+i)); }
-    decltype(auto) front() const { return this->proxy_(*this->first_); }
-    decltype(auto) back() const { return this->proxy_(*(this->last_-1)); }
 
-    auto size() const { return this->last_ - this->first_; }
+    auto operator[](std::size_t i) const -> decltype(this->proxy_(*(this->first_+i)))
+    { return this->proxy_(*(this->first_+i)); }
+
+    auto front() const -> decltype(this->proxy_(*this->first_))
+    { return this->proxy_(*this->first_); }
+
+    auto back() const -> decltype(this->proxy_(*(this->last_-1)))
+    { return this->proxy_(*(this->last_-1)); }
+
+    auto size() const -> decltype(this->last_ - this->first_)
+    { return this->last_ - this->first_; }
+
     bool empty() const { return this->first_ == this->last_; }
-
-private:
-    Iterator first_;
-    Iterator last_;
-    Proxy proxy_;
 };
 
 
