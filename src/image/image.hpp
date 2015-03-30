@@ -59,6 +59,9 @@ struct Image
 
     Image rotate90() const;
 
+    Pixel operator[](Index const & idx) const noexcept
+    { return data()[to_size_t(idx)]; }
+
     Pixel const * data() const noexcept { return this->data_.get(); }
 
     Pixel const * data(Index const & idx) const noexcept

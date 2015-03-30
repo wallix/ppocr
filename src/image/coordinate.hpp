@@ -38,6 +38,11 @@ struct Index {
     size_t x() const noexcept { return x_; }
     size_t y() const noexcept { return y_; }
 
+    bool operator == (Index const & other) const noexcept
+    { return this->x_ == other.x_ && this->y_ == other.y_; }
+    bool operator != (Index const & other) const noexcept
+    { return !(*this == other); }
+
 private:
     size_t x_ = 0;
     size_t y_ = 0;
@@ -57,6 +62,11 @@ struct Bounds {
 
     size_t contains(Index const & idx) const
     { return idx.x() < w() && idx.y() < h(); }
+
+    bool operator == (Bounds const & other) const noexcept
+    { return this->w_ == other.w_ && this->h_ == other.h_; }
+    bool operator != (Bounds const & other) const noexcept
+    { return !(*this == other); }
 
 private:
     size_t w_ = 0;

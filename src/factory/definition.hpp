@@ -44,4 +44,6 @@ struct Definition
 void write_definition(std::ostream & os, Definition const & def, DataLoader const & loader);
 void read_definition(std::istream& is, Definition & def, DataLoader const & loader);
 
+std::vector<Definition> read_definitions(std::istream& is, DataLoader const & loader);
+
 #endif

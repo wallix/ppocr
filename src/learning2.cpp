@@ -27,7 +27,7 @@ static int load_file(
     //std::cerr << img << '\n';
 
     size_t x = 0;
-    Bounds bounds(img.width(), img.height());
+    Bounds const & bounds = img.bounds();
 
     std::string s;
 

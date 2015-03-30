@@ -28,6 +28,8 @@
 
 struct Box
 {
+    Box() = default;
+
     Box(Index const & idx,  Bounds const & bnd)
     : idx_(idx)
     , bounds_(bnd)
@@ -52,6 +54,11 @@ struct Box
     Bounds const & bounds() const noexcept { return bounds_; }
 
     explicit operator bool() const noexcept { return w() && h(); }
+
+    bool operator == (Box const & other) const noexcept
+    { return this->bounds_ == other.bounds_; }
+    bool operator != (Box const & other) const noexcept
+    { return !(*this == other); }
 
 private:
     Index idx_;

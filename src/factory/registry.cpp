@@ -18,33 +18,44 @@
 #include "strategies/dvgravity.hpp"
 #include "strategies/dvgravity2.hpp"
 
+#include "strategies/loop.hpp"
+
 
 void all_registy(DataLoader& loader)
 {
 #define REGISTRY(name) loader.registry<strategies::name>(#name)
     REGISTRY(alternations);
     //REGISTRY(direction);
+
     REGISTRY(hdirection);
     REGISTRY(hdirection90);
     REGISTRY(hdirection2);
     REGISTRY(hdirection290);
-//     REGISTRY(agravity);
+
+    //REGISTRY(agravity);
     //REGISTRY(gravity);
+
     REGISTRY(hgravity);
     REGISTRY(hgravity90);
     REGISTRY(hgravity2);
     REGISTRY(hgravity290);
-//     REGISTRY(compass);
-//     REGISTRY(dcompass);
+
+    //REGISTRY(compass);
+    //REGISTRY(dcompass);
+
     REGISTRY(proportionality);
-//     REGISTRY(gravity2);
+    //REGISTRY(gravity2);
+
     REGISTRY(dvdirection);
     REGISTRY(dvdirection90);
     REGISTRY(dvdirection2);
     REGISTRY(dvdirection290);
+
     REGISTRY(dvgravity);
     REGISTRY(dvgravity90);
     REGISTRY(dvgravity2);
     REGISTRY(dvgravity290);
+
+    REGISTRY(loop);
 #undef REGISTRY
 }

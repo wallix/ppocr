@@ -35,3 +35,16 @@ void read_definition(std::istream& is, Definition & def, const DataLoader& loade
         def.img = Image(bnd, std::move(p));
     }
 }
+
+std::vector<Definition> read_definitions(std::istream& is, DataLoader const & loader)
+{
+    std::vector<Definition> definitions;
+    Definition def;
+    while (is) {
+        read_definition(is, def, loader);
+        if (def) {
+            definitions.push_back(std::move(def));
+        }
+    }
+    return definitions;
+}

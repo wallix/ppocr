@@ -217,19 +217,7 @@ int main(int ac, char **av)
     DataLoader loader;
     all_registy(loader);
 
-    std::vector<Definition> definitions;
-    //std::cerr << img << '\n';
-
-    {
-        Definition def;
-        while (file) {
-            read_definition(file, def, loader);
-            if (def) {
-                //std::cerr << def.c << ' ' << bnd <<  '\n' /*<< def.img*/ << def.data << std::endl;
-                definitions.push_back(std::move(def));
-            }
-        }
-    }
+    std::vector<Definition> definitions = read_definitions(file, loader);
 
     if (!file.eof()) {
         std::cerr << "read error\n";

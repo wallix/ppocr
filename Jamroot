@@ -116,6 +116,7 @@ exe extract_text2 :
     src/strategies/hdirection.cpp
     src/strategies/hgravity2.cpp
     src/strategies/hgravity.cpp
+    src/strategies/loop.cpp
     src/strategies/proportionality.cpp
     src/strategies/utils/basic_proportionality.cpp
     src/utils/image_compare.cpp
@@ -148,6 +149,7 @@ exe learning2 :
     src/strategies/hdirection.cpp
     src/strategies/hgravity2.cpp
     src/strategies/hgravity.cpp
+    src/strategies/loop.cpp
     src/strategies/proportionality.cpp
     src/strategies/utils/basic_proportionality.cpp
     src/utils/image_compare.cpp
@@ -240,6 +242,13 @@ unit-test test_hgravity :
 unit-test test_hgravity2 :
     tests/strategies/test_hgravity2.cpp
     src/strategies/hgravity2.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    libboost_unit_test : ;
+
+unit-test test_loop :
+    tests/strategies/test_loop.cpp
+    src/strategies/loop.cpp
     src/image/image.cpp src/image/image_from_string.cpp
     src/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
