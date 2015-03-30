@@ -52,33 +52,54 @@ loop::loop(const Image& img, const Image& /*img90*/)
         }
     }
 
-    std::set<unsigned> external_loop_idx;
+    std::set<unsigned> top, bottom, right, left;
+
+    auto insert = [&](std::set<unsigned> & set, size_t x, size_t y) {
+        auto i = img.to_size_t({x, y});
+        if (mirror[i]) {
+            set.insert(mirror[i]);
+        }
+    };
 
     for (size_t x = 0; x < img.width(); ++x) {
-        external_loop_idx.emplace(mirror[img.to_size_t({x, 0})]);
-        external_loop_idx.emplace(mirror[img.to_size_t({x, img.height()-1})]);
+        insert(top, x, 0);
+        insert(bottom, x, img.height()-1);
     }
 
     for (size_t y = 0; y < img.height(); ++y) {
-        external_loop_idx.emplace(mirror[img.to_size_t({0, y})]);
-        external_loop_idx.emplace(mirror[img.to_size_t({img.width()-1, y})]);
+        insert(left, 0, y);
+        insert(right, img.width()-1, y);
     }
 
-    if (*external_loop_idx.begin() == 0) {
-        external_loop_idx.erase(0);
-    }
+    datas_[0] = top.size();
+    datas_[1] = right.size();
+    datas_[2] = bottom.size();
+    datas_[3] = left.size();
 
-    out_ = static_cast<unsigned>(external_loop_idx.size());
-    in_ = n - 1 - out_;
+    for (auto x : right) top.insert(x);
+    for (auto x : bottom) top.insert(x);
+    for (auto x : left) top.insert(x);
+
+    datas_[4] = n - 1 - static_cast<unsigned>(top.size());
 }
 
 unsigned int loop::relationship(const loop& other) const
 { return *this == other ? 100 : 0; }
 
 std::ostream& operator<<(std::ostream& os, const loop& loop)
-{ return os << loop.loop_in() << ' ' << loop.loop_out(); }
+{
+    for (auto & x : loop.datas()) {
+        os << x << " ";
+    }
+    return os;
+}
 
 std::istream& operator>>(std::istream& is, loop& loop)
-{ return is >> loop.in_ >> loop.out_; }
+{
+    for (auto & x : loop.datas_) {
+        is >> x;
+    }
+    return is;
+}
 
 }

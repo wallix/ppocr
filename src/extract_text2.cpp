@@ -4,7 +4,7 @@
 #include "factory/registry.hpp"
 #include "factory/definition.hpp"
 #include "box_char/box.hpp"
-// #include "utils/unique_sort_definition.hpp"
+#include "filters/line.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -238,16 +238,10 @@ int main(int ac, char **av)
     bool show_data_if_empty_range = false;
     bool show_percent = false;
     unsigned conformity = 100;
-    using ref_definitions_t = std::vector<Definition const *>;
 
     //unique_sort_definitions(definitions);
 
-    struct CharInfo {
-        ref_definitions_t ref_definitions;
-        Box box;
-        bool ok;
-    };
-    std::vector<CharInfo> char_infos;
+    std::vector<filters::CharInfo> char_infos;
 
     struct Line {
         std::string c;
@@ -374,97 +368,47 @@ int main(int ac, char **av)
             std::cout << "\nok: " << num_word_ok << " / " << num_word
               << " : " << std::chrono::duration<double>(t2-t1).count() << "s\n"
             ;
+
+            Index const text_index(min_x, min_y);
+            Bounds const text_bounds(bounds_x-min_x, bounds_y-min_y);
+            std::cout << "\n box: [" << text_index << " + " << text_bounds << "]\n";
         }
 
         if (search_baseline)
         {
-            Index text_index(min_x, min_y);
-            Bounds text_bounds(bounds_x-min_x, bounds_y-min_y);
-            std::cout << "\n box: [" << text_index << " + " << text_bounds << "]\n";
-
-            struct Stat { size_t n; size_t val; };
-            struct StatEqVal {
-                size_t val;
-                bool operator()(const Stat & s) const { return s.val == val; }
-            };
-            std::vector<Stat> baseline_stats;
-            std::vector<Stat> topline_stats;
-            std::vector<Stat> bottomline_stats;
-
-            //size_t middle = img.height()/2;
-            size_t meanline = ~size_t(0);
-            size_t baseline = ~size_t(0);
-            for (CharInfo const & info : char_infos) {
-//                 std::cout << info.ok;
-                if (info.ok) {
-                    Box const & box = info.box;
-                    std::string const & c = info.ref_definitions.front()->c;
-//                     std::cout << "  " << def.c;
-                    auto p = std::find_if(info_lines.begin(), info_lines.end(), [&](Line const & l) {
-                        return l.c == c;
-                    });
-                    if (p != info_lines.end()) {
-                        if (p->i == 1) {
-                            meanline = box.top();
-                            baseline = box.bottom();
-                            break;
-                        }
-                        else if ((p->i & (3 << 1)) == 0) {
-                            meanline = box.top();
-                        }
-                        else if ((p->i & (3 << 3)) == 0) {
-                            baseline = box.bottom();
-                        }
-
-                        if (meanline != ~size_t(0) && baseline != ~size_t(0)) {
-                            break;
-                        }
-                    }
-                }
-//                 std::cout << "\n";
-            }
+            filters::line line_filter;
+            std::ifstream("/tmp/lines_info") >> line_filter;
+            auto data_line = line_filter.search(char_infos);
 
             std::cout
-              << "\n meanline: " << meanline
-              << "\n baseline: " << baseline
-              << "\n\n"
-            ;
+              << "\n capline: " << data_line.capline
+              << "\n ascentline: " << data_line.ascentline
+              << "\n meanline: " << data_line.meanline
+              << "\n baseline: " << data_line.baseline
+              << "\n\n";
 
-            for (CharInfo const & info : char_infos) {
-                if (!info.ok && !info.ref_definitions.empty()) {
-                    Box const & box = info.box;
-                    std::cout << info.ref_definitions.front()->c << ':';
-                    for (Definition const * def : info.ref_definitions) {
-                        auto p = std::find_if(info_lines.begin(), info_lines.end(), [&](Line const & l) {
-                            return l.c == def->c;
-                        });
-                        if (p != info_lines.end()) {
-                            if (p->i == 1) {
-                                if (meanline == box.top() && baseline == box.bottom()) {
-                                    std::cout << ' ' << def->c;
-                                }
-                            }
-                            else if ((p->i & (3 << 1)) == 0) {
-                                if (meanline == box.top()
-                                 && (
-                                     ((p->i & (3 << 3)) == (1 << 3) && box.bottom() < baseline)
-                                  || ((p->i & (3 << 3)) == (1 << 4) && box.bottom() > baseline)
-                                )) {
-                                    std::cout << ' ' << def->c;
-                                }
-                            }
-                            else if ((p->i & (3 << 3)) == 0) {
-                                if (baseline == box.bottom()
-                                 && (
-                                     ((p->i & (3 << 1)) == (1 << 1) && box.top() < meanline)
-                                  || ((p->i & (3 << 1)) == (1 << 3) && box.top() > meanline)
-                                )) {
-                                    std::cout << ' ' << def->c;
+            if (data_line.is_valid()) {
+                for (filters::CharInfo & info : char_infos) {
+                    if (!info.ok && !info.ref_definitions.empty()) {
+                        std::cout << info.ref_definitions.front()->c << " " << info.box.bottom() << ':';
+                        info.ref_definitions = line_filter(info, data_line);
+                        for (auto def : info.ref_definitions) {
+                            std::cout << ' ' << def->c;
+                        }
+                        info.ok = !info.ref_definitions.empty();
+                        if (info.ok) {
+                            std::string const & s = info.ref_definitions.front()->c;
+                            auto it = info.ref_definitions.begin();
+                            auto e = info.ref_definitions.end();
+                            for (; it != e; ++it) {
+                                if ((*it)->c != s) {
+                                    info.ok = false;
+                                    break;
                                 }
                             }
                         }
+                        std::cout << "\n";
                     }
-                    std::cout << "\n";
                 }
             }
         }

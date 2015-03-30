@@ -21,6 +21,7 @@
 #ifndef REDEMPTION_SRC_STRATEGIES_LOOP_HPP
 #define REDEMPTION_SRC_STRATEGIES_LOOP_HPP
 
+#include <array>
 #include <iosfwd>
 
 class Image;
@@ -29,27 +30,27 @@ class Image;
 namespace strategies {
 
     struct loop {
+        using value_type = std::array<unsigned, 5>;
+
         loop() = default;
-        loop(unsigned in, unsigned out) : in_(in), out_(out) {}
+        loop(value_type const & datas) : datas_(datas) {}
 
         loop(const Image & img, const Image & img90);
 
         bool operator<(loop const & other) const
-        { return in_ < other.in_ || (in_ == other.in_ && out_ < other.out_); }
+        { return datas_ < other.datas_; }
 
         bool operator==(loop const & other) const
-        { return this->in_ == other.in_ && this->out_ == other.out_; }
+        { return this->datas_ == other.datas_; }
 
-        unsigned loop_in() const noexcept { return in_; }
-        unsigned loop_out() const noexcept { return out_; }
+        value_type const & datas() const noexcept { return datas_; }
 
         unsigned relationship(loop const & other) const;
 
         friend std::istream & operator>>(std::istream &, loop &);
 
     private:
-        unsigned in_ = 0;
-        unsigned out_ = 0;
+        value_type datas_ = /*value_type*/{{}};
     };
 
     std::ostream & operator<<(std::ostream &, loop const &);

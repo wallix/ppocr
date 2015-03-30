@@ -36,45 +36,43 @@
 
 using L = strategies::loop;
 
-static L to_hdirection2_value(Bounds bnd, const char * data_text)
+static L mk_loop(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
     return strategies::loop(img, img.rotate90());
 }
 
-BOOST_AUTO_TEST_CASE(TestHDirection2)
+BOOST_AUTO_TEST_CASE(TestLoop)
 {
     L loop;
 
-    loop = to_hdirection2_value({3, 3},
+    using A = L::value_type;
+
+    loop = mk_loop({3, 3},
         "xxx"
         "---"
         "-x-"
     );
-    BOOST_CHECK_EQUAL(loop.loop_in(), 0);
-    BOOST_CHECK_EQUAL(loop.loop_out(), 1);
+    BOOST_CHECK((loop.datas() == A{0, 1, 1, 1, 0}));
 
-    loop = to_hdirection2_value({3, 5},
+    loop = mk_loop({3, 5},
         "--x"
         "---"
         "---"
         "xxx"
         "--x"
     );
-    BOOST_CHECK_EQUAL(loop.loop_in(), 0);
-    BOOST_CHECK_EQUAL(loop.loop_out(), 2);
+    BOOST_CHECK((loop.datas() == A{1, 1, 1, 2, 0}));
 
-    loop = to_hdirection2_value({3, 5},
+    loop = mk_loop({3, 4},
         "-x-"
-        "x-x"
         "x-x"
         "xxx"
         "x-x"
     );
-    BOOST_CHECK_EQUAL(loop.loop_in(), 1);
-    BOOST_CHECK_EQUAL(loop.loop_out(), 3);
+    BOOST_CHECK((loop.datas() == A{2, 1, 1, 1, 1}));
 
-    loop = to_hdirection2_value({5, 6},
+    loop = mk_loop({5, 6},
         "--x--"
         "-x-x-"
         "x---x"
@@ -82,6 +80,5 @@ BOOST_AUTO_TEST_CASE(TestHDirection2)
         "x---x"
         "x---x"
     );
-    BOOST_CHECK_EQUAL(loop.loop_in(), 1);
-    BOOST_CHECK_EQUAL(loop.loop_out(), 3);
+    BOOST_CHECK((loop.datas() == A{2, 1, 1, 1, 1}));
 }
