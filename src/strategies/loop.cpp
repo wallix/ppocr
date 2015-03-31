@@ -1,86 +1,29 @@
 #include "strategies/loop.hpp"
 #include "image/image.hpp"
+#include "utils/count_zone.hpp"
 
 #include <ostream>
 #include <istream>
 
-#include <vector>
-#include <set>
-
-namespace {
-    bool propagation_loop(
-        std::vector<unsigned> & mirror, Image const & img,
-        unsigned current, Index const & idx
-    ) {
-        {
-            auto & n = mirror[img.to_size_t(idx)];
-            if (n || is_pix_letter(img[idx])) {
-                return false;
-            }
-            n = current;
-        }
-
-        if (idx.x() != 0) {
-            propagation_loop(mirror, img, current, {idx.x()-1, idx.y()});
-        }
-        if (idx.x() + 1 != img.width()) {
-            propagation_loop(mirror, img, current, {idx.x()+1, idx.y()});
-        }
-        if (idx.y() != 0) {
-            propagation_loop(mirror, img, current, {idx.x(), idx.y()-1});
-        }
-        if (idx.y() + 1 != img.height()) {
-            propagation_loop(mirror, img, current, {idx.x(), idx.y()+1});
-        }
-
-        return true;
-    }
-}
 
 namespace strategies {
 
 loop::loop(const Image& img, const Image& /*img90*/)
 {
-    std::vector<unsigned> mirror(img.area(), 0);
-    unsigned n = 1;
+    utils::ZoneInfo zone_info = utils::count_zone(img);
 
-    for (size_t x = 0; x < img.width(); ++x) {
-        for (size_t y = 0; y < img.height(); ++y) {
-            if (propagation_loop(mirror, img, n, {x, y})) {
-                ++n;
-            }
-        }
-    }
+    datas_[top_left_is_letter] = is_pix_letter(img[{0, 0}]);
+    datas_[bottom_right_is_letter] = is_pix_letter(img[{img.width()-1, img.height()-1}]);
+    datas_[number_top_alternations] = zone_info.top.size();
+    datas_[number_right_alternations] = zone_info.right.size();
+    datas_[number_bottom_alternations] = zone_info.bottom.size();
+    datas_[number_left_alternations] = zone_info.left.size();
 
-    std::set<unsigned> top, bottom, right, left;
+    for (auto x : zone_info.right) zone_info.top.insert(x);
+    for (auto x : zone_info.bottom) zone_info.top.insert(x);
+    for (auto x : zone_info.left) zone_info.top.insert(x);
 
-    auto insert = [&](std::set<unsigned> & set, size_t x, size_t y) {
-        auto i = img.to_size_t({x, y});
-        if (mirror[i]) {
-            set.insert(mirror[i]);
-        }
-    };
-
-    for (size_t x = 0; x < img.width(); ++x) {
-        insert(top, x, 0);
-        insert(bottom, x, img.height()-1);
-    }
-
-    for (size_t y = 0; y < img.height(); ++y) {
-        insert(left, 0, y);
-        insert(right, img.width()-1, y);
-    }
-
-    datas_[0] = top.size();
-    datas_[1] = right.size();
-    datas_[2] = bottom.size();
-    datas_[3] = left.size();
-
-    for (auto x : right) top.insert(x);
-    for (auto x : bottom) top.insert(x);
-    for (auto x : left) top.insert(x);
-
-    datas_[4] = n - 1 - static_cast<unsigned>(top.size());
+    datas_[number_internal_alternations] = zone_info.count_zone - 1 - static_cast<unsigned>(zone_info.top.size());
 }
 
 unsigned int loop::relationship(const loop& other) const

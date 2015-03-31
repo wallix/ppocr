@@ -293,7 +293,7 @@ int main(int ac, char **av)
             //std::cerr << data << '\n';
 
             if (display_char && !show_one_line) {
-                std::cout << img_word;
+                std::cout << img_word << cbox << "\n";
                 std::cout.write(img_word.data(), img_word.area()) << '\n';
                 std::cout << loader.writer(data);
             }
@@ -377,21 +377,21 @@ int main(int ac, char **av)
         if (search_baseline)
         {
             filters::line line_filter;
-            std::ifstream("/tmp/lines_info") >> line_filter;
+            std::ifstream("lines_info") >> line_filter;
             auto data_line = line_filter.search(char_infos);
 
             std::cout
-              << "\n capline: " << data_line.capline
               << "\n ascentline: " << data_line.ascentline
+              << "\n capline: " << data_line.capline
               << "\n meanline: " << data_line.meanline
               << "\n baseline: " << data_line.baseline
               << "\n\n";
 
-            if (data_line.is_valid()) {
+            /*if (!data_line.is_invalid())*/ {
                 for (filters::CharInfo & info : char_infos) {
                     if (!info.ok && !info.ref_definitions.empty()) {
                         std::cout << info.ref_definitions.front()->c << " " << info.box.bottom() << ':';
-                        info.ref_definitions = line_filter(info, data_line);
+                        line_filter(info.ref_definitions, info.box, data_line);
                         for (auto def : info.ref_definitions) {
                             std::cout << ' ' << def->c;
                         }

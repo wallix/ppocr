@@ -32,13 +32,16 @@ namespace filters {
 
 using std::size_t;
 
-enum class line_position
+enum class line_position : unsigned
 {
     unspecified = 0,
     upper = 1,
     below = 2,
     above = 4
 };
+
+inline line_position operator & (line_position a, line_position b)
+{ return static_cast<line_position>(static_cast<unsigned>(a) & static_cast<unsigned>(b)); }
 
 std::ostream & operator<<(std::ostream & os, line_position);
 std::istream & operator>>(std::istream & is, line_position &);
@@ -59,13 +62,18 @@ struct line
         size_t meanline;
         size_t baseline;
 
-        bool is_valid() const
-        { return ascentline != ~size_t{} && meanline != ~size_t{} && baseline != ~size_t{}; }
+        bool is_invalid() const noexcept
+        {
+            return ascentline == ~size_t{}
+                && capline == ~size_t{}
+                && meanline == ~size_t{}
+                && baseline == ~size_t{};
+        }
     };
 
     data_line search(std::vector<CharInfo> const & v) const;
 
-    ptr_def_list operator()(CharInfo const & info, data_line const & data) const;
+    void operator()(ptr_def_list & ptr_defs, Box const & box, line::data_line const & pos_line) const;
 
     friend std::ostream & operator<<(std::ostream & os, line const &);
     friend std::istream & operator>>(std::istream & is, line &);

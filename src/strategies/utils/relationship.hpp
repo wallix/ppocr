@@ -39,12 +39,12 @@ unsigned compute_relationship(T const & a, T const & b, U const & interval)
 }
 
 inline
-unsigned mask_relationship(unsigned a, unsigned b, unsigned mask, unsigned d, unsigned interval)
+unsigned mask_relationship(unsigned a, unsigned b, unsigned mask, unsigned rbit, unsigned interval)
 {
     unsigned const a1 = a & mask;
     unsigned const a2 = b & mask;
-    unsigned const b1 = (a & (mask << d)) >> d;
-    unsigned const b2 = (b & (mask << d)) >> d;
+    unsigned const b1 = (a & (mask << rbit)) >> rbit;
+    unsigned const b2 = (b & (mask << rbit)) >> rbit;
 
     unsigned dist = 100 - (
         (a1 < a2 ? a2 - a1 : a1 - a2)

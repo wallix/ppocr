@@ -18,10 +18,10 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_STRATEGIES_LOOP_HPP
-#define REDEMPTION_SRC_STRATEGIES_LOOP_HPP
+#ifndef REDEMPTION_SRC_STRATEGIES_PROPORTIONALITY_ZONE_HPP
+#define REDEMPTION_SRC_STRATEGIES_PROPORTIONALITY_ZONE_HPP
 
-#include <array>
+#include <vector>
 #include <iosfwd>
 
 class Image;
@@ -29,41 +29,31 @@ class Image;
 
 namespace strategies {
 
-    struct loop {
-        enum {
-            top_left_is_letter,
-            bottom_right_is_letter,
-            number_top_alternations,
-            number_right_alternations,
-            number_bottom_alternations,
-            number_left_alternations,
-            number_internal_alternations,
-            number_index
-        };
-        using value_type = std::array<unsigned, number_index>;
+    struct proportionality_zone {
+        using value_type = std::vector<unsigned>;
 
-        loop() = default;
-        loop(value_type const & datas) : datas_(datas) {}
+        proportionality_zone() = default;
+        proportionality_zone(value_type const & datas) : datas_(datas) {}
 
-        loop(const Image & img, const Image & img90);
+        proportionality_zone(const Image & img, const Image & img90);
 
-        bool operator<(loop const & other) const
+        bool operator<(proportionality_zone const & other) const
         { return datas_ < other.datas_; }
 
-        bool operator==(loop const & other) const
+        bool operator==(proportionality_zone const & other) const
         { return this->datas_ == other.datas_; }
 
         value_type const & datas() const noexcept { return datas_; }
 
-        unsigned relationship(loop const & other) const;
+        unsigned relationship(proportionality_zone const & other) const;
 
-        friend std::istream & operator>>(std::istream &, loop &);
+        friend std::istream & operator>>(std::istream &, proportionality_zone &);
 
     private:
-        value_type datas_ = /*value_type*/{{}};
+        value_type datas_;
     };
 
-    std::ostream & operator<<(std::ostream &, loop const &);
+    std::ostream & operator<<(std::ostream &, proportionality_zone const &);
 
 }
 

@@ -47,14 +47,14 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
     );
 
     strategies::alternations alternations(img, img.rotate90());
-    using seq_t = strategies::alternations::sequence_type;
-    BOOST_CHECK(alternations[0] == seq_t({1, 0, 1}));
-    BOOST_CHECK(alternations[1] == seq_t({1, 0}));
-    BOOST_CHECK(alternations[2] == seq_t({1}));
-    BOOST_CHECK(alternations[3] == seq_t({1}));
-    BOOST_CHECK(alternations[4] == seq_t({1, 0, 1, 0, 1}));
-    BOOST_CHECK(alternations[5] == seq_t({1}));
-    BOOST_CHECK(alternations[6] == seq_t({1, 0, 1}));
+    using alternations_t = strategies::alternations::alternations_type;
+    BOOST_CHECK(alternations[0] == alternations_t({1, 3}));
+    BOOST_CHECK(alternations[1] == alternations_t({1, 2}));
+    BOOST_CHECK(alternations[2] == alternations_t({1, 1}));
+    BOOST_CHECK(alternations[3] == alternations_t({1, 1}));
+    BOOST_CHECK(alternations[4] == alternations_t({1, 5}));
+    BOOST_CHECK(alternations[5] == alternations_t({1, 1}));
+    BOOST_CHECK(alternations[6] == alternations_t({1, 3}));
     BOOST_CHECK_EQUAL(100, alternations.relationship(alternations));
 
     img = image_from_string({6, 7},
@@ -68,13 +68,13 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
     );
 
     strategies::alternations alternations2(img, img.rotate90());
-    BOOST_CHECK(alternations2[0] == seq_t({1, 0, 1}));
-    BOOST_CHECK(alternations2[1] == seq_t({1, 0}));
-    BOOST_CHECK(alternations2[2] == seq_t({1, 0, 1}));
-    BOOST_CHECK(alternations2[3] == seq_t({1}));
-    BOOST_CHECK(alternations2[4] == seq_t({0, 1, 0, 1}));
-    BOOST_CHECK(alternations2[5] == seq_t({1}));
-    BOOST_CHECK(alternations2[6] == seq_t({1, 0, 1}));
+    BOOST_CHECK(alternations2[0] == alternations_t({1, 3}));
+    BOOST_CHECK(alternations2[1] == alternations_t({1, 2}));
+    BOOST_CHECK(alternations2[2] == alternations_t({1, 3}));
+    BOOST_CHECK(alternations2[3] == alternations_t({1, 1}));
+    BOOST_CHECK(alternations2[4] == alternations_t({0, 4}));
+    BOOST_CHECK(alternations2[5] == alternations_t({1, 1}));
+    BOOST_CHECK(alternations2[6] == alternations_t({1, 3}));
     BOOST_CHECK_EQUAL(5*100/7, alternations.relationship(alternations2));
     BOOST_CHECK_EQUAL(5*100/7, alternations2.relationship(alternations));
 }

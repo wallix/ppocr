@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "---"
         "-x-"
     );
-    BOOST_CHECK((loop.datas() == A{0, 1, 1, 1, 0}));
+    BOOST_CHECK((loop.datas() == A{1, 0, 0, 1, 1, 1, 0}));
 
     loop = mk_loop({3, 5},
         "--x"
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "xxx"
         "--x"
     );
-    BOOST_CHECK((loop.datas() == A{1, 1, 1, 2, 0}));
+    BOOST_CHECK((loop.datas() == A{0, 1, 1, 1, 1, 2, 0}));
 
     loop = mk_loop({3, 4},
         "-x-"
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "xxx"
         "x-x"
     );
-    BOOST_CHECK((loop.datas() == A{2, 1, 1, 1, 1}));
+    BOOST_CHECK((loop.datas() == A{0, 1, 2, 1, 1, 1, 1}));
 
     loop = mk_loop({5, 6},
         "--x--"
@@ -80,5 +80,5 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "x---x"
         "x---x"
     );
-    BOOST_CHECK((loop.datas() == A{2, 1, 1, 1, 1}));
+    BOOST_CHECK((loop.datas() == A{0, 1, 2, 1, 1, 1, 1}));
 }

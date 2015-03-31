@@ -19,6 +19,7 @@
 #include "strategies/dvgravity2.hpp"
 
 #include "strategies/loop.hpp"
+#include "strategies/proportionality_zone.hpp"
 
 
 void all_registy(DataLoader& loader)
@@ -57,5 +58,6 @@ void all_registy(DataLoader& loader)
     REGISTRY(dvgravity290);
 
     REGISTRY(loop);
+    REGISTRY(proportionality_zone);
 #undef REGISTRY
 }

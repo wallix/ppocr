@@ -17,15 +17,15 @@ struct line_impl
         });
     }
 
-    struct Cap {
-        size_t position(Box const & box) const { return box.top(); }
-        size_t position(line::data_line const & data) const { return data.capline; }
-        line_position get_line_position(line::Data const & data) const { return data.capline; }
-    };
     struct Ascent {
         size_t position(Box const & box) const { return box.top(); }
         size_t position(line::data_line const & data) const { return data.ascentline; }
         line_position get_line_position(line::Data const & data) const { return data.ascentline; }
+    };
+    struct Cap {
+        size_t position(Box const & box) const { return box.top(); }
+        size_t position(line::data_line const & data) const { return data.capline; }
+        line_position get_line_position(line::Data const & data) const { return data.capline; }
     };
     struct Mean {
         size_t position(Box const & box) const { return box.top(); }
@@ -42,13 +42,14 @@ struct line_impl
     static size_t
     search_impl(std::vector<line::Data> const & datas, const std::vector< CharInfo >& char_infos, F f)
     {
+        /// NOTE simple impolementation
         size_t line = invalid_result;
         for (CharInfo const & info : char_infos) {
             if (info.ok) {
                 Box const & box = info.box;
                 auto p = line_impl::find_data(datas, info.ref_definitions.front()->c);
                 if (p != datas.end()) {
-                    if (f.get_line_position(*p) == line_position::below) {
+                    if ((f.get_line_position(*p) & line_position::below) == line_position::below) {
                         line = f.position(box);
                         break;
                     }
@@ -59,12 +60,10 @@ struct line_impl
     }
 
     template<class F>
-    static ptr_def_list
-    filter(
+    static void filter(
         std::vector<line::Data> const & datas, Box const & box,
-        ptr_def_list const & ptr_defs, line::data_line pos_line, F f
+        ptr_def_list & ptr_defs, line::data_line const & pos_line, F f
     ) {
-        ptr_def_list ret;
         line_position pos
             = f.position(pos_line) == f.position(box)
             ? line_position::below
@@ -72,37 +71,40 @@ struct line_impl
             ? line_position::above
             : line_position::upper
         ;
-        for (Definition const * def : ptr_defs) {
+        ptr_defs.erase(std::remove_if(ptr_defs.begin(), ptr_defs.end(), [&](Definition const * def) {
             auto p = line_impl::find_data(datas, def->c);
-            if (p == datas.end()
-             || f.get_line_position(*p) == line_position::unspecified
-             || f.get_line_position(*p) == pos
-            ) {
-                ret.push_back(def);
-            }
-        }
-        return ret;
+            return !(p == datas.end()
+                || f.get_line_position(*p) == line_position::unspecified
+                || (f.get_line_position(*p) & pos) != line_position::unspecified
+            );
+        }), ptr_defs.end());
     }
 };
 
 line::data_line line::search(const std::vector< CharInfo >& char_infos) const
 {
     return {
-        line_impl::search_impl(datas_, char_infos, line_impl::Cap()),
         line_impl::search_impl(datas_, char_infos, line_impl::Ascent()),
+        line_impl::search_impl(datas_, char_infos, line_impl::Cap()),
         line_impl::search_impl(datas_, char_infos, line_impl::Mean()),
         line_impl::search_impl(datas_, char_infos, line_impl::Base())
     };
 }
 
-ptr_def_list line::operator()(const CharInfo& info, line::data_line const & pos_line) const
+void line::operator()(ptr_def_list & ptr_defs, Box const & box, line::data_line const & pos_line) const
 {
-    ptr_def_list
-    ret = line_impl::filter(datas_, info.box, info.ref_definitions, pos_line, line_impl::Cap());
-    ret = line_impl::filter(datas_, info.box, ret, pos_line, line_impl::Ascent());
-    ret = line_impl::filter(datas_, info.box, ret, pos_line, line_impl::Mean());
-    ret = line_impl::filter(datas_, info.box, ret, pos_line, line_impl::Base());
-    return ret;
+    if (pos_line.ascentline != invalid_result) {
+        line_impl::filter(datas_, box, ptr_defs, pos_line, line_impl::Ascent());
+    }
+    if (pos_line.capline != invalid_result) {
+        line_impl::filter(datas_, box, ptr_defs, pos_line, line_impl::Cap());
+    }
+    if (pos_line.meanline != invalid_result) {
+        line_impl::filter(datas_, box, ptr_defs, pos_line, line_impl::Mean());
+    }
+    if (pos_line.baseline != invalid_result) {
+        line_impl::filter(datas_, box, ptr_defs, pos_line, line_impl::Base());
+    }
 }
 
 std::ostream& operator<<(std::ostream& os, const line& x)
@@ -120,7 +122,7 @@ std::ostream& operator<<(std::ostream& os, const line& x)
 std::istream& operator>>(std::istream& is, line& x)
 {
     line::Data data;
-    while (is >> data.c >> data.capline >> data.ascentline >> data.meanline >> data.baseline) {
+    while (is >> data.c >> data.ascentline >> data.capline >> data.meanline >> data.baseline) {
         x.datas_.push_back(std::move(data));
     }
     return is;

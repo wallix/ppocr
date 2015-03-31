@@ -18,21 +18,19 @@ namespace strategies
 {
 
 template<class T>
-alternations::sequence_type
+alternations::alternations_type
 make_alternations(const Image & img, Index const & idx, T const & bounds)
 {
-    alternations::sequence_type ret;
-
     auto range = hrange(img, idx, bounds);
     auto it = range.begin();
     auto last = range.end();
 
-    ret.push_back(*it);
+    alternations::alternations_type alternations{*it, 1};
     while (rng::next_alternation(it, last)) {
-        ret.push_back(*it);
+        ++alternations.count;
     }
 
-    return ret;
+    return alternations;
 }
 
 alternations::alternations(const Image& img, const Image& img90)
@@ -43,7 +41,7 @@ alternations::alternations(const Image& img, const Image& img90)
         Bounds const & bnd = img.bounds();
 
         if (bnd.h() < 2) {
-            ++it;
+            *it++ = alternations_type{0, 0};
         } else {
             *it++ = MAKE_SEQUENCE_ALTERNATION("Hl1", img, {0, (bnd.h()-2)/3}, bnd.w());
         }
@@ -80,27 +78,16 @@ unsigned alternations::relationship(const alternations& other) const
 
 std::ostream & operator<<(std::ostream & os, alternations const & seq_alternations)
 {
-    for (alternations::sequence_type const & alternation : seq_alternations) {
-        os << alternation.size();
-        for (auto x : alternation) {
-            os << ' ' << x;
-        }
-        os << ' ';
+    for (auto const & alternations : seq_alternations) {
+        os << alternations.start_contains_letter << ' ' << alternations.count << ' ';
     }
     return os;
 }
 
 std::istream & operator>>(std::istream & is, alternations & seq_alternations)
 {
-    size_t sz;
-    bool val;
-    for (auto & alternation : seq_alternations.seq_alternations) {
-        is >> sz;
-        alternation.resize(sz);
-        for (auto && x : alternation) {
-            is >> val;
-            x = val;
-        }
+    for (auto & alternations : seq_alternations.seq_alternations) {
+        is >> alternations.start_contains_letter >> alternations.count;
     }
     return is;
 }

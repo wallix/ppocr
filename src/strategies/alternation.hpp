@@ -21,7 +21,6 @@
 #ifndef REDEMPTION_STRATEGIES_ALTERNATION_HPP
 #define REDEMPTION_STRATEGIES_ALTERNATION_HPP
 
-#include <vector>
 #include <array>
 #include <iosfwd>
 
@@ -84,20 +83,33 @@ namespace strategies
      */
     struct alternations
     {
-        using sequence_type = std::vector<bool>;
+        struct alternations_type {
+            bool start_contains_letter;
+            std::size_t count;
+
+            bool operator==(alternations_type const & other) const noexcept
+            { return start_contains_letter == other.start_contains_letter && count == other.count; }
+
+            bool operator<(alternations_type const & other) const noexcept
+            {
+                return count < other.count
+                    || (count == other.count && start_contains_letter < other.start_contains_letter);
+            }
+        };
+        using sequence_type = std::array<alternations_type, 7>;
 
         alternations() = default;
 
         alternations(const Image & img, const Image & img90);
 
-        sequence_type const & operator[](size_t i) const /*noexcept*/
+        alternations_type const & operator[](size_t i) const /*noexcept*/
         { return seq_alternations[i]; }
 
         std::size_t size() const noexcept { return seq_alternations.size(); }
 
-        std::array<sequence_type, 7>::const_iterator begin() const noexcept
+        sequence_type::const_iterator begin() const noexcept
         { return seq_alternations.begin(); }
-        std::array<sequence_type, 7>::const_iterator end() const noexcept
+        sequence_type::const_iterator end() const noexcept
         { return seq_alternations.end(); }
 
         bool operator<(alternations const & other) const
@@ -111,110 +123,13 @@ namespace strategies
         friend std::istream & operator>>(std::istream &, alternations &);
 
     private:
-        std::array<sequence_type, 7> seq_alternations;
+        sequence_type seq_alternations;
     };
 
     std::ostream & operator<<(std::ostream &, alternations const &);
 
 
     /// TODO alternations -> alternation< Hl1>,  alternation< Hl2>,  alternation< Hm1>, etc
-
-//     class alternations
-//     {
-//         using internal_value_ = uint_fast16_t;
-//
-//     public:
-//         using value_type = bool;
-//
-//         struct const_iterator
-//         {
-//             using iterator_category = std::forward_iterator_tag;
-//
-//             const_iterator(internal_value_ const & v, unsigned offset = 0)
-//             : refv(v)
-//             , offset(offset)
-//             {}
-//
-//             const_iterator & operator++() {
-//                 ++offset;
-//                 return *this;
-//             }
-//
-//             bool operator*() const noexcept {
-//                 return refv & (1 << offset);
-//             }
-//
-//             bool operator<(const_iterator const & other) const noexcept {
-//                 return offset < other.offset;
-//             }
-//
-//             bool operator == (const_iterator const & other) const noexcept {
-//                 return offset == other.offset;
-//             }
-//
-//             bool operator != (const_iterator const & other) const noexcept {
-//                 return offset != other.offset;
-//             }
-//
-//         private:
-//             std::reference_wrapper<const internal_value_> refv;
-//             unsigned offset;
-//         };
-//
-//         vlight_type() = default;
-//
-//         vlight_type(size_t v, size_t offset) noexcept
-//         : v(v)
-//         , sz(offset)
-//         {
-//             assert(sz < 16);
-//         }
-//
-//
-//         void push_back(bool x) {
-//             assert(sz < 16);
-//             if (x) {
-//                 v |= 1 << sz;
-//             }
-//             ++sz;
-//         }
-//
-//         size_t size() const {
-//             return sz;
-//         }
-//
-//         bool front() const {
-//             return v & 1;
-//         }
-//
-//         bool back() const {
-//             return v & (1 << (sz-1));
-//         }
-//
-//         const_iterator begin() const {
-//             return const_iterator(v, 0);
-//         }
-//
-//         const_iterator end() const {
-//             return const_iterator(v, sz);
-//         }
-//
-//         bool operator < (vlight_type const & other) const noexcept {
-//             return sz < other.sz && v < other.v;
-//         }
-//
-//         bool operator == (vlight_type const & other) const noexcept {
-//             return v == other.v && sz == other.sz;
-//         }
-//
-//         internal_value_ data() const noexcept {
-//             return v;
-//         }
-//
-//     private:
-//         internal_value_ v = 0;
-//         unsigned sz = 0;
-//     };
 }
 
 #endif

@@ -86,12 +86,14 @@ obj coordinate      : src/image/coordinate.cpp ;
 obj box             : src/box_char/box.cpp ;
 obj image           : src/image/image.cpp ;
 obj image_from_file : src/image/image_from_file.cpp ;
+obj image_from_string : src/image/image_from_string.cpp ;
 obj definition      : src/factory/definition.cpp ;
 
 #exe test_image : tests/test_image.cpp src/image/image.cpp src/image/image_from_file.cpp libboost_unit_test : ;
 
 exe extract_text2 :
     src/extract_text2.cpp
+    src/filters/line.cpp
     src/box_char/box.cpp
     src/box_char/make_box_character.cpp
     src/factory/data_loader.cpp
@@ -118,6 +120,7 @@ exe extract_text2 :
     src/strategies/hgravity.cpp
     src/strategies/loop.cpp
     src/strategies/proportionality.cpp
+    src/strategies/proportionality_zone.cpp
     src/strategies/utils/basic_proportionality.cpp
     src/utils/image_compare.cpp
     src/utils/unique_sort_definition.cpp
@@ -125,6 +128,7 @@ exe extract_text2 :
 
 exe learning2 :
     src/learning2.cpp
+    src/filters/line.cpp
     src/box_char/box.cpp
     src/box_char/make_box_character.cpp
     src/factory/data_loader.cpp
@@ -151,6 +155,7 @@ exe learning2 :
     src/strategies/hgravity.cpp
     src/strategies/loop.cpp
     src/strategies/proportionality.cpp
+    src/strategies/proportionality_zone.cpp
     src/strategies/utils/basic_proportionality.cpp
     src/utils/image_compare.cpp
     src/utils/unique_sort_definition.cpp
@@ -166,6 +171,13 @@ unit-test test_image :
     tests/test_image.cpp
     src/image/image.cpp
     src/image/image_from_file.cpp
+    libboost_unit_test : ;
+
+unit-test test_line :
+    image image_from_string definition coordinate box
+    src/factory/data_loader.cpp
+    tests/test_line.cpp
+    src/filters/line.cpp
     libboost_unit_test : ;
 
 unit-test test_make_box_character :
