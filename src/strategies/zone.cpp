@@ -1,4 +1,4 @@
-#include "strategies/loop.hpp"
+#include "strategies/zone.hpp"
 #include "image/image.hpp"
 #include "utils/count_zone.hpp"
 
@@ -8,7 +8,7 @@
 
 namespace strategies {
 
-loop::loop(const Image& img, const Image& /*img90*/)
+zone::zone(const Image& img, const Image& /*img90*/)
 {
     utils::ZoneInfo zone_info = utils::count_zone(img);
 
@@ -26,20 +26,20 @@ loop::loop(const Image& img, const Image& /*img90*/)
     datas_[number_internal_alternations] = zone_info.count_zone - 1 - static_cast<unsigned>(zone_info.top.size());
 }
 
-unsigned int loop::relationship(const loop& other) const
+unsigned int zone::relationship(const zone& other) const
 { return *this == other ? 100 : 0; }
 
-std::ostream& operator<<(std::ostream& os, const loop& loop)
+std::ostream& operator<<(std::ostream& os, const zone& zone)
 {
-    for (auto & x : loop.datas()) {
+    for (auto & x : zone.datas()) {
         os << x << " ";
     }
     return os;
 }
 
-std::istream& operator>>(std::istream& is, loop& loop)
+std::istream& operator>>(std::istream& is, zone& zone)
 {
-    for (auto & x : loop.datas_) {
+    for (auto & x : zone.datas_) {
         is >> x;
     }
     return is;

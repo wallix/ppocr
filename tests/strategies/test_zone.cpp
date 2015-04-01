@@ -27,52 +27,52 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/loop.hpp"
+#include "strategies/zone.hpp"
 #include "image/image_from_string.hpp"
 #include "image/image.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./images/"
 
-using L = strategies::loop;
+using L = strategies::zone;
 
-static L mk_loop(Bounds bnd, const char * data_text)
+static L mk_zone(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::loop(img, img.rotate90());
+    return strategies::zone(img, img.rotate90());
 }
 
 BOOST_AUTO_TEST_CASE(TestLoop)
 {
-    L loop;
+    L zone;
 
     using A = L::value_type;
 
-    loop = mk_loop({3, 3},
+    zone = mk_zone({3, 3},
         "xxx"
         "---"
         "-x-"
     );
-    BOOST_CHECK((loop.datas() == A{1, 0, 0, 1, 1, 1, 0}));
+    BOOST_CHECK((zone.datas() == A{1, 0, 0, 1, 1, 1, 0}));
 
-    loop = mk_loop({3, 5},
+    zone = mk_zone({3, 5},
         "--x"
         "---"
         "---"
         "xxx"
         "--x"
     );
-    BOOST_CHECK((loop.datas() == A{0, 1, 1, 1, 1, 2, 0}));
+    BOOST_CHECK((zone.datas() == A{0, 1, 1, 1, 1, 2, 0}));
 
-    loop = mk_loop({3, 4},
+    zone = mk_zone({3, 4},
         "-x-"
         "x-x"
         "xxx"
         "x-x"
     );
-    BOOST_CHECK((loop.datas() == A{0, 1, 2, 1, 1, 1, 1}));
+    BOOST_CHECK((zone.datas() == A{0, 1, 2, 1, 1, 1, 1}));
 
-    loop = mk_loop({5, 6},
+    zone = mk_zone({5, 6},
         "--x--"
         "-x-x-"
         "x---x"
@@ -80,5 +80,5 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "x---x"
         "x---x"
     );
-    BOOST_CHECK((loop.datas() == A{0, 1, 2, 1, 1, 1, 1}));
+    BOOST_CHECK((zone.datas() == A{0, 1, 2, 1, 1, 1, 1}));
 }

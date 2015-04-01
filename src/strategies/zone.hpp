@@ -18,8 +18,8 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_STRATEGIES_LOOP_HPP
-#define REDEMPTION_SRC_STRATEGIES_LOOP_HPP
+#ifndef REDEMPTION_SRC_STRATEGIES_ZONE_HPP
+#define REDEMPTION_SRC_STRATEGIES_ZONE_HPP
 
 #include <array>
 #include <iosfwd>
@@ -29,7 +29,7 @@ class Image;
 
 namespace strategies {
 
-    struct loop {
+    struct zone {
         enum {
             top_left_is_letter,
             bottom_right_is_letter,
@@ -42,28 +42,28 @@ namespace strategies {
         };
         using value_type = std::array<unsigned, number_index>;
 
-        loop() = default;
-        loop(value_type const & datas) : datas_(datas) {}
+        zone() = default;
+        zone(value_type const & datas) : datas_(datas) {}
 
-        loop(const Image & img, const Image & img90);
+        zone(const Image & img, const Image & img90);
 
-        bool operator<(loop const & other) const
+        bool operator<(zone const & other) const
         { return datas_ < other.datas_; }
 
-        bool operator==(loop const & other) const
+        bool operator==(zone const & other) const
         { return this->datas_ == other.datas_; }
 
         value_type const & datas() const noexcept { return datas_; }
 
-        unsigned relationship(loop const & other) const;
+        unsigned relationship(zone const & other) const;
 
-        friend std::istream & operator>>(std::istream &, loop &);
+        friend std::istream & operator>>(std::istream &, zone &);
 
     private:
         value_type datas_ = /*value_type*/{{}};
     };
 
-    std::ostream & operator<<(std::ostream &, loop const &);
+    std::ostream & operator<<(std::ostream &, zone const &);
 
 }
 
