@@ -14,6 +14,7 @@
 #include "strategies/dvdirection2.hpp"
 #include "strategies/dvgravity.hpp"
 #include "strategies/dvgravity2.hpp"
+#include "strategies/density.hpp"
 // #include "utils/unique_sort_definition.hpp"
 
 #include <iostream>
@@ -80,8 +81,9 @@ int main(int ac, char **av)
         strategies::dvgravity90::traits::get_interval(),
         strategies::dvgravity2::traits::get_interval(),
         strategies::dvgravity290::traits::get_interval(),
+        strategies::density::traits::get_interval(),
     };
-    for (size_t idata = 1; idata < loader.size(); ++idata) {
+    for (size_t idata = 1; idata < sizeof(coef)/sizeof(coef[0]) + 1; ++idata) {
         grid.clear();
         for (auto & p : m) {
 //             if (p.first.size() != 1) {
