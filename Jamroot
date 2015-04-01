@@ -107,6 +107,7 @@ exe extract_text2 :
     src/strategies/alternation.cpp
     src/strategies/compass.cpp
     src/strategies/dcompass.cpp
+    src/strategies/density.cpp
     src/strategies/direction.cpp
     src/strategies/dvdirection2.cpp
     src/strategies/dvdirection.cpp
@@ -118,7 +119,7 @@ exe extract_text2 :
     src/strategies/hdirection.cpp
     src/strategies/hgravity2.cpp
     src/strategies/hgravity.cpp
-    src/strategies/loop.cpp
+    src/strategies/zone.cpp
     src/strategies/proportionality.cpp
     src/strategies/proportionality_zone.cpp
     src/strategies/utils/basic_proportionality.cpp
@@ -142,6 +143,7 @@ exe learning2 :
     src/strategies/alternation.cpp
     src/strategies/compass.cpp
     src/strategies/dcompass.cpp
+    src/strategies/density.cpp
     src/strategies/direction.cpp
     src/strategies/dvdirection2.cpp
     src/strategies/dvdirection.cpp
@@ -153,7 +155,7 @@ exe learning2 :
     src/strategies/hdirection.cpp
     src/strategies/hgravity2.cpp
     src/strategies/hgravity.cpp
-    src/strategies/loop.cpp
+    src/strategies/zone.cpp
     src/strategies/proportionality.cpp
     src/strategies/proportionality_zone.cpp
     src/strategies/utils/basic_proportionality.cpp
@@ -258,9 +260,9 @@ unit-test test_hgravity2 :
     src/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
-unit-test test_loop :
-    tests/strategies/test_loop.cpp
-    src/strategies/loop.cpp
+unit-test test_zone :
+    tests/strategies/test_zone.cpp
+    src/strategies/zone.cpp
     src/image/image.cpp src/image/image_from_string.cpp
     src/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
