@@ -346,7 +346,7 @@ int main(int ac, char **av)
                     if (show_percent && conformity != 100 && !ok) {
                         std::cout << "\n " << def->c << " ";
                         for (auto percent : data_sorted.relationships(def->datas, data)) {
-                            std::cout << std::setw(3) << percent << "% ";
+                            std::cout << std::setw(3) << percent << " ";
                         }
                     }
                     else {
@@ -510,7 +510,7 @@ int main(int ac, char **av)
                 std::cin >> conformity;
                 conformity = std::min(100u, conformity);
             }
-            else if (s[0] == '%') {
+            else if (s[0] == 'P') {
                 show_percent = !show_percent;
             }
             else if (s[0] == 'h') {
