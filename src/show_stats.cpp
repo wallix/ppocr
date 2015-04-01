@@ -62,7 +62,7 @@ int main(int ac, char **av)
 
     struct Line { std::string const * s; std::array<char, 101> l; };
     std::vector<Line> grid;
-    Line line;
+    Line tmpline;
     unsigned coef[] = {
         strategies::hdirection::traits::get_interval(),
         strategies::hdirection90::traits::get_interval(),
@@ -89,8 +89,8 @@ int main(int ac, char **av)
 //             if (p.first.size() != 1) {
 //                 continue;
 //             }
-            line.s = &p.first;
-            line.l.fill('-');
+            tmpline.s = &p.first;
+            tmpline.l.fill('-');
             const auto divide = coef[idata-1]/100;
             assert(divide*100 == coef[idata-1]);
             for (size_t i = 0; i <= 100; ++i) {
@@ -107,10 +107,10 @@ int main(int ac, char **av)
                         return value / divide == i;
                     }
                 )) {
-                    line.l[i] = char(count + '0');
+                    tmpline.l[i] = char(count + '0');
                 }
             }
-            grid.push_back(line);
+            grid.push_back(tmpline);
         }
 
         std::sort(grid.begin(), grid.end(), [](Line const & a, Line const & b) { return a.l < b.l; });

@@ -115,6 +115,7 @@ exe extract_text2 :
     src/strategies/dvgravity.cpp
     src/strategies/gravity2.cpp
     src/strategies/gravity.cpp
+    src/strategies/hbar.cpp
     src/strategies/hdirection2.cpp
     src/strategies/hdirection.cpp
     src/strategies/hgravity2.cpp
@@ -151,6 +152,7 @@ exe learning2 :
     src/strategies/dvgravity.cpp
     src/strategies/gravity2.cpp
     src/strategies/gravity.cpp
+    src/strategies/hbar.cpp
     src/strategies/hdirection2.cpp
     src/strategies/hdirection.cpp
     src/strategies/hgravity2.cpp
@@ -230,6 +232,13 @@ unit-test test_direction :
     tests/strategies/test_direction.cpp
     src/strategies/direction.cpp
     src/image/image.cpp src/image/image_from_string.cpp
+    libboost_unit_test : ;
+
+unit-test test_hbar :
+    tests/strategies/test_hbar.cpp
+    src/strategies/hbar.cpp
+    src/image/image.cpp src/image/image_from_string.cpp
+    src/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_hdirection :

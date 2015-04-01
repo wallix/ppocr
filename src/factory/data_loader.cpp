@@ -46,7 +46,7 @@ std::vector<unsigned> DataLoader::Datas::relationships(const DataLoader::Datas& 
     return ret;
 }
 
-DataLoader::Datas DataLoader::new_data() const
+DataLoader::Datas DataLoader::new_datas() const
 {
     std::vector<data_ptr> datas;
 
@@ -57,14 +57,14 @@ DataLoader::Datas DataLoader::new_data() const
     return {std::move(datas)};
 }
 
-DataLoader::Datas DataLoader::new_data(std::istream& is) const
+DataLoader::Datas DataLoader::new_datas(std::istream& is) const
 {
-    auto data = this->new_data();
+    auto data = this->new_datas();
     read(is, data);
     return data;
 }
 
-DataLoader::Datas DataLoader::new_data(Image const & img, Image const & img90) const
+DataLoader::Datas DataLoader::new_datas(Image const & img, Image const & img90) const
 {
     std::vector<data_ptr> datas;
 
@@ -75,20 +75,20 @@ DataLoader::Datas DataLoader::new_data(Image const & img, Image const & img90) c
     return {std::move(datas)};
 }
 
-void DataLoader::read(std::istream& is, DataLoader::Datas& data) const
+void DataLoader::read(std::istream& is, DataLoader::Datas& datas) const
 {
     std::string s;
     // TODO dichotomic
-    for (auto & p : data.datas_) {
+    for (auto & p : datas.datas_) {
         is >> s;
         p->read(is);
     }
 }
 
-void DataLoader::write(std::ostream& os, DataLoader::Datas const & data) const
+void DataLoader::write(std::ostream& os, DataLoader::Datas const & datas) const
 {
     auto it = this->loaders.begin();
-    for (auto & p : data.datas_) {
+    for (auto & p : datas.datas_) {
         os << it->name() << ' ';
         p->write(os);
         os << '\n';

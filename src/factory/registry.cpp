@@ -23,6 +23,8 @@
 #include "strategies/zone.hpp"
 #include "strategies/proportionality_zone.hpp"
 
+#include "strategies/hbar.hpp"
+
 
 void all_registy(DataLoader& loader)
 {
@@ -63,5 +65,8 @@ void all_registy(DataLoader& loader)
 
     REGISTRY(zone);
     REGISTRY(proportionality_zone);
+
+    REGISTRY(hbar);
+    REGISTRY(hbar90);
 #undef REGISTRY
 }

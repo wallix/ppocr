@@ -288,8 +288,8 @@ int main(int ac, char **av)
             Image const img_word = img.section(cbox.index(), cbox.bounds());
             //std::cerr << img_word << '\n';
 
-            //Def const def{{}, img_word, loader.new_data(img_word, img_word.rotate90())};
-            auto data = loader.new_data(img_word, img_word.rotate90());
+            //Def const def{{}, img_word, loader.new_datas(img_word, img_word.rotate90())};
+            auto data = loader.new_datas(img_word, img_word.rotate90());
             //std::cerr << data << '\n';
 
             if (display_char && !show_one_line) {
