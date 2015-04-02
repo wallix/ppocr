@@ -29,7 +29,6 @@
 void all_registy(DataLoader& loader)
 {
 #define REGISTRY(name) loader.registry<strategies::name>(#name)
-    REGISTRY(alternations);
     //REGISTRY(direction);
 
     REGISTRY(hdirection);
@@ -63,10 +62,13 @@ void all_registy(DataLoader& loader)
 
     REGISTRY(density);
 
-    REGISTRY(zone);
-    REGISTRY(proportionality_zone);
-
     REGISTRY(hbar);
     REGISTRY(hbar90);
+
+
+    REGISTRY(alternations);
+
+    REGISTRY(zone);
+    REGISTRY(proportionality_zone);
 #undef REGISTRY
 }

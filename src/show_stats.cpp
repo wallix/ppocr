@@ -83,7 +83,7 @@ int main(int ac, char **av)
         strategies::dvgravity290::traits::get_interval(),
         strategies::density::traits::get_interval(),
     };
-    for (size_t idata = 1; idata < sizeof(coef)/sizeof(coef[0]) + 1; ++idata) {
+    for (size_t idata = 0; idata < sizeof(coef)/sizeof(coef[0]); ++idata) {
         grid.clear();
         for (auto & p : m) {
 //             if (p.first.size() != 1) {
@@ -91,8 +91,8 @@ int main(int ac, char **av)
 //             }
             tmpline.s = &p.first;
             tmpline.l.fill('-');
-            const auto divide = coef[idata-1]/100;
-            assert(divide*100 == coef[idata-1]);
+            const auto divide = coef[idata]/100;
+            assert(divide*100 == coef[idata]);
             for (size_t i = 0; i <= 100; ++i) {
                 if (size_t const count = std::count_if(
                     p.second.begin(), p.second.end(),
@@ -123,7 +123,7 @@ int main(int ac, char **av)
             max = std::max(max, unsigned(line.l.rend() - std::find_if(
                 line.l.rbegin(), line.l.rend(),
                 [](char c) { return c != '-'; }
-            )));
+            ) - 1));
         }
         std::cout << loader.names()[idata] << "  [ " << min << " - " << max << "]\n";
         for (Line & line : grid) {

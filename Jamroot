@@ -165,6 +165,80 @@ exe learning2 :
     src/utils/unique_sort_definition.cpp
 : ;
 
+exe show_stats :
+    src/show_stats.cpp
+    src/filters/line.cpp
+    src/box_char/box.cpp
+    src/box_char/make_box_character.cpp
+    src/factory/data_loader.cpp
+    src/factory/definition.cpp
+    src/factory/registry.cpp
+    src/image/coordinate.cpp
+    src/image/image.cpp
+    src/image/image_from_file.cpp
+    src/image/image_from_string.cpp
+    src/strategies/agravity.cpp
+    src/strategies/alternation.cpp
+    src/strategies/compass.cpp
+    src/strategies/dcompass.cpp
+    src/strategies/density.cpp
+    src/strategies/direction.cpp
+    src/strategies/dvdirection2.cpp
+    src/strategies/dvdirection.cpp
+    src/strategies/dvgravity2.cpp
+    src/strategies/dvgravity.cpp
+    src/strategies/gravity2.cpp
+    src/strategies/gravity.cpp
+    src/strategies/hbar.cpp
+    src/strategies/hdirection2.cpp
+    src/strategies/hdirection.cpp
+    src/strategies/hgravity2.cpp
+    src/strategies/hgravity.cpp
+    src/strategies/zone.cpp
+    src/strategies/proportionality.cpp
+    src/strategies/proportionality_zone.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    src/utils/image_compare.cpp
+    src/utils/unique_sort_definition.cpp
+: ;
+
+exe graphic_data :
+    src/graphic_data.cpp
+    src/filters/line.cpp
+    src/box_char/box.cpp
+    src/box_char/make_box_character.cpp
+    src/factory/data_loader.cpp
+    src/factory/definition.cpp
+    src/factory/registry.cpp
+    src/image/coordinate.cpp
+    src/image/image.cpp
+    src/image/image_from_file.cpp
+    src/image/image_from_string.cpp
+    src/strategies/agravity.cpp
+    src/strategies/alternation.cpp
+    src/strategies/compass.cpp
+    src/strategies/dcompass.cpp
+    src/strategies/density.cpp
+    src/strategies/direction.cpp
+    src/strategies/dvdirection2.cpp
+    src/strategies/dvdirection.cpp
+    src/strategies/dvgravity2.cpp
+    src/strategies/dvgravity.cpp
+    src/strategies/gravity2.cpp
+    src/strategies/gravity.cpp
+    src/strategies/hbar.cpp
+    src/strategies/hdirection2.cpp
+    src/strategies/hdirection.cpp
+    src/strategies/hgravity2.cpp
+    src/strategies/hgravity.cpp
+    src/strategies/zone.cpp
+    src/strategies/proportionality.cpp
+    src/strategies/proportionality_zone.cpp
+    src/strategies/utils/basic_proportionality.cpp
+    src/utils/image_compare.cpp
+    src/utils/unique_sort_definition.cpp
+: ;
+
 #
 # Unit Tests
 #
