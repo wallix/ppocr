@@ -61,22 +61,16 @@ public:
         this->events_by_sig_.clear();
         this->events_by_sig_.resize(total);
         this->max_events_ = 0;
+        this->min_ = total;
+        this->max_ = 0;
 
         for (Definition const & def : definitions) {
-            this->max_events_ = std::max(this->max_events_, ++this->events_by_sig_[g(def.datas)]);
+            unsigned const n = g(def.datas);
+            this->max_events_ = std::max(this->max_events_, ++this->events_by_sig_[n]);
+            this->min_ = std::min(this->min_, n);
+            this->max_ = std::max(this->max_, n);
         }
-
-        this->min_ = std::find_if(
-            this->events_by_sig_.begin(),
-            this->events_by_sig_.end(),
-            [](unsigned i) { return i; }
-        ) - this->events_by_sig_.begin();
-
-        this->max_ = std::find_if(
-            this->events_by_sig_.rbegin(),
-            this->events_by_sig_.rend() + this->min_,
-            [](unsigned i) { return i; }
-        ).base() - this->events_by_sig_.begin();
+        ++this->max_;
     }
 
     unsigned min() const noexcept { return this->min_; }
@@ -137,6 +131,8 @@ public:
 
     container_type::const_iterator begin() const { return this->m.begin(); }
     container_type::const_iterator end() const { return this->m.end(); }
+    container_type::mapped_type const & operator[](std::string const & s) const
+    { return this->m.find(string_ref_t(s))->second; }
 };
 
 
@@ -186,33 +182,57 @@ void run(
     std::cout
       << " [" << events_by_sig.min() << " - "
       << events_by_sig.max() << "] ; max_events: "
-      << events_by_sig.max_events() << "\n"
+      << events_by_sig.max_events() << "\n\n"
     ;
 
     auto const total_events = double(definitions.size());
 
-    prob_letter_on_value.compute(definitions, g);
-    {
-        for (auto & p : prob_letter_on_value) {
-            std::cout << "\033[00;35m" << p.first.get() << "\033[0m  ";
-            for (auto & p2 : p.second) {
-                std::cout << "P(" << double(events_by_sig[p2.first]) / total_events << " /" << p2.first << ")  ";
-            }
-            std::cout << "\n";
-        }
-    }
+    if (1) {
+        std::fixed(std::cout);
+        std::cout.precision(6);
 
-    std::cout << "\n\n";
-
-    prob_value_on_letter.compute(definitions, g);
-    {
-        for (auto & p : prob_value_on_letter) {
-            std::cout << "\033[00;35m" << std::setw(3) << p.first << "\033[0m  ";
-            for (auto & p2 : p.second) {
-                std::cout << "P(" << double(p2.second) / total_events << " /" << p2.first.get() << ")  ";
+        prob_letter_on_value.compute(definitions, g);
+        {
+            for (auto & p : prob_letter_on_value) {
+                std::cout << "\033[00;35m" << p.first.get() << "\033[0m  ";
+                for (auto & p2 : p.second) {
+                    std::cout
+                      << "P(" << double(p2.second) / total_events
+                      << " /" << std::setw(3) << p2.first << ")  "
+                    ;
+                }
+                std::cout << "\n";
             }
-            std::cout << "\n";
         }
+
+        std::cout << "\n\n";
+
+        prob_value_on_letter.compute(definitions, g);
+        {
+            for (auto & p : prob_value_on_letter) {
+                std::cout
+                  << "\033[00;35m" << std::setw(3) << p.first
+                  << "\033[0m  P(" << double(events_by_sig[p.first]) / total_events << ")  "
+                ;
+                for (auto & p2 : p.second) {
+                    auto const & values = prob_letter_on_value[p2.first];
+                    auto const sum = double(std::accumulate(
+                        values.begin(), values.end(), 0u,
+                        [](unsigned a, std::pair<unsigned const, unsigned> const & pair){ return a + pair.second; }
+                    ));
+                    std::cout << "P("
+                      << double(p2.second) / total_events << " /"
+                      << p2.first.get() << " ["
+                      << std::setprecision(3)
+                      << double(p2.second) / sum << "])  "
+                      << std::setprecision(6)
+                    ;
+                }
+                std::cout << "\n";
+            }
+        }
+
+        std::cout.unsetf(std::ios::floatfield);
     }
 }
 
@@ -288,20 +308,82 @@ int main(int ac, char ** av) {
     }
 
 
-    auto const total_sig1 = (strategies::hdirection::traits::get_interval() + 1) / 10;
-    auto const total_sig2 = (strategies::hdirection90::traits::get_interval() + 1) / 10;
+    auto const total_sig1 = (intervals[0] + 1) / 10;
+    auto const total_sig2 = (intervals[1] + 1) / 10;
     auto const total_sig = total_sig1 * total_sig2;
+//     run(
+//         events_by_sig,
+//         graph,
+//         prob_letter_on_value,
+//         prob_value_on_letter,
+//         definitions,
+//         [total_sig1, &get_value](DataLoader::Datas const & datas) {
+//             return (get_value(datas[0]) * total_sig1 + get_value(datas[1])) / 10;
+//         },
+//         total_sig
+//     );
     run(
         events_by_sig,
         graph,
         prob_letter_on_value,
         prob_value_on_letter,
         definitions,
-        [total_sig1, &get_value](DataLoader::Datas const & datas) {
-            return get_value(datas[0]) / 10 * total_sig1 + get_value(datas[1]) / 10;
+        [total_sig2, &get_value](DataLoader::Datas const & datas) {
+            return (get_value(datas[0]) + get_value(datas[1]) * total_sig2) / 10;
         },
         total_sig
     );
+
+    auto first = definitions.begin();
+    auto last = definitions.end();
+    auto pos = first;
+    std::reference_wrapper<std::string const> sref(first->c);
+    std::vector<Definition> new_defs;
+    while (1) {
+        bool const is_finish = ++first == last;
+        if (is_finish || first->c != sref.get()) {
+            std::cout << "\n# " << sref.get() << "\n";
+            new_defs.assign(std::make_move_iterator(pos), std::make_move_iterator(first));
+            run(
+                events_by_sig,
+                graph,
+                prob_letter_on_value,
+                prob_value_on_letter,
+                new_defs,
+                [total_sig2, get_value](DataLoader::Datas const & datas) {
+                    return (get_value(datas[0]) + get_value(datas[1]) * total_sig2) / 10;
+                },
+                total_sig
+            );
+            std::move(new_defs.begin(), new_defs.end(), pos);
+            if (!is_finish) {
+                pos = first;
+                sref = first->c;
+            }
+        }
+
+        if (is_finish) {
+            break;
+        }
+    }
+
+
+//     run(
+//         events_by_sig,
+//         graph,
+//         prob_letter_on_value,
+//         prob_value_on_letter,
+//         definitions,
+//         [intervals, &get_value](DataLoader::Datas const & datas) {
+//             auto const n1 = get_value(datas[0]);
+//             if (!(n1 <= ((intervals[0] + 1)*55/100) && n1 >= ((intervals[0] + 1)*45/100))) {
+//                 return false;
+//             }
+//             auto const n2 = get_value(datas[1]);
+//             return (n2 <= ((intervals[1] + 1)*55/100) && n2 >= ((intervals[1] + 1)*45/100));
+//         },
+//         2
+//     );
 
 
 
