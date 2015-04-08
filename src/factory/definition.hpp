@@ -31,12 +31,13 @@
 struct Definition
 {
     std::string c;
+    std::string font_name;
     Image img;
     DataLoader::Datas datas;
 
     Definition() = default;
-    Definition(std::string c, Image img, DataLoader const & loader);
-    Definition(std::string c, Image img, DataLoader::Datas datas);
+    Definition(std::string c, std::string font_name, Image img, DataLoader const & loader);
+    Definition(std::string c, std::string font_name, Image img, DataLoader::Datas datas);
 
     explicit operator bool () const noexcept { return bool(this->img); }
 };

@@ -3,8 +3,6 @@
 #include "box_char/make_box_character.hpp"
 #include "factory/registry.hpp"
 #include "factory/definition.hpp"
-#include "utils/image_compare.hpp"
-#include "utils/unique_sort_definition.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -15,7 +13,7 @@
 
 static int load_file(
     std::vector<Definition> & definitions, DataLoader const & loader,
-    const char * imagefilename, const char * textfilename
+    const char * imagefilename, const char * textfilename, const char * fontname
 ) {
     std::ifstream file(textfilename);
     if (!file) {
@@ -39,7 +37,7 @@ static int load_file(
             return 10;
         }
 
-        definitions.emplace_back(s, img.section(cbox.index(), cbox.bounds()), loader);
+        definitions.emplace_back(s, fontname, img.section(cbox.index(), cbox.bounds()), loader);
         assert(definitions.back().datas == definitions.back().datas);
 
         x = cbox.x() + cbox.w();
@@ -55,8 +53,8 @@ static int load_file(
 
 int main(int ac, char **av)
 {
-    if (ac < 3 || !(ac & 1)) {
-        std::cerr << av[0] << "image_file text_file [image_file text_file ...]\n";
+    if (ac < 4 || (ac-1) % 3) {
+        std::cerr << av[0] << " image_file text_file font_name [image_file text_file font_name ...]\n";
         return 1;
     }
 
@@ -67,14 +65,12 @@ int main(int ac, char **av)
 
     int return_code = 0;
 
-    for (int i = 1; i < ac; i += 2) {
-        int const code = load_file(definitions, loader, av[i], av[i+1]);
+    for (int i = 1; i < ac; i += 3) {
+        int const code = load_file(definitions, loader, av[i], av[i+1], av[i+2]);
         if (code) {
             return_code = code;
         }
     }
-
-    unique_sort_definitions(definitions);
 
     for (auto & def : definitions) {
         write_definition(std::cout, def, loader);

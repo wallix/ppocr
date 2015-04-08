@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(TestLine)
 
     {
         Definition def{
-            "d",
+            "d", "",
             image_from_string({6, 8}, "----xx----xx-xxxxxxx--xxxx--xxxx--xxxx--xx-xxxxx"),
             DataLoader::Datas()
         };
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(TestLine)
     filters::line::data_line data_line{5, 6, 8, 15};
     {
         Box box{{111, 6}, {1, 3}};
-        Definition def{"'", image_from_string(box.bounds(), "xxx"), DataLoader::Datas()};
+        Definition def{"'", "", image_from_string(box.bounds(), "xxx"), DataLoader::Datas()};
         filters::ptr_def_list definitions({&def});
         line(definitions, box, data_line);
 
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(TestLine)
     }
     {
         Box box{{111, 5}, {6, 11}};
-        Definition def{"b", image_from_string(box.bounds(), "x-----x-----x-----xxxxx-xx--xxx----xx----xx----xx----xxx--xxxxxxx-"), DataLoader::Datas()};
+        Definition def{"b", "", image_from_string(box.bounds(), "x-----x-----x-----xxxxx-xx--xxx----xx----xx----xx----xxx--xxxxxxx-"), DataLoader::Datas()};
         filters::ptr_def_list definitions({&def});
         line(definitions, box, data_line);
 
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(TestLine)
     }
     {
         Box box{{111, 8}, {6, 11}};
-        Definition def{"p", image_from_string(box.bounds(), "x-----x-----x-----xxxxx-xx--xxx----xx----xx----xx----xxx--xxxxxxx-"), DataLoader::Datas()};
+        Definition def{"p", "", image_from_string(box.bounds(), "x-----x-----x-----xxxxx-xx--xxx----xx----xx----xx----xxx--xxxxxxx-"), DataLoader::Datas()};
         filters::ptr_def_list definitions({&def});
         line(definitions, box, data_line);
 

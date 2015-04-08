@@ -6,6 +6,10 @@
 
 void unique_sort_definitions(std::vector< Definition >& defs)
 {
+    if (defs.empty()) {
+        return;
+    }
+
     std::sort(defs.begin(), defs.end(), [](Definition const & a, Definition const & b) {
         {
             int const cmp = a.c.compare(b.c);
@@ -18,7 +22,7 @@ void unique_sort_definitions(std::vector< Definition >& defs)
         }
 
         {
-            int const cmp = image_compare(a.img, b.img);
+            int const cmp = a.font_name.compare(b.font_name);
             if (cmp < 0) {
                 return true;
             }
@@ -27,9 +31,10 @@ void unique_sort_definitions(std::vector< Definition >& defs)
             }
         }
 
-        return a.datas < b.datas;
+        return image_compare(a.img, b.img) < 0;
     });
+
     defs.erase(std::unique(defs.begin(), defs.end(), [](Definition const & a, Definition const & b) {
-        return a.c == b.c && a.img == b.img && a.datas == b.datas;
+        return a.c == b.c && a.font_name == b.font_name && a.img == b.img;
     }), defs.end());
 }
