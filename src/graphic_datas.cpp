@@ -239,7 +239,7 @@ void run(
 
 
 int main(int ac, char ** av) {
-    if (ac < 1) {
+    if (ac < 2) {
         std::cerr << av[0] << " datas\n";
         return 1;
     }

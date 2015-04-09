@@ -37,6 +37,7 @@
 #include "strategies/dvgravity.hpp"
 #include "strategies/dvgravity2.hpp"
 #include "strategies/density.hpp"
+#include "strategies/dzdensity.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -95,7 +96,7 @@ probability_by_characters_t reduce_univers(
         for (Probability const & prop : sref_prob.second) {
             if (unsigned x = approximate_get_value(prop.refdef)) {
                 auto & props = new_probability_by_characters[sref_prob.first];
-                props.emplace_back(prop.refdef, prop.prop + x);
+                props.emplace_back(prop.refdef, prop.prop * x / 100);
             }
         }
     }
@@ -133,7 +134,7 @@ int main(int ac, char **av)
 
     probability_by_characters_t probability_by_characters;
     for (auto const & def : definitions) {
-        probability_by_characters[def.c].emplace_back(def, 0u);
+        probability_by_characters[def.c].emplace_back(def, 1.);
     }
 
 
@@ -149,13 +150,15 @@ int main(int ac, char **av)
         {01, strategies::proportionality::traits::get_interval()},
         {01, strategies::dvdirection::traits::get_interval()},
         {01, strategies::dvdirection90::traits::get_interval()},
-        {01, strategies::dvdirection2::traits::get_interval()},
+        {0/*1*/, strategies::dvdirection2::traits::get_interval()},
         {01, strategies::dvdirection290::traits::get_interval()},
         {01, strategies::dvgravity::traits::get_interval()},
         {01, strategies::dvgravity90::traits::get_interval()},
-        {01, strategies::dvgravity2::traits::get_interval()},
+        {0/*1*/, strategies::dvgravity2::traits::get_interval()},
         {01, strategies::dvgravity290::traits::get_interval()},
         {01, strategies::density::traits::get_interval()},
+        {01, strategies::dzdensity::traits::get_interval()},
+        {01, strategies::dzdensity90::traits::get_interval()},
     };
 
     using resolution_clock = std::chrono::high_resolution_clock;
@@ -180,14 +183,31 @@ int main(int ac, char **av)
                 new_probability_by_characters, i, get_value(data[i]), intervals[i].interval
             );
         }
-        for (auto & p : new_probability_by_characters) {
+
+        struct Info { std::string const * s_p; unsigned percent; size_t sz; };
+        std::vector<Info> infos(new_probability_by_characters.size());
+        {
+            auto it = infos.begin();
+            for (auto & p : new_probability_by_characters) {
+                it->s_p = &p.first.get();
+                it->percent = std::round(std::accumulate(
+                    p.second.begin(), p.second.end(), 0.,
+                    [](double n, Probability const & prop) { return n+prop.prop; }
+                    //[](double n, Probability const & prop) { return std::max(n, prop.prop); }
+                ) / p.second.size() * 100);
+                it->sz = p.second.size();
+                ++it;
+            }
+        }
+        std::sort(
+            infos.begin(), infos.end(),
+            [](Info const & a, Info const & b) { return a.percent > b.percent; }
+        );
+        for (auto & info : infos) {
             std::cout
-                << p.first.get() << " ["
-                << std::accumulate(
-                    p.second.begin(), p.second.end(), 0u,
-                    [](unsigned n, Probability const & prop) { return n+prop.prop; }
-                )
-                << "]  "
+                << "\033[00;31m" << *info.s_p << "\033[0m [\033[00;32m"
+                << std::setw(3) << info.percent
+                << "\033[0m/" << info.sz << "]  "
             ;
         }
         std::cout << "\n\n";

@@ -18,6 +18,8 @@
 #include "strategies/dvgravity.hpp"
 #include "strategies/dvgravity2.hpp"
 
+#include "strategies/dzdensity.hpp"
+
 #include "strategies/density.hpp"
 
 #include "strategies/zone.hpp"
@@ -61,6 +63,9 @@ void all_registy(DataLoader& loader)
     REGISTRY(dvgravity290);
 
     REGISTRY(density);
+
+    REGISTRY(dzdensity);
+    REGISTRY(dzdensity90);
 
     REGISTRY(hbar);
     REGISTRY(hbar90);
