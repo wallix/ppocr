@@ -32,11 +32,18 @@ namespace details_ {
     template<class Fn>
     void diagonal_zone_density_impl(const Image& img, Fn fn)
     {
+        if (img.width() < 3 || img.height() < 3) {
+            return ;
+        }
+
         int const area = int(img.area());
         int const h3 = int(img.height() * 3);
         int const w3 = int(img.width() * 3);
         int yp = 0;
         for (size_t y = 0; y < img.height(); ++y, yp += w3) {
+            //double const d = double(img.width())/3.;
+            //double const xs = std::ceil(double(y+1)*w/h-d);
+            //double const xe = std::floor(double(y )*w/h+d);
             int const xs = (w3 + yp - area + h3-1) / h3;
             int const xe = (     yp + area       ) / h3;
             fn(std::max(0, xs), std::min(int(img.width()), xe));
@@ -46,9 +53,6 @@ namespace details_ {
 
 inline unsigned diagonal_zone_density_area(const Image& img)
 {
-    if (img.width() < 3 && img.height() < 3) {
-        return is_pix_letter(*img.data()) ? 1 : 0;
-    }
     int res = 0;
     details_::diagonal_zone_density_impl(img, [&](int xs, int xe) { res += xe-xs; });
     return unsigned(res);
@@ -57,9 +61,6 @@ inline unsigned diagonal_zone_density_area(const Image& img)
 inline
 unsigned diagonal_zone_density(const Image& img)
 {
-    if (img.width() < 3 && img.height() < 3) {
-        return is_pix_letter(*img.data()) ? 1 : 0;
-    }
     int res = 0;
     auto data = img.data();
     details_::diagonal_zone_density_impl(img, [&](int xs, int xe) {
