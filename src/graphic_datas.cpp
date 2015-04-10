@@ -33,6 +33,7 @@
 #include "strategies/dvgravity.hpp"
 #include "strategies/dvgravity2.hpp"
 #include "strategies/density.hpp"
+#include "strategies/dzdensity.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -293,6 +294,8 @@ int main(int ac, char ** av) {
 //         strategies::dvgravity2::traits::get_interval(),
 //         strategies::dvgravity290::traits::get_interval(),
 //         strategies::density::traits::get_interval(),
+//         strategies::dzdensity::traits::get_interval(),
+//         strategies::dzdensity90::traits::get_interval(),
     };
     for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
         std::cout << "name: " << loader.names()[i] << "\n";
