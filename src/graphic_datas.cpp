@@ -46,6 +46,8 @@
 #include <cstring>
 #include <cerrno>
 
+#include "sassert.hpp"
+
 struct EventBySignature
 {
     std::vector<unsigned> events_by_sig_;
@@ -67,11 +69,12 @@ public:
 
         for (Definition const & def : definitions) {
             unsigned const n = g(def.datas);
+            assert(n < total);
             this->max_events_ = std::max(this->max_events_, ++this->events_by_sig_[n]);
             this->min_ = std::min(this->min_, n);
             this->max_ = std::max(this->max_, n);
         }
-        ++this->max_;
+        //++this->max_;
     }
 
     unsigned min() const noexcept { return this->min_; }
@@ -276,8 +279,8 @@ int main(int ac, char ** av) {
     ProbValueOnLetter prob_value_on_letter;
 
     unsigned intervals[] = {
-        strategies::hdirection::traits::get_interval(),
-        strategies::hdirection90::traits::get_interval(),
+//         strategies::hdirection::traits::get_interval(),
+//         strategies::hdirection90::traits::get_interval(),
 //         strategies::hdirection2::traits::get_interval(),
 //         strategies::hdirection290::traits::get_interval(),
 //         strategies::hgravity::traits::get_interval(),
@@ -294,26 +297,31 @@ int main(int ac, char ** av) {
 //         strategies::dvgravity2::traits::get_interval(),
 //         strategies::dvgravity290::traits::get_interval(),
 //         strategies::density::traits::get_interval(),
-//         strategies::dzdensity::traits::get_interval(),
-//         strategies::dzdensity90::traits::get_interval(),
+        strategies::dzdensity::traits::get_interval(),
+        strategies::dzdensity90::traits::get_interval(),
     };
+    constexpr unsigned incr = 18;
+
     for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
-        std::cout << "name: " << loader.names()[i] << "\n";
+        std::cout << "name: " << loader.names()[incr+i] << "\n";
         run(
             events_by_sig,
             graph,
             prob_letter_on_value,
             prob_value_on_letter,
             definitions,
-            [&get_value, i](DataLoader::Datas const & datas) { return get_value(datas[i]); },
+            [&get_value, i](DataLoader::Datas const & datas) { return get_value(datas[incr+i]); },
             intervals[i] + 1
         );
     }
 
 
     auto const total_sig1 = (intervals[0] + 1) / 10;
-    auto const total_sig2 = (intervals[1] + 1) / 10;
-    auto const total_sig = total_sig1 * total_sig2;
+    //auto const total_sig2 = (intervals[1] + 1) / 10;
+    auto const total_sig = [&]() {
+        auto res = (intervals[0] + 1) * (intervals[1] + 1) / 10;
+        return res;
+    }();
 //     run(
 //         events_by_sig,
 //         graph,
@@ -331,8 +339,8 @@ int main(int ac, char ** av) {
         prob_letter_on_value,
         prob_value_on_letter,
         definitions,
-        [total_sig2, &get_value](DataLoader::Datas const & datas) {
-            return (get_value(datas[0]) + get_value(datas[1]) * total_sig2) / 10;
+        [total_sig1, &get_value](DataLoader::Datas const & datas) {
+            return get_value(datas[incr]) / 10 + get_value(datas[incr+1]) / 10 * total_sig1;
         },
         total_sig
     );
@@ -353,8 +361,8 @@ int main(int ac, char ** av) {
                 prob_letter_on_value,
                 prob_value_on_letter,
                 new_defs,
-                [total_sig2, get_value](DataLoader::Datas const & datas) {
-                    return (get_value(datas[0]) + get_value(datas[1]) * total_sig2) / 10;
+                [total_sig1, get_value](DataLoader::Datas const & datas) {
+                    return get_value(datas[incr]) / 10 + get_value(datas[incr+1]) / 10 * total_sig1;
                 },
                 total_sig
             );

@@ -32,10 +32,6 @@ namespace details_ {
     template<class Fn>
     void diagonal_zone_density_impl(const Image& img, Fn fn)
     {
-        if (img.width() < 3 || img.height() < 3) {
-            return ;
-        }
-
         int const area = int(img.area());
         int const h3 = int(img.height() * 3);
         int const w3 = int(img.width() * 3);
@@ -51,23 +47,22 @@ namespace details_ {
     }
 }
 
-inline unsigned diagonal_zone_density_area(const Image& img)
-{
-    int res = 0;
-    details_::diagonal_zone_density_impl(img, [&](int xs, int xe) { res += xe-xs; });
-    return unsigned(res);
-}
-
 inline
 unsigned diagonal_zone_density(const Image& img)
 {
+    if (img.width() < 3 || img.height() < 3) {
+        return 0;
+    }
+
     int res = 0;
+    int area = 0;
     auto data = img.data();
     details_::diagonal_zone_density_impl(img, [&](int xs, int xe) {
         res += std::count_if(data+xs, data+xe, is_pix_letter_fn());
+        area += xe-xs;
         data += img.width();
     });
-    return unsigned(res);
+    return unsigned(res * 100 / area);
 }
 
 } }

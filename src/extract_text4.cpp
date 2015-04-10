@@ -225,7 +225,6 @@ int main(int ac, char **av)
             if (!intervals[i].enable) {
                 continue;
             }
-            std::cout << i << ": " << get_value(datas[i]) << std::endl;
             new_probability_by_characters = reduce_univers(
                 new_probability_by_characters, i, get_value(datas[i]), intervals[i].interval
             );

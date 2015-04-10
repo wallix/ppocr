@@ -24,19 +24,15 @@
 
 #include "image/image.hpp"
 
+#include <iostream>
+
 namespace strategies {
 
-static unsigned compute_dzdensity(const Image& img)
-{
-    auto const density = utils::diagonal_zone_density(img);
-    return density * 100 / img.area();
-}
-
 unsigned dzdensity_traits::compute(const Image& img, const Image&)
-{ return compute_dzdensity(img); }
+{ return utils::diagonal_zone_density(img); }
 
 unsigned dzdensity90_traits::compute(const Image&, const Image& img90)
-{ return compute_dzdensity(img90); }
+{ return utils::diagonal_zone_density(img90); }
 
 unsigned int dzdensity_traits::get_interval() { return 100; }
 unsigned int dzdensity90_traits::get_interval() { return 100; }
