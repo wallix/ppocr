@@ -58,11 +58,11 @@ using definition_ref_t = std::reference_wrapper<Definition const>;
 
 struct Probability {
     definition_ref_t refdef;
-    double prop;
+    double prob;
 
-    Probability(Definition const & def, double prop)
+    Probability(Definition const & def, double prob)
     : refdef(def)
-    , prop(prop)
+    , prob(prob)
     {}
 };
 
@@ -93,10 +93,10 @@ probability_by_characters_t reduce_univers(
 
     for (auto const & sref_prob : probability_by_characters) {
         // P(x and Sn=value)
-        for (Probability const & prop : sref_prob.second) {
-            if (unsigned x = approximate_get_value(prop.refdef)) {
-                auto & props = new_probability_by_characters[sref_prob.first];
-                props.emplace_back(prop.refdef, prop.prop * x / 100);
+        for (Probability const & prob : sref_prob.second) {
+            if (unsigned x = approximate_get_value(prob.refdef)) {
+                auto & probs = new_probability_by_characters[sref_prob.first];
+                probs.emplace_back(prob.refdef, prob.prob * x / 100);
             }
         }
     }
@@ -104,6 +104,46 @@ probability_by_characters_t reduce_univers(
     return new_probability_by_characters;
 }
 
+
+double get_probability(std::vector<Probability> const & probs) {
+    return std::accumulate(
+        probs.begin(), probs.end(), 0.,
+        [](double n, Probability const & prob) { return n+prob.prob; }
+        //[](double n, Probability const & prob) { return std::max(n, prob.prob); }
+    ) / probs.size();
+}
+
+
+struct Info { std::string const * s_p; unsigned percent; size_t sz; };
+
+void init_and_show_infos(
+    std::vector<Info> & infos,
+    probability_by_characters_t const & probability_by_characters
+) {
+    infos.resize(probability_by_characters.size());
+    {
+        auto it = infos.begin();
+        for (auto & p : probability_by_characters) {
+            it->s_p = &p.first.get();
+            it->percent = std::round(get_probability(p.second) * 100);
+            it->sz = p.second.size();
+            ++it;
+        }
+    }
+    std::sort(
+        infos.begin(), infos.end(),
+        [](Info const & a, Info const & b) { return a.percent > b.percent; }
+    );
+
+    for (auto & info : infos) {
+        std::cout
+            << "\033[00;31m" << *info.s_p << "\033[0m [\033[00;32m"
+            << std::setw(3) << info.percent
+            << "\033[0m/" << info.sz << "]  "
+        ;
+    }
+    std::cout << "\n\n";
+}
 
 int main(int ac, char **av)
 {
@@ -132,10 +172,13 @@ int main(int ac, char **av)
     Bounds const bounds(img.width(), img.height());
     size_t x = 0;
 
-    probability_by_characters_t probability_by_characters;
-    for (auto const & def : definitions) {
-        probability_by_characters[def.c].emplace_back(def, 1.);
-    }
+    probability_by_characters_t const probability_by_characters = [&definitions]() {
+        probability_by_characters_t ret;
+        for (auto const & def : definitions) {
+            ret[def.c].emplace_back(def, 1.);
+        }
+        return ret;
+    }();
 
 
     struct { bool enable; unsigned interval; } const intervals[] = {
@@ -161,6 +204,9 @@ int main(int ac, char **av)
         {01, strategies::dzdensity90::traits::get_interval()},
     };
 
+    std::string result1;
+    std::string result2;
+
     using resolution_clock = std::chrono::high_resolution_clock;
     auto t1 = resolution_clock::now();
     while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
@@ -172,45 +218,89 @@ int main(int ac, char **av)
         Image const img_word = img.section(cbox.index(), cbox.bounds());
         std::cerr << img_word;
 
-        auto data = loader.new_datas(img_word, img_word.rotate90());
+        auto datas = loader.new_datas(img_word, img_word.rotate90());
 
         auto new_probability_by_characters = probability_by_characters;
         for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
             if (!intervals[i].enable) {
                 continue;
             }
+            std::cout << i << ": " << get_value(datas[i]) << std::endl;
             new_probability_by_characters = reduce_univers(
-                new_probability_by_characters, i, get_value(data[i]), intervals[i].interval
+                new_probability_by_characters, i, get_value(datas[i]), intervals[i].interval
             );
         }
 
-        struct Info { std::string const * s_p; unsigned percent; size_t sz; };
-        std::vector<Info> infos(new_probability_by_characters.size());
-        {
-            auto it = infos.begin();
-            for (auto & p : new_probability_by_characters) {
-                it->s_p = &p.first.get();
-                it->percent = std::round(std::accumulate(
-                    p.second.begin(), p.second.end(), 0.,
-                    [](double n, Probability const & prop) { return n+prop.prop; }
-                    //[](double n, Probability const & prop) { return std::max(n, prop.prop); }
-                ) / p.second.size() * 100);
-                it->sz = p.second.size();
-                ++it;
+        std::vector<Info> infos;
+        init_and_show_infos(infos, new_probability_by_characters);
+        if (new_probability_by_characters.empty()) {
+            result1 += '_';
+        }
+        else {
+            result1 += *infos.front().s_p;
+        }
+
+        if (new_probability_by_characters.empty()) {
+            result2 += '_';
+        }
+        else if (infos.front().percent >= 95) {
+            result2 += *infos.front().s_p;
+        }
+        else {
+            {
+                probability_by_characters_t result_probability_by_characters;
+                for (size_t i = sizeof(intervals)/sizeof(intervals[0]), e = i + 3/*5*/; i < e; ++i) {
+                    result_probability_by_characters.clear();
+                    for (auto const & sref_prob : new_probability_by_characters) {
+                        // P(x and Sn=value)
+                        for (Probability const & prob : sref_prob.second) {
+                            unsigned const x = prob.refdef.get().datas[i].relationship(datas[i]);
+                            if (x >= 50) {
+                                auto & probs = result_probability_by_characters[sref_prob.first];
+                                probs.emplace_back(prob.refdef, prob.prob * x / 100);
+                            }
+                        }
+                    }
+                    swap(new_probability_by_characters, result_probability_by_characters);
+                }
+
+                for (size_t i = sizeof(intervals)/sizeof(intervals[0]) + 3, e = i + 2; i < e; ++i) {
+                    result_probability_by_characters.clear();
+                    for (auto const & sref_prob : new_probability_by_characters) {
+                        // P(x and Sn=value)
+                        if ([&]() -> bool {
+                            for (Probability const & prob : probability_by_characters.find(sref_prob.first)->second) {
+                                if (prob.refdef.get().datas[i].relationship(datas[i]) >= 50) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }()) {
+                            result_probability_by_characters[sref_prob.first] = sref_prob.second;
+                        }
+                    }
+                    swap(new_probability_by_characters, result_probability_by_characters);
+                }
+            }
+
+            init_and_show_infos(infos, new_probability_by_characters);
+
+            if (!new_probability_by_characters.empty()) {
+                using pair_type = probability_by_characters_t::value_type;
+                result2 += std::max_element(
+                    new_probability_by_characters.begin(), new_probability_by_characters.end(),
+                    [](pair_type const & a, pair_type const & b) {
+                        return get_probability(a.second) < get_probability(b.second);
+                    }
+                )->first.get();
+            }
+            else {
+                result2 += '_';
             }
         }
-        std::sort(
-            infos.begin(), infos.end(),
-            [](Info const & a, Info const & b) { return a.percent > b.percent; }
-        );
-        for (auto & info : infos) {
-            std::cout
-                << "\033[00;31m" << *info.s_p << "\033[0m [\033[00;32m"
-                << std::setw(3) << info.percent
-                << "\033[0m/" << info.sz << "]  "
-            ;
-        }
-        std::cout << "\n\n";
+
+        result1 += ' ';
+        result2 += ' ';
 
         x = cbox.x() + cbox.w();
     }
@@ -219,4 +309,6 @@ int main(int ac, char **av)
         auto t2 = resolution_clock::now();
         std::cout << std::chrono::duration<double>(t2-t1).count() << "s\n";
     }
+
+    std::cout << " ## result1: " << (result1) << "\n ## result2: " << (result2) << std::endl;
 }

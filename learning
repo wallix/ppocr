@@ -15,9 +15,10 @@ for d in "$@" ; do
   font="$(basename "$d")"
   for f in "$d"/*.pbm ; do
     "$learning_bin" "$f" "${f:0:-3}"txt "$font"
+    [ $? != 0 ] && echo "$f" >&2
   done
-done > "$$-learning"
+done > "$temp"
 
-$normalize_bin "$$-learning"
+$normalize_bin "$temp"
 
-rm "$$-learning"
+rm "$temp"
