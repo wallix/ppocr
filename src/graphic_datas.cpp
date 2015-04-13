@@ -68,11 +68,11 @@ public:
         this->max_ = 0;
 
         for (Definition const & def : definitions) {
-            unsigned const n = g(def.datas);
-            assert(n < total);
-            this->max_events_ = std::max(this->max_events_, ++this->events_by_sig_[n]);
-            this->min_ = std::min(this->min_, n);
-            this->max_ = std::max(this->max_, n);
+            unsigned const x = g(def.datas);
+            assert(x < total);
+            this->max_events_ = std::max(this->max_events_, ++this->events_by_sig_[x]);
+            this->min_ = std::min(this->min_, x);
+            this->max_ = std::max(this->max_, x);
         }
         //++this->max_;
     }
@@ -319,7 +319,7 @@ int main(int ac, char ** av) {
     auto const total_sig1 = (intervals[0] + 1) / 10;
     //auto const total_sig2 = (intervals[1] + 1) / 10;
     auto const total_sig = [&]() {
-        auto res = (intervals[0] + 1) * (intervals[1] + 1) / 10;
+        auto res = (intervals[0] + 1) / 10 * (intervals[1] + 1) / 10;
         return res;
     }();
 //     run(
@@ -340,7 +340,7 @@ int main(int ac, char ** av) {
         prob_value_on_letter,
         definitions,
         [total_sig1, &get_value](DataLoader::Datas const & datas) {
-            return get_value(datas[incr]) / 10 + get_value(datas[incr+1]) / 10 * total_sig1;
+            return (get_value(datas[incr]) / 10) * (get_value(datas[incr+1]) / 10 * total_sig1);
         },
         total_sig
     );
@@ -362,7 +362,7 @@ int main(int ac, char ** av) {
                 prob_value_on_letter,
                 new_defs,
                 [total_sig1, get_value](DataLoader::Datas const & datas) {
-                    return get_value(datas[incr]) / 10 + get_value(datas[incr+1]) / 10 * total_sig1;
+                    return (get_value(datas[incr]) / 10) * (get_value(datas[incr+1]) / 10 * total_sig1);
                 },
                 total_sig
             );

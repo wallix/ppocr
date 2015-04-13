@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(TestDigonalDensity)
         "---"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 1*100/9);
+    BOOST_CHECK_EQUAL(id, 1*100/3);
 
     id = to_ddensity_id({3, 3},
         "--x"
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(TestDigonalDensity)
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 1*100/9);
+    BOOST_CHECK_EQUAL(id, 1*100/3);
 
     id = to_ddensity_id({3, 3},
         "---"
@@ -142,21 +142,21 @@ BOOST_AUTO_TEST_CASE(TestDigonalDensity)
         "-x-"
         "---"
     );
-    BOOST_CHECK_EQUAL(id, 1*100/9);
+    BOOST_CHECK_EQUAL(id, 1*100/3);
 
     id = to_ddensity_id({3, 3},
         "---"
         "x--"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 1*100/9);
+    BOOST_CHECK_EQUAL(id, 1*100/3);
 
     id = to_ddensity_id({3, 3},
         "--x"
         "---"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 1*100/9);
+    BOOST_CHECK_EQUAL(id, 1*100/3);
 
     id = to_ddensity_id({3, 5},
         "--x"
@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(TestDigonalDensity)
         "--x"
         "--x"
     );
-    BOOST_CHECK_EQUAL(id, 1*100/15);
+    BOOST_CHECK_EQUAL(id, 1*100/3);
 
     id = to_ddensity_id({5, 7},
         "-----"
@@ -176,7 +176,7 @@ BOOST_AUTO_TEST_CASE(TestDigonalDensity)
         "-----"
         "---xx"
     );
-    BOOST_CHECK_EQUAL(id, 1*100/35);
+    BOOST_CHECK_EQUAL(id, 1*100/11);
 
     id = to_ddensity_id({6, 6},
         "xx----"
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(TestDigonalDensity)
         "---xxx"
         "----xx"
     );
-    BOOST_CHECK_EQUAL(id, 16*100/36);
+    BOOST_CHECK_EQUAL(id, 16*100/16);
 
     id = to_ddensity_id({6, 6},
         "xxxxxx"
@@ -196,19 +196,19 @@ BOOST_AUTO_TEST_CASE(TestDigonalDensity)
         "xxxxxx"
         "xxxxxx"
     );
-    BOOST_CHECK_EQUAL(id, 16*100/36);
+    BOOST_CHECK_EQUAL(id, 16*100/16);
 
     id = to_ddensity_id({6, 3},
         "xx----"
         "--xx--"
         "----xx"
     );
-    BOOST_CHECK_EQUAL(id, 6*100/18);
+    BOOST_CHECK_EQUAL(id, 6*100/6);
 
     id = to_ddensity_id({6, 3},
         "xxxxxx"
         "xxxxxx"
         "xxxxxx"
     );
-    BOOST_CHECK_EQUAL(id, 6*100/18);
+    BOOST_CHECK_EQUAL(id, 6*100/6);
 }
