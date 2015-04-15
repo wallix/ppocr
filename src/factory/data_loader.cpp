@@ -1,8 +1,11 @@
 #include "data_loader.hpp"
 
-#include <cassert>
-#include <cstring>
+#ifndef NDEBUG
+# include "sassert.hpp"
+#endif
+
 #include <ostream>
+#include <cstring>
 
 
 bool DataLoader::Datas::operator<(const DataLoader::Datas& other) const
@@ -77,10 +80,17 @@ DataLoader::Datas DataLoader::new_datas(Image const & img, Image const & img90) 
 
 void DataLoader::read(std::istream& is, DataLoader::Datas& datas) const
 {
-    std::string s;
     // TODO dichotomic
+    std::string s;
+#ifndef NDEBUG
+    auto it_name = this->names().begin();
+#endif
     for (auto & p : datas.datas_) {
         is >> s;
+#ifndef NDEBUG
+        assert(s == *it_name);
+        ++it_name;
+#endif
         p->read(is);
     }
 }

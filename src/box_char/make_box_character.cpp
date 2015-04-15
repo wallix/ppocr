@@ -61,11 +61,11 @@ Box make_box_character(Image const & image, Index const & idx, Bounds const & bn
 
     while (w + 1 < bnd.w()) {
         ++w;
-        if ([](Pixel const * d, size_t w, size_t h) -> bool {
+        if ([&image](Pixel const * d, size_t w, size_t h) -> bool {
             for (auto e = d+w*h; d != e; d += w) {
                 if (is_pix_letter(*d) && (
                     (d+1 != e && is_pix_letter(*(d+1)))
-                 || (d-w+1 < e && is_pix_letter(*(d-w+1)))
+                 || (d-w+1 >= image.data() && is_pix_letter(*(d-w+1)))
                  || (d+w+1 < e && is_pix_letter(*(d+w+1)))
                 )) {
                     return false;

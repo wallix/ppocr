@@ -170,6 +170,11 @@ exe extract_text4 :
     extract_data_src
 : ;
 
+exe extract_text5 :
+    src/extract_text5.cpp
+    extract_data_src
+: ;
+
 exe learning2 :
     src/learning2.cpp
     extract_data_src

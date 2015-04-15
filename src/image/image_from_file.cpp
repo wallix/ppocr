@@ -2,7 +2,7 @@
 #include <cstring>
 #include <cerrno>
 
-#include "image.hpp"
+#include "image_from_file.hpp"
 
 #include "mln/image/image2d.hh"
 #include "mln/io/ppm/load.hh"
@@ -22,9 +22,8 @@ Image image2d_to_Image(mln::image2d<T> const & img, ToPix to_pix)
     return Image(Bounds(img.ncols(), img.nrows()), std::move(vimg));
 }
 
-#include <iostream>
 
-Image image_from_file(const char * filename)
+Image image_from_file(const char * filename, unsigned luminance)
 {
     mln::image2d<ocr::rgb8> img;
 
@@ -48,7 +47,7 @@ Image image_from_file(const char * filename)
         = ((511/*PPM_RED_WEIGHT*/   * rgb.red()   + 511)>>10)
         + ((396/*PPM_GREEN_WEIGHT*/ * rgb.green() + 511)>>10)
         + ((117/*PPM_BLUE_WEIGHT*/  * rgb.blue()  + 511)>>10);
-        return (c < 128) ? '-' : 'x';
+        return (c < luminance) ? '-' : 'x';
 //         *it++ = !(rgb.red() == 60 && rgb.green() == 64 && rgb.blue() == 72) ? cc :ncc;
 //         *it++ = (rgb.red() == 255 && rgb.green() == 255 && rgb.blue() == 255) ? ncc : cc;
     });

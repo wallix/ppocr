@@ -241,6 +241,12 @@ void run(
 }
 
 
+unsigned get_value(DataLoader::data_base const & data) {
+    return *reinterpret_cast<unsigned const *>(
+        reinterpret_cast<unsigned char const *>(&data) + sizeof(DataLoader::data_base)
+    );
+}
+
 
 int main(int ac, char ** av) {
     if (ac < 2) {
@@ -265,13 +271,6 @@ int main(int ac, char ** av) {
     }
 
     std::cout << "definitions.size = " << definitions.size() << "\n\n";
-
-
-    auto get_value = [](DataLoader::data_base const & data) {
-        return *reinterpret_cast<unsigned const *>(
-            reinterpret_cast<unsigned char const *>(&data) + sizeof( DataLoader::data_base)
-        );
-    };
 
     EventBySignature events_by_sig;
     Graphic graph;
@@ -310,7 +309,7 @@ int main(int ac, char ** av) {
             prob_letter_on_value,
             prob_value_on_letter,
             definitions,
-            [&get_value, i](DataLoader::Datas const & datas) { return get_value(datas[incr+i]); },
+            [i](DataLoader::Datas const & datas) { return get_value(datas[incr+i]); },
             intervals[i] + 1
         );
     }
@@ -328,7 +327,7 @@ int main(int ac, char ** av) {
 //         prob_letter_on_value,
 //         prob_value_on_letter,
 //         definitions,
-//         [total_sig1, &get_value](DataLoader::Datas const & datas) {
+//         [total_sig1](DataLoader::Datas const & datas) {
 //             return (get_value(datas[0]) * total_sig1 + get_value(datas[1])) / 10;
 //         },
 //         total_sig
@@ -339,7 +338,7 @@ int main(int ac, char ** av) {
         prob_letter_on_value,
         prob_value_on_letter,
         definitions,
-        [total_sig1, &get_value](DataLoader::Datas const & datas) {
+        [total_sig1](DataLoader::Datas const & datas) {
             return (get_value(datas[incr]) / 10) * (get_value(datas[incr+1]) / 10 * total_sig1);
         },
         total_sig
@@ -361,7 +360,7 @@ int main(int ac, char ** av) {
                 prob_letter_on_value,
                 prob_value_on_letter,
                 new_defs,
-                [total_sig1, get_value](DataLoader::Datas const & datas) {
+                [total_sig1](DataLoader::Datas const & datas) {
                     return (get_value(datas[incr]) / 10) * (get_value(datas[incr+1]) / 10 * total_sig1);
                 },
                 total_sig

@@ -30,7 +30,6 @@
 #include "strategies/gravity2.hpp"
 #include "image/image_from_string.hpp"
 #include "image/image.hpp"
-#include <sstream>
 
 #define IMAGE_PATH "./images/"
 

@@ -31,7 +31,6 @@
 #include "image/image_from_string.hpp"
 #include "strategies/utils/diagonal_zone_density.hpp"
 #include "image/image.hpp"
-#include <sstream>
 
 #define IMAGE_PATH "./images/"
 

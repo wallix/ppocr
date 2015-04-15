@@ -90,9 +90,6 @@ bool operator == (Image const &, Image const &);
 inline bool operator != (Image const & a, Image const & b) { return !(a == b); }
 
 
-Image image_from_file(const char * filename);
-
-
 struct NormalPixelGet {
     constexpr NormalPixelGet() noexcept {}
 

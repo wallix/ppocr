@@ -1,4 +1,5 @@
 #include "image/image.hpp"
+#include "image/image_from_file.hpp"
 #include "factory/data_loader.hpp"
 #include "box_char/make_box_character.hpp"
 #include "factory/registry.hpp"

@@ -31,7 +31,6 @@
 #include "image/image_from_string.hpp"
 #include "strategies/utils/cardinal_direction_io.hpp"
 #include "image/image.hpp"
-#include <sstream>
 
 #define IMAGE_PATH "./images/"
 
