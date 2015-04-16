@@ -42,6 +42,8 @@
 
 #include "math/almost_equal.hpp"
 
+#include "sassert.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -49,27 +51,30 @@
 #include <algorithm>
 #include <chrono>
 #include <map>
+#include <set>
 
 #include <cstring>
 #include <cerrno>
-#include <cassert>
 
 using std::size_t;
 
-using string_ref_t = std::reference_wrapper<std::string const>;
+//using string_ref_t = std::reference_wrapper<std::string const>;
 using definition_ref_t = std::reference_wrapper<Definition const>;
 
 struct Probability {
     definition_ref_t refdef;
     double prob;
 
-    Probability(Definition const & def, double prob)
+    Probability(Definition const & def, double prob = 1)
     : refdef(def)
     , prob(prob)
     {}
+
+    std::string const & c() const { return refdef.get().c; }
+    DataLoader::data_base const & data(size_t i) const { return refdef.get().datas[i]; }
 };
 
-using probability_by_characters_t = std::map<string_ref_t, std::vector<Probability>, std::less<std::string>>;
+using probabilities_t = std::vector<Probability>;
 
 
 unsigned get_value(DataLoader::data_base const & data) {
@@ -79,97 +84,79 @@ unsigned get_value(DataLoader::data_base const & data) {
 }
 
 
-probability_by_characters_t reduce_univers(
-    probability_by_characters_t const & probability_by_characters,
+probabilities_t reduce_univers(
+    probabilities_t const & probabilities,
     size_t sig_idx, unsigned value, unsigned interval
 ) {
-    auto d = interval/10;
+    auto d = interval/10u;
 
     auto approximate_get_value = [d, sig_idx, value, interval](Definition const & def) {
         unsigned const sig_value = get_value(def.datas[sig_idx]);
         return value < sig_value
-            ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100 / interval : 0u)
-            : (value <= sig_value + d ? (interval - (value - sig_value)) * 100 / interval : 0u);
+            ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
+            : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u);
+        //return value == sig_value  ? 100 : 0;
     };
 
-    probability_by_characters_t new_probability_by_characters;
+    probabilities_t new_probabilities;
 
-    for (auto const & sref_prob : probability_by_characters) {
-        // P(x and Sn=value)
-        for (Probability const & prob : sref_prob.second) {
-            if (unsigned x = approximate_get_value(prob.refdef)) {
-                auto & probs = new_probability_by_characters[sref_prob.first];
-                probs.emplace_back(prob.refdef, prob.prob * x / 100);
-            }
+    for (auto const & prob : probabilities) {
+        if (unsigned x = approximate_get_value(prob.refdef)) {
+            new_probabilities.emplace_back(prob.refdef, prob.prob * x / 100);
         }
     }
 
-    return new_probability_by_characters;
+    return new_probabilities;
 }
 
 
-double get_probability(std::vector<Probability> const & probs) {
+double accu_probability(std::vector<Probability> const & probs) {
     return std::accumulate(
         probs.begin(), probs.end(), 0.,
         [](double n, Probability const & prob) { return n+prob.prob; }
         //[](double n, Probability const & prob) { return std::max(n, prob.prob); }
-    ) / probs.size();
+    );
 }
 
 
-struct Info { std::string const * s_p; unsigned prob; size_t sz; };
+double get_probability(std::vector<Probability> const & probs) {
+    return accu_probability(probs) / probs.size();
+}
 
-void init_and_show_infos(
-    std::vector<Info> & infos,
-    probability_by_characters_t const & probability_by_characters,
-    probability_by_characters_t const & original_probability_by_characters
-) {
-    infos.resize(probability_by_characters.size());
-    {
-        auto it = infos.begin();
-        for (auto & p : probability_by_characters) {
-            it->s_p = &p.first.get();
-            it->sz = p.second.size();
-            it->prob = std::round(get_probability(p.second)* 100);
-            ++it;
-        }
+
+void sort_and_show_infos(probabilities_t & probabilities) {
+    if (probabilities.empty()) {
+        std::cout << "\033[00;34mbest: 0 ( )\033[0m\n\n";
+        return;
     }
+
     std::sort(
-        infos.begin(), infos.end(),
-        [](Info const & a, Info const & b) { return a.prob > b.prob || (!(a.prob < b.prob) && a.sz > b.sz); }
+        probabilities.begin(), probabilities.end(),
+        [](Probability const & a, Probability const & b)
+        { return a.c() < b.c() || (a.c() == b.c() && a.prob > b.prob); }
     );
 
-    for (auto & info : infos) {
-        std::cout
-            << "\033[00;31m" << *info.s_p << "\033[0m [\033[00;32m"
-            << std::setw(3) << info.prob
-            << "%\033[0m|" << info.sz << "]  "
-        ;
-    }
+    probabilities.erase(std::unique(
+        probabilities.begin(), probabilities.end(),
+        [](Probability const & a, Probability const & b)
+        { return a.c() == b.c(); }
+    ), probabilities.end());
 
-//     struct Best { std::reference_wrapper<Probability const> prob; string_ref_t s; };
-//     std::vector<Best> best;
-//     for (auto & p : probability_by_characters) {
-//         for (Probability const & prob : p.second) {
-//             best.push_back({{prob}, p.first});
-//         }
-//     }
-//     std::sort(
-//         best.begin(), best.end(),
-//         [](Best const & a, Best const & b) { return a.prob.get().prob > b.prob.get().prob; }
-//     );
-//     best.erase(best.begin(), std::unique(
-//         best.begin(), best.end(),
-//         [](Best const & a, Best const & b) { return almost_equal(a.prob.get().prob, b.prob.get().prob, 1); }
-//     ));
-//     if (!best.empty()) {
-//         std::cout << "\n\nbest: ";
-//         auto x = best.front().prob.get().prob;
-//         auto last = std::upper_bound(best.begin(), best.end(), x, [](double x, Best const & best) { return best.prob.get().prob < x; });
-//         for (auto first = best.begin(); first != last; ++first) {
-//             std::cout << first->s.get() << "(" << first->prob.get().prob << ")  ";
-//         }
-//     }
+    std::sort(
+        probabilities.begin(), probabilities.end(),
+        [](Probability const & a, Probability const & b)
+        { return a.prob > b.prob; }
+    );
+
+    auto first = probabilities.begin();
+    std::cout << "\033[00;34mbest: " << first->prob << " ( \033[00;31m" << first->c();
+    for (auto previous = first; ++first != probabilities.end() && !(first->prob < previous->prob); ++previous) {
+        std::cout << " " << first->c();
+    }
+    std::cout << "\033[0m )\n\n";
+    for (; first != probabilities.end(); ++first) {
+        std::cout << "\033[00;31m" << first->c() << "\033[0m " << first->prob << "  ";
+    }
 
     std::cout << "\n\n";
 }
@@ -197,17 +184,15 @@ int main(int ac, char **av)
         return 5;
     }
 
+    std::cout << " ## definitions.size(): " << definitions.size() << "\n\n";
+
     Image img = image_from_file(av[2]);
     Bounds const bounds(img.width(), img.height());
     size_t x = 0;
 
-    probability_by_characters_t const probability_by_characters = [&definitions]() {
-        probability_by_characters_t ret;
-        for (auto const & def : definitions) {
-            ret[def.c].emplace_back(def, 1.);
-        }
-        return ret;
-    }();
+    probabilities_t const probabilities(definitions.begin(), definitions.end());
+    probabilities_t cp_probabilities;
+    probabilities_t tmp_probabilities;
 
 
     struct { bool enable; unsigned interval; } const intervals[] = {
@@ -236,6 +221,8 @@ int main(int ac, char **av)
     std::string result1;
     std::string result2;
 
+    probabilities_t result_probabilities;
+
     using resolution_clock = std::chrono::high_resolution_clock;
     auto t1 = resolution_clock::now();
     while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
@@ -249,81 +236,64 @@ int main(int ac, char **av)
 
         auto datas = loader.new_datas(img_word, img_word.rotate90());
 
-        auto new_probability_by_characters = probability_by_characters;
+        cp_probabilities = probabilities;
         for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
             if (!intervals[i].enable) {
                 continue;
             }
-            new_probability_by_characters = reduce_univers(
-                new_probability_by_characters, i, get_value(datas[i]), intervals[i].interval
-            );
+            cp_probabilities = reduce_univers(cp_probabilities, i, get_value(datas[i]), intervals[i].interval);
         }
 
-        std::vector<Info> infos;
-        init_and_show_infos(infos, new_probability_by_characters, probability_by_characters);
-        if (new_probability_by_characters.empty()) {
+        tmp_probabilities = cp_probabilities;
+        sort_and_show_infos(tmp_probabilities);
+        if (tmp_probabilities.empty()) {
             result1 += '_';
         }
         else {
-            result1 += *infos.front().s_p;
+            result1 += tmp_probabilities.front().c();
         }
 
-        if (new_probability_by_characters.empty()) {
+        if (tmp_probabilities.empty()) {
             result2 += '_';
         }
-        else if (infos.front().prob >= 95) {
-            result2 += *infos.front().s_p;
+        else if (tmp_probabilities.front().prob >= 1) {
+            result2 += tmp_probabilities.front().c();
         }
         else {
-            {
-                probability_by_characters_t result_probability_by_characters;
-                for (size_t i = sizeof(intervals)/sizeof(intervals[0]), e = i + 3/*5*/; i < e; ++i) {
-                    result_probability_by_characters.clear();
-                    for (auto const & sref_prob : new_probability_by_characters) {
-                        // P(x and Sn=value)
-                        for (Probability const & prob : sref_prob.second) {
-                            unsigned const x = prob.refdef.get().datas[i].relationship(datas[i]);
-                            if (x >= 50) {
-                                auto & probs = result_probability_by_characters[sref_prob.first];
-                                probs.emplace_back(prob.refdef, prob.prob * x / 100);
-                            }
-                        }
+            for (size_t i = sizeof(intervals)/sizeof(intervals[0]), e = i + 3; i < e; ++i) {
+                result_probabilities.clear();
+                for (auto const & prob : cp_probabilities) {
+                    unsigned const x = prob.data(i).relationship(datas[i]);
+                    if (x >= 50) {
+                        result_probabilities.emplace_back(prob.refdef, prob.prob * x / 100);
                     }
-                    swap(new_probability_by_characters, result_probability_by_characters);
                 }
-
-                for (size_t i = sizeof(intervals)/sizeof(intervals[0]) + 3, e = i + 2; i < e; ++i) {
-                    result_probability_by_characters.clear();
-                    for (auto const & sref_prob : new_probability_by_characters) {
-                        // P(x and Sn=value)
-                        if ([&]() -> bool {
-                            for (Probability const & prob : probability_by_characters.find(sref_prob.first)->second) {
-                                if (prob.refdef.get().datas[i].relationship(datas[i]) >= 50) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }()) {
-                            result_probability_by_characters[sref_prob.first] = sref_prob.second;
-                        }
-                    }
-                    swap(new_probability_by_characters, result_probability_by_characters);
-                }
+                swap(cp_probabilities, result_probabilities);
             }
 
-            init_and_show_infos(infos, new_probability_by_characters, probability_by_characters);
-
-            if (!new_probability_by_characters.empty()) {
-                using pair_type = probability_by_characters_t::value_type;
-                result2 += std::max_element(
-                    new_probability_by_characters.begin(), new_probability_by_characters.end(),
-                    [](pair_type const & a, pair_type const & b) {
-                        return get_probability(a.second) < get_probability(b.second);
+            for (size_t i = sizeof(intervals)/sizeof(intervals[0]) + 3, e = i + 2; i < e; ++i) {
+                result_probabilities.clear();
+                for (auto const & prob : cp_probabilities) {
+                    auto first = std::lower_bound(
+                        definitions.begin(), definitions.end(), prob.c(),
+                        [](Definition const & a, std::string const & s) { return a.c < s; }
+                    );
+                    for (; first != definitions.end() && first->c == prob.c(); ++first) {
+                        if (prob.data(i).relationship(first->datas[i]) >= 50) {
+                            result_probabilities.push_back(prob);
+                            break;
+                        }
                     }
-                )->first.get();
+                }
+                swap(cp_probabilities, result_probabilities);
+            }
+
+            sort_and_show_infos(cp_probabilities);
+            if (cp_probabilities.empty()) {
+                result2 += '_';
             }
             else {
-                result2 += '_';
+                result2 += cp_probabilities.front().c();
             }
         }
 
