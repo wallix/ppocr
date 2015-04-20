@@ -119,6 +119,7 @@ namespace strategies
         { return seq_alternations == other.seq_alternations; }
 
         unsigned relationship(const alternations& other) const;
+        unsigned best_difference() const;
 
         friend std::istream & operator>>(std::istream &, alternations &);
 

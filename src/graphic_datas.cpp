@@ -272,34 +272,52 @@ int main(int ac, char ** av) {
 
     std::cout << "definitions.size = " << definitions.size() << "\n\n";
 
+    std::sort(
+        definitions.begin(), definitions.end(),
+        [](Definition const & lhs, Definition const & rhs) {
+            return lhs.datas < rhs.datas || (lhs.datas == rhs.datas && lhs.c < rhs.c);
+        }
+    );
+    definitions.erase(
+        std::unique(
+            definitions.begin(), definitions.end(),
+            [](Definition const & lhs, Definition const & rhs) {
+                return lhs.c == rhs.c && lhs.datas == rhs.datas;
+            }
+        ),
+        definitions.end()
+    );
+
+    std::cout << "unique definitions.size = " << definitions.size() << "\n\n";
+
     EventBySignature events_by_sig;
     Graphic graph;
     ProbLetterOnValue prob_letter_on_value;
     ProbValueOnLetter prob_value_on_letter;
 
     unsigned intervals[] = {
-//         strategies::hdirection::traits::get_interval(),
-//         strategies::hdirection90::traits::get_interval(),
-//         strategies::hdirection2::traits::get_interval(),
-//         strategies::hdirection290::traits::get_interval(),
-//         strategies::hgravity::traits::get_interval(),
-//         strategies::hgravity90::traits::get_interval(),
-//         strategies::hgravity2::traits::get_interval(),
-//         strategies::hgravity290::traits::get_interval(),
-//         strategies::proportionality::traits::get_interval(),
-//         strategies::dvdirection::traits::get_interval(),
-//         strategies::dvdirection90::traits::get_interval(),
-//         strategies::dvdirection2::traits::get_interval(),
-//         strategies::dvdirection290::traits::get_interval(),
-//         strategies::dvgravity::traits::get_interval(),
-//         strategies::dvgravity90::traits::get_interval(),
-//         strategies::dvgravity2::traits::get_interval(),
-//         strategies::dvgravity290::traits::get_interval(),
-//         strategies::density::traits::get_interval(),
+        strategies::hdirection::traits::get_interval(),
+        strategies::hdirection90::traits::get_interval(),
+        strategies::hdirection2::traits::get_interval(),
+        strategies::hdirection290::traits::get_interval(),
+        strategies::hgravity::traits::get_interval(),
+        strategies::hgravity90::traits::get_interval(),
+        strategies::hgravity2::traits::get_interval(),
+        strategies::hgravity290::traits::get_interval(),
+        strategies::proportionality::traits::get_interval(),
+        strategies::dvdirection::traits::get_interval(),
+        strategies::dvdirection90::traits::get_interval(),
+        strategies::dvdirection2::traits::get_interval(),
+        strategies::dvdirection290::traits::get_interval(),
+        strategies::dvgravity::traits::get_interval(),
+        strategies::dvgravity90::traits::get_interval(),
+        strategies::dvgravity2::traits::get_interval(),
+        strategies::dvgravity290::traits::get_interval(),
+        strategies::density::traits::get_interval(),
         strategies::dzdensity::traits::get_interval(),
         strategies::dzdensity90::traits::get_interval(),
     };
-    constexpr unsigned incr = 18;
+    constexpr unsigned incr = 0;
 
     for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
         std::cout << "name: " << loader.names()[incr+i] << "\n";
@@ -314,11 +332,15 @@ int main(int ac, char ** av) {
         );
     }
 
+    // TODO
+    return 0;
+
 
     auto const total_sig1 = (intervals[0] + 1) / 10;
     //auto const total_sig2 = (intervals[1] + 1) / 10;
     auto const total_sig = [&]() {
-        auto res = (intervals[0] + 1) / 10 * (intervals[1] + 1) / 10;
+        //auto res = (intervals[0] + 1) / 10 * (intervals[1] + 1) / 10;
+        auto res = (intervals[0] + 1 + intervals[1] + 1) / 2;
         return res;
     }();
 //     run(
@@ -339,10 +361,14 @@ int main(int ac, char ** av) {
         prob_value_on_letter,
         definitions,
         [total_sig1](DataLoader::Datas const & datas) {
-            return (get_value(datas[incr]) / 10) * (get_value(datas[incr+1]) / 10 * total_sig1);
+            return (get_value(datas[incr]) + get_value(datas[incr+1])) / 2;
+            //return (get_value(datas[incr]) / 10) * (get_value(datas[incr+1]) / 10 * total_sig1);
         },
         total_sig
     );
+
+    // TODO
+    return 0;
 
     auto first = definitions.begin();
     auto last = definitions.end();

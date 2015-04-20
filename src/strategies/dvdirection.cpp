@@ -42,4 +42,7 @@ unsigned dvdirection90_traits::compute(const Image&, const Image& img90)
 unsigned int dvdirection_traits::get_interval() { return 200; }
 unsigned int dvdirection90_traits::get_interval() { return 200; }
 
+unsigned int dvdirection_traits::best_difference() { return 10; }
+unsigned int dvdirection90_traits::best_difference() { return 10; }
+
 }

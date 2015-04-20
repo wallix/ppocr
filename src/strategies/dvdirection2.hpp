@@ -28,11 +28,13 @@ namespace strategies {
 struct dvdirection2_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 struct dvdirection290_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 using dvdirection2 = basic_proportionality<dvdirection2_traits>;

@@ -47,4 +47,7 @@ unsigned dvgravity290_traits::compute(const Image&, const Image& img90)
 unsigned int dvgravity2_traits::get_interval() { return 100; }
 unsigned int dvgravity290_traits::get_interval() { return 100; }
 
+unsigned int dvgravity2_traits::best_difference() { return 5; }
+unsigned int dvgravity290_traits::best_difference() { return 5; }
+
 }

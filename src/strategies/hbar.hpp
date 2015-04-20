@@ -46,6 +46,8 @@ namespace details_ {
         unsigned relationship(basic_hbar const & other) const
         { return other.n_ == n_ ? 100 : 0; }
 
+        unsigned best_difference() const { return 1; }
+
         friend std::istream & operator>>(std::istream &, basic_hbar &);
 
     private:

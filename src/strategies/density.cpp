@@ -36,3 +36,6 @@ unsigned int strategies::density_traits::compute(const Image& img, const Image& 
     }
     return count * 100 / img.area();
 }
+
+unsigned int strategies::density_traits::best_difference() { return 5; }
+

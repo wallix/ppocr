@@ -42,4 +42,8 @@ unsigned hgravity90_traits::compute(const Image&, const Image& img90)
 unsigned int hgravity_traits::get_interval() { return 200; }
 unsigned int hgravity90_traits::get_interval() { return 200; }
 
+unsigned int hgravity_traits::best_difference() { return 10; }
+unsigned int hgravity90_traits::best_difference() { return 10; }
+
+
 }

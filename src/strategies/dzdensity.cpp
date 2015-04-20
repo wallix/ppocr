@@ -37,4 +37,7 @@ unsigned dzdensity90_traits::compute(const Image&, const Image& img90)
 unsigned int dzdensity_traits::get_interval() { return 100; }
 unsigned int dzdensity90_traits::get_interval() { return 100; }
 
+unsigned int dzdensity_traits::best_difference() { return 5; }
+unsigned int dzdensity90_traits::best_difference() { return 5; }
+
 }

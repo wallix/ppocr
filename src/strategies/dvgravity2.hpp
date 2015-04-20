@@ -28,11 +28,13 @@ namespace strategies {
 struct dvgravity2_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 struct dvgravity290_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 using dvgravity2 = basic_proportionality<dvgravity2_traits>;

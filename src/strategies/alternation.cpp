@@ -76,6 +76,10 @@ unsigned alternations::relationship(const alternations& other) const
     return nb_equal * 100 / this->seq_alternations.size();
 }
 
+unsigned int alternations::best_difference() const
+{ return 10; }
+
+
 std::ostream & operator<<(std::ostream & os, alternations const & seq_alternations)
 {
     for (auto const & alternations : seq_alternations) {

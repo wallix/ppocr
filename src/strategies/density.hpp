@@ -28,6 +28,7 @@ namespace strategies {
 struct density_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 using density = basic_proportionality<density_traits>;

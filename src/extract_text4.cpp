@@ -58,23 +58,97 @@
 
 using std::size_t;
 
-//using string_ref_t = std::reference_wrapper<std::string const>;
+using string_ref_t = std::reference_wrapper<std::string const>;
 using definition_ref_t = std::reference_wrapper<Definition const>;
 
-struct Probability {
-    definition_ref_t refdef;
+struct GroupDefinition
+{
+    definition_ref_t def_base;
+    std::vector<string_ref_t> are_same;
+
+    GroupDefinition(Definition const & def)
+    : def_base(def)
+    {}
+
+    DataLoader::Datas const & datas() const { return this->def_base.get().datas; }
+    DataLoader::data_base const & data(size_t i) const { return this->def_base.get().datas[i]; }
+    std::string const & c() const { return this->def_base.get().c; }
+};
+
+using group_definition_ref_t = std::reference_wrapper<GroupDefinition const>;
+
+
+struct Probability
+{
+    group_definition_ref_t gdef;
     double prob;
 
-    Probability(Definition const & def, double prob = 1)
-    : refdef(def)
+    Probability(GroupDefinition const & gdef, double prob = 1)
+    : gdef(gdef)
     , prob(prob)
     {}
 
-    std::string const & c() const { return refdef.get().c; }
-    DataLoader::data_base const & data(size_t i) const { return refdef.get().datas[i]; }
+    std::string const & c() const { return gdef.get().c(); }
+    DataLoader::data_base const & data(size_t i) const { return gdef.get().datas()[i]; }
+    std::vector<string_ref_t> const & are_same() const { return gdef.get().are_same; }
 };
 
-using probabilities_t = std::vector<Probability>;
+struct Probabilities
+{
+    using iterator = Probability *;
+
+    Probabilities(size_t sz)
+    : data(static_cast<Probability*>(::operator new(sz * sizeof(Probability))))
+    , current(data)
+    {}
+
+    template<class It>
+    Probabilities(It first, It last)
+    : data(static_cast<Probability*>(::operator new((last-first) * sizeof(Probability))))
+    , current(data + (last-first))
+    { std::copy(first, last, data); }
+
+    Probabilities(Probabilities &&) = delete;
+    Probabilities(Probabilities const &) = delete;
+
+    void swap(Probabilities & p) noexcept
+    {
+        std::swap(p.data, data);
+        std::swap(p.current, current);
+    }
+
+    ~Probabilities() {
+      ::operator delete(this->data);
+    }
+
+    iterator begin() const { return data; }
+    iterator end() const { return current; }
+    size_t size() const { return current - data; }
+    bool empty() const { return current == data; }
+    void push_back(Probability const & p) { *current++ = p; }
+    template<class... Args>
+    void emplace_back(Args const & ... args) { *current++ = {args...}; }
+    void clear() { current = data; }
+
+    Probability & front() const { return *data; }
+    Probability & back() const { return *(current-1); }
+    Probability & operator[](size_t i) const { return data[i]; }
+
+    void resize(size_t n) {
+        current = data + n;
+    }
+
+private:
+    Probability * data;
+    Probability * current;
+};
+
+void swap(Probabilities & a, Probabilities & b) noexcept
+{ a.swap(b); }
+
+//using probabilities_t = std::vector<Probability>;
+using probabilities_t = Probabilities;
+
 
 
 unsigned get_value(DataLoader::data_base const & data) {
@@ -84,29 +158,31 @@ unsigned get_value(DataLoader::data_base const & data) {
 }
 
 
-probabilities_t reduce_univers(
+void reduce_univers(
     probabilities_t const & probabilities,
+    probabilities_t & probabilities_cp,
     size_t sig_idx, unsigned value, unsigned interval
 ) {
     auto d = interval/10u;
 
-    auto approximate_get_value = [d, sig_idx, value, interval](Definition const & def) {
-        unsigned const sig_value = get_value(def.datas[sig_idx]);
+    auto approximate_get_value = [d, sig_idx, value, interval](GroupDefinition const & gdef) {
+        unsigned const sig_value = get_value(gdef.data(sig_idx));
         return value < sig_value
             ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
             : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u);
         //return value == sig_value  ? 100 : 0;
     };
 
-    probabilities_t new_probabilities;
-
-    for (auto const & prob : probabilities) {
-        if (unsigned x = approximate_get_value(prob.refdef)) {
-            new_probabilities.emplace_back(prob.refdef, prob.prob * x / 100);
+    auto first = probabilities.begin();
+    auto last = probabilities.end();
+    auto cp = probabilities_cp.begin();
+    for (; first != last; ++first) {
+        if (unsigned x = approximate_get_value(first->gdef)) {
+            *cp = {first->gdef, first->prob * x / 100};
+            ++cp;
         }
     }
-
-    return new_probabilities;
+    probabilities_cp.resize(cp - probabilities_cp.begin());
 }
 
 
@@ -132,15 +208,44 @@ void sort_and_show_infos(probabilities_t & probabilities) {
 
     std::sort(
         probabilities.begin(), probabilities.end(),
-        [](Probability const & a, Probability const & b)
-        { return a.c() < b.c() || (a.c() == b.c() && a.prob > b.prob); }
+        [](Probability const & a, Probability const & b) -> bool {
+            if (a.c() < b.c()) {
+                return true;
+            }
+            if (a.c() > b.c()) {
+                return false;
+            }
+            if (a.are_same().size() < b.are_same().size()) {
+                return true;
+            }
+            if (a.are_same().size() > b.are_same().size()) {
+                return false;
+            }
+            auto const pair = std::mismatch(
+                a.are_same().begin(), a.are_same().end(), b.are_same().begin(),
+                std::equal_to<std::string>()
+            );
+            if (pair.first == a.are_same().end()) {
+                return a.prob > b.prob;
+            }
+            return pair.first->get() < pair.second->get();
+        }
     );
 
-    probabilities.erase(std::unique(
-        probabilities.begin(), probabilities.end(),
-        [](Probability const & a, Probability const & b)
-        { return a.c() == b.c(); }
-    ), probabilities.end());
+    probabilities.resize(
+        std::unique(
+            probabilities.begin(), probabilities.end(),
+            [](Probability const & a, Probability const & b) {
+                if (a.c() == b.c() && a.are_same().size() == b.are_same().size()) {
+                    return std::equal(
+                        a.are_same().begin(), a.are_same().end(), b.are_same().begin(),
+                        std::equal_to<std::string>()
+                    );
+                }
+                return false;
+            }
+        ) - probabilities.begin()
+    );
 
     std::sort(
         probabilities.begin(), probabilities.end(),
@@ -148,14 +253,27 @@ void sort_and_show_infos(probabilities_t & probabilities) {
         { return a.prob > b.prob; }
     );
 
+    auto print_chars = [](GroupDefinition const & gdef) {
+        std::cout << gdef.c();
+        if (!gdef.are_same.empty()) {
+            for (std::string const & c : gdef.are_same) {
+                std::cout << " " << c;
+            }
+        }
+    };
+
     auto first = probabilities.begin();
-    std::cout << "\033[00;34mbest: " << first->prob << " ( \033[00;31m" << first->c();
+    std::cout << "\033[00;34mbest: " << first->prob << " ( \033[00;31m";
+    print_chars(first->gdef);
     for (auto previous = first; ++first != probabilities.end() && !(first->prob < previous->prob); ++previous) {
-        std::cout << " " << first->c();
+        std::cout << " ";
+        print_chars(first->gdef);
     }
     std::cout << "\033[0m )\n\n";
     for (; first != probabilities.end(); ++first) {
-        std::cout << "\033[00;31m" << first->c() << "\033[0m " << first->prob << "  ";
+        std::cout << "\033[00;31m";
+        print_chars(first->gdef);
+        std::cout << "\033[0m " << first->prob << "  ";
     }
 
     std::cout << "\n\n";
@@ -177,7 +295,7 @@ int main(int ac, char **av)
     DataLoader loader;
     all_registy(loader);
 
-    std::vector<Definition> definitions = read_definitions(file, loader);
+    std::vector<Definition> const definitions = read_definitions(file, loader);
 
     if (!file.eof()) {
         std::cerr << "read error\n";
@@ -186,13 +304,43 @@ int main(int ac, char **av)
 
     std::cout << " ## definitions.size(): " << definitions.size() << "\n\n";
 
+    std::vector<GroupDefinition> group_definitions(definitions.begin(), definitions.end());
+
+    std::sort(
+        group_definitions.begin(), group_definitions.end(),
+        [](GroupDefinition const & lhs, GroupDefinition const & rhs) {
+            bool const is_less = lhs.datas() < rhs.datas();
+            return is_less || (lhs.datas() == rhs.datas() && lhs.c() < rhs.c());
+        }
+    );
+    if (!group_definitions.empty())
+    {
+        auto first = group_definitions.begin();
+        auto prev = group_definitions.begin();
+        auto last = group_definitions.end();
+        while (++first != last) {
+            if (first->datas() == prev->datas()) {
+                if (prev->are_same.empty() ? first->c() != prev->c() : prev->are_same.empty() && prev->are_same.back().get() != first->c()) {
+                    prev->are_same.push_back(first->c());
+                }
+            }
+            else {
+                ++prev;
+               *prev = *std::move(first);
+            }
+        }
+        group_definitions.erase(++prev, group_definitions.end());
+    }
+
+    std::cout << " ## group_definitions.size(): " << group_definitions.size() << "\n\n";
+
     Image img = image_from_file(av[2]);
     Bounds const bounds(img.width(), img.height());
     size_t x = 0;
 
-    probabilities_t const probabilities(definitions.begin(), definitions.end());
-    probabilities_t cp_probabilities;
-    probabilities_t tmp_probabilities;
+    probabilities_t const probabilities(group_definitions.begin(), group_definitions.end());
+    probabilities_t cp_probabilities(group_definitions.size());
+    probabilities_t tmp_probabilities(group_definitions.size());
 
 
     struct { bool enable; unsigned interval; } const intervals[] = {
@@ -221,7 +369,7 @@ int main(int ac, char **av)
     std::string result1;
     std::string result2;
 
-    probabilities_t result_probabilities;
+    probabilities_t result_probabilities(group_definitions.size());
 
     using resolution_clock = std::chrono::high_resolution_clock;
     auto t1 = resolution_clock::now();
@@ -236,15 +384,38 @@ int main(int ac, char **av)
 
         auto datas = loader.new_datas(img_word, img_word.rotate90());
 
-        cp_probabilities = probabilities;
+//         {
+//             std::vector<size_t> reduce_values;
+//             for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
+//                 if (!intervals[i].enable) {
+//                     continue;
+//                 }
+//                 cp_probabilities = probabilities;
+//                 reduce_univers(cp_probabilities, i, get_value(datas[i]), intervals[i].interval);
+//                 reduce_values.emplace_back(cp_probabilities.size());
+//             }
+//
+//             auto i = 0u;
+//             for (auto reduce : reduce_values) {
+//                 if (!intervals[i++].enable) {
+//                     continue;
+//                 }
+//                 std::cout << (i-1) << ") \033[00;36m" << std::setw(4) << reduce << "\033[0m  ";
+//             }
+//             std::cout << "\n";
+//         }
+
+        cp_probabilities.resize(probabilities.size());
+        reduce_univers(probabilities, cp_probabilities, 16, get_value(datas[16]), intervals[16].interval);
         for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
-            if (!intervals[i].enable) {
+            if (!intervals[i].enable || i == 16) {
                 continue;
             }
-            cp_probabilities = reduce_univers(cp_probabilities, i, get_value(datas[i]), intervals[i].interval);
+            reduce_univers(cp_probabilities, cp_probabilities, i, get_value(datas[i]), intervals[i].interval);
         }
 
-        tmp_probabilities = cp_probabilities;
+        tmp_probabilities.resize(cp_probabilities.size());
+        std::copy(cp_probabilities.begin(), cp_probabilities.end(), tmp_probabilities.begin());
         sort_and_show_infos(tmp_probabilities);
         if (tmp_probabilities.empty()) {
             result1 += '_';
@@ -256,16 +427,16 @@ int main(int ac, char **av)
         if (tmp_probabilities.empty()) {
             result2 += '_';
         }
-        else if (tmp_probabilities.front().prob >= 1) {
-            result2 += tmp_probabilities.front().c();
+        else if (tmp_probabilities[0].prob >= 1/* && tmp_probabilities.size() == 1*/) {
+            result2 += tmp_probabilities[0].c();
         }
         else {
             for (size_t i = sizeof(intervals)/sizeof(intervals[0]), e = i + 3; i < e; ++i) {
                 result_probabilities.clear();
-                for (auto const & prob : cp_probabilities) {
+                for (auto & prob : cp_probabilities) {
                     unsigned const x = prob.data(i).relationship(datas[i]);
                     if (x >= 50) {
-                        result_probabilities.emplace_back(prob.refdef, prob.prob * x / 100);
+                        result_probabilities.emplace_back(std::move(prob.gdef), prob.prob * x / 100);
                     }
                 }
                 swap(cp_probabilities, result_probabilities);
@@ -273,14 +444,14 @@ int main(int ac, char **av)
 
             for (size_t i = sizeof(intervals)/sizeof(intervals[0]) + 3, e = i + 2; i < e; ++i) {
                 result_probabilities.clear();
-                for (auto const & prob : cp_probabilities) {
+                for (auto & prob : cp_probabilities) {
                     auto first = std::lower_bound(
                         definitions.begin(), definitions.end(), prob.c(),
                         [](Definition const & a, std::string const & s) { return a.c < s; }
                     );
                     for (; first != definitions.end() && first->c == prob.c(); ++first) {
                         if (prob.data(i).relationship(first->datas[i]) >= 50) {
-                            result_probabilities.push_back(prob);
+                            result_probabilities.push_back(std::move(prob));
                             break;
                         }
                     }

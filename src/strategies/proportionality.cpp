@@ -28,7 +28,8 @@ namespace strategies {
 unsigned int proportionality_traits::compute(const Image& img, const Image& /*img90*/)
 { return img.width() * 100 / (img.width() + img.height()); }
 
-unsigned int proportionality_traits::get_interval()
-{ return 100; }
+unsigned int proportionality_traits::get_interval() { return 100; }
+
+unsigned int proportionality_traits::best_difference() { return 5; }
 
 }

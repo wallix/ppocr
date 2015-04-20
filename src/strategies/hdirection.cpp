@@ -42,4 +42,7 @@ unsigned hdirection90_traits::compute(const Image&, const Image& img90)
 unsigned int hdirection_traits::get_interval() { return 200; }
 unsigned int hdirection90_traits::get_interval() { return 200; }
 
+unsigned int hdirection_traits::best_difference() { return 10; }
+unsigned int hdirection90_traits::best_difference() { return 10; }
+
 }

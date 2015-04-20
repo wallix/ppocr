@@ -40,11 +40,13 @@ namespace strategies {
 struct dzdensity_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 struct dzdensity90_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 using dzdensity = basic_proportionality<dzdensity_traits>;

@@ -28,6 +28,7 @@ namespace strategies {
 struct proportionality_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 using proportionality = basic_proportionality<proportionality_traits>;

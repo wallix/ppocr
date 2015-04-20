@@ -28,11 +28,13 @@ namespace strategies {
 struct hgravity2_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 struct hgravity290_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 using hgravity2 = basic_proportionality<hgravity2_traits>;

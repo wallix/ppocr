@@ -72,6 +72,8 @@ namespace strategies
 
         unsigned relationship(basic_proportionality const & other) const
         { return proportionality_base::relationship(other, traits::get_interval()); }
+
+        unsigned best_difference() const { return Traits::best_difference(); }
     };
 }
 

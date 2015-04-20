@@ -115,6 +115,7 @@ struct DataLoader
         virtual void write(std::ostream & os) const = 0;
         virtual void read(std::istream & is) = 0;
         virtual unsigned relationship(const data_base& other) const = 0;
+        virtual unsigned best_difference() const = 0;
     };
 
     template<class Strategy>
@@ -137,6 +138,9 @@ struct DataLoader
 
         virtual unsigned relationship(const data_base& other) const
         { return this->strategy.relationship(static_cast<data const&>(other).strategy); }
+
+        virtual unsigned best_difference() const
+        { return this->strategy.best_difference(); }
 
         virtual void write(std::ostream & os) const override
         { os << this->strategy; }

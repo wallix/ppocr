@@ -47,6 +47,8 @@ namespace strategies {
 
         unsigned relationship(proportionality_zone const & other) const;
 
+        unsigned best_difference() const { return 10u; }
+
         friend std::istream & operator>>(std::istream &, proportionality_zone &);
 
     private:

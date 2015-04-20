@@ -28,11 +28,13 @@ namespace strategies {
 struct hdirection2_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 struct hdirection290_traits {
     static unsigned get_interval();
     static unsigned compute(Image const & img, Image const & img90);
+    static unsigned best_difference();
 };
 
 using hdirection2 = basic_proportionality<hdirection2_traits>;
