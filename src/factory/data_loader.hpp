@@ -116,6 +116,13 @@ struct DataLoader
         virtual void read(std::istream & is) = 0;
         virtual unsigned relationship(const data_base& other) const = 0;
         virtual unsigned best_difference() const = 0;
+
+        bool operator == (data_base const & other) const { return this->eq(other); }
+        bool operator != (data_base const & other) const { return !(*this == other); }
+        bool operator <  (data_base const & other) const { return this->lt(other); }
+        bool operator >  (data_base const & other) const { return (other < *this); }
+        bool operator >= (data_base const & other) const { return !(*this < other); }
+        bool operator <= (data_base const & other) const { return !(other < *this); }
     };
 
     template<class Strategy>

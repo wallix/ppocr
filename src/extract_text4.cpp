@@ -161,7 +161,7 @@ unsigned get_value(DataLoader::data_base const & data) {
 void reduce_univers(
     probabilities_t const & probabilities,
     probabilities_t & probabilities_cp,
-    size_t sig_idx, unsigned value, unsigned interval
+    size_t sig_idx, unsigned value, unsigned interval, bool first
 ) {
     auto d = interval/10u;
 
@@ -173,15 +173,36 @@ void reduce_univers(
         //return value == sig_value  ? 100 : 0;
     };
 
-    auto first = probabilities.begin();
-    auto last = probabilities.end();
     auto cp = probabilities_cp.begin();
-    for (; first != last; ++first) {
-        if (unsigned x = approximate_get_value(first->gdef)) {
-            *cp = {first->gdef, first->prob * x / 100};
+    if (first) {
+        auto first = std::lower_bound(
+            probabilities.begin(), probabilities.end(), value < d ? 0u : value - d,
+            [&](Probability const & prob, unsigned x) {
+                return get_value(prob.data(sig_idx)) < x;
+            }
+        );
+        auto last = std::upper_bound(
+            first, probabilities.end(), std::min(value + d, interval),
+            [&](unsigned x, Probability const & prob) {
+                return x < get_value(prob.data(sig_idx));
+            }
+        );
+        for (; first != last; ++first) {
+            *cp = {first->gdef, first->prob * approximate_get_value(first->gdef) / 100};
             ++cp;
         }
     }
+    else {
+        auto first = probabilities.begin();
+        auto last = probabilities.end();
+        for (; first != last; ++first) {
+            if (unsigned x = approximate_get_value(first->gdef)) {
+                *cp = {first->gdef, first->prob * x / 100};
+                ++cp;
+            }
+        }
+    }
+
     probabilities_cp.resize(cp - probabilities_cp.begin());
 }
 
@@ -334,6 +355,15 @@ int main(int ac, char **av)
 
     std::cout << " ## group_definitions.size(): " << group_definitions.size() << "\n\n";
 
+    size_t const first_algo = 16;
+
+    std::sort(
+        group_definitions.begin(), group_definitions.end(),
+        [](GroupDefinition const & lhs, GroupDefinition const & rhs) {
+            return lhs.data(first_algo) < rhs.data(first_algo);
+        }
+    );
+
     Image img = image_from_file(av[2]);
     Bounds const bounds(img.width(), img.height());
     size_t x = 0;
@@ -406,12 +436,12 @@ int main(int ac, char **av)
 //         }
 
         cp_probabilities.resize(probabilities.size());
-        reduce_univers(probabilities, cp_probabilities, 16, get_value(datas[16]), intervals[16].interval);
+        reduce_univers(probabilities, cp_probabilities, first_algo, get_value(datas[first_algo]), intervals[first_algo].interval, true);
         for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
-            if (!intervals[i].enable || i == 16) {
+            if (!intervals[i].enable || i == first_algo) {
                 continue;
             }
-            reduce_univers(cp_probabilities, cp_probabilities, i, get_value(datas[i]), intervals[i].interval);
+            reduce_univers(cp_probabilities, cp_probabilities, i, get_value(datas[i]), intervals[i].interval, false);
         }
 
         tmp_probabilities.resize(cp_probabilities.size());
