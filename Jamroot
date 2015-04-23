@@ -9,9 +9,9 @@ project ppocr
     <include>src
     <include>src/ocr
 #    <toolset>gcc:<cxxflags>-Wno-cpp
-    <cxxflags>-Wno-unused-but-set-variable
+    <toolset>gcc:<cxxflags>-Wno-unused-but-set-variable
 
-    <cxxflags>-finline-functions
+    <toolset>gcc:<cxxflags>-finline-functions
     <toolset>gcc:<cxxflags>-funswitch-loops
     <toolset>gcc:<cxxflags>-fpredictive-commoning
     <toolset>gcc:<cxxflags>-fgcse-after-reload
@@ -23,7 +23,7 @@ project ppocr
 #    <cxxflags>-Wconversion
     <cxxflags>-Wvla
     <cxxflags>-Wstrict-aliasing=2
-   <cxxflags>-Wold-style-cast
+    <cxxflags>-Wold-style-cast
 #    <cxxflags>-Wlong-long
     <cxxflags>-O3
     <variant>debug:<cxxflags>-g
@@ -58,8 +58,13 @@ project ppocr
     <cxxflags>-Woverloaded-virtual
     <cxxflags>-Wunused-variable
 
+    <cxxflags>-flto
+    <define>NDEBUG
+
 #     <toolset>gcc:<cxxflags>-Wdouble-promotion
     <toolset>gcc:<cxxflags>-Wmaybe-uninitialized
+
+    <toolset>clang:<cxxflags>-Wno-mismatched-tags
 
 #     <toolset>clang:<cxxflags>-Wno-mismatched-tags
 #    <toolset>clang:<cxxflags>-Wno-overloaded-virtual
@@ -156,6 +161,7 @@ alias extract_data_src :
 
 exe extract_text2 :
     src/extract_text2.cpp
+    src/utils/image_compare.cpp
     extract_data_src
     filter_src
 : ;
@@ -187,6 +193,11 @@ exe show_stats :
 
 exe graphic_datas :
     src/graphic_datas.cpp
+    registry_src
+: ;
+
+exe stat_definitions :
+    src/stat_definitions.cpp
     registry_src
 : ;
 

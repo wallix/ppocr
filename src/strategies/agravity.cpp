@@ -40,7 +40,7 @@ bool agravity::operator<(agravity const & other) const
 unsigned agravity::relationship(const agravity& other) const
 {
     // disable -Wfloat-equal
-    std::equal_to<double> const eq;
+    std::equal_to<double> eq;
     if (eq(angle(), null_angle()) || eq(other.angle(), null_angle())) {
         return eq(other.angle(), angle()) ? 100 : 0;
     }

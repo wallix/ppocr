@@ -295,7 +295,7 @@ int main(int ac, char ** av) {
     ProbLetterOnValue prob_letter_on_value;
     ProbValueOnLetter prob_value_on_letter;
 
-    unsigned intervals[] = {
+    unsigned const intervals[] = {
         strategies::hdirection::traits::get_interval(),
         strategies::hdirection90::traits::get_interval(),
         strategies::hdirection2::traits::get_interval(),
