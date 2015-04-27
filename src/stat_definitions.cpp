@@ -37,6 +37,8 @@
 #include "strategies/density.hpp"
 #include "strategies/dzdensity.hpp"
 
+#include "utils/read_definitions_file_and_normalize.hpp"
+
 #include <iostream>
 #include <array>
 #include <iomanip>
@@ -62,41 +64,10 @@ int main(int ac, char **av)
         return 1;
     }
 
-    std::ifstream file(av[1]);
-    if (!file) {
-        std::cerr << strerror(errno) << '\n';
-        return 2;
-    }
-
     DataLoader loader;
     all_registy(loader);
 
-    std::vector<Definition> definitions = read_definitions(file, loader);
-
-    if (!file.eof()) {
-        std::cerr << "read error\n";
-        return 5;
-    }
-
-    std::cout << "definitions.size = " << definitions.size() << "\n\n";
-
-    std::sort(
-        definitions.begin(), definitions.end(),
-        [](Definition const & lhs, Definition const & rhs) {
-            return lhs.datas < rhs.datas;
-        }
-    );
-    definitions.erase(
-        std::unique(
-            definitions.begin(), definitions.end(),
-            [](Definition const & lhs, Definition const & rhs) {
-                return lhs.datas == rhs.datas;
-            }
-        ),
-        definitions.end()
-    );
-
-    std::cout << "unique definitions.size = " << definitions.size() << "\n\n";
+    std::vector<Definition> const definitions = read_definitions_file_and_normalize(av[1], loader, &std::cout);
 
     unsigned const intervals[] = {
         strategies::hdirection::traits::get_interval(),
@@ -232,6 +203,7 @@ int main(int ac, char **av)
                             vec.begin(), vec.end(), vec2.begin(), vec2.end(), Counter{n},
                             [](Definition const & a, Definition const & b) { return &a < &b; }
                         );
+                        n = vec.size() - n;
                         print_value(vec.size(), n);
                     }
                     if (xx == x) {

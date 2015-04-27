@@ -410,7 +410,7 @@ int main(int ac, char **av)
         //std::cerr << "\nbox(" << cbox << ")\n";
 
         Image const img_word = img.section(cbox.index(), cbox.bounds());
-        std::cerr << img_word;
+        std::cout << img_word;
 
         auto datas = loader.new_datas(img_word, img_word.rotate90());
 
@@ -506,7 +506,7 @@ int main(int ac, char **av)
 
     {
         auto t2 = resolution_clock::now();
-        std::cout << std::chrono::duration<double>(t2-t1).count() << "s\n";
+        std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
     }
 
     std::cout << " ## result1: " << (result1) << "\n ## result2: " << (result2) << std::endl;

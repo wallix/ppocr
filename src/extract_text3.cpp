@@ -1,3 +1,23 @@
+/*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 2 of the License, or
+*   (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*
+*   Product name: redemption, a FLOSS RDP proxy
+*   Copyright (C) Wallix 2010-2015
+*   Author(s): Jonathan Poelen
+*/
+
 #include "image/image.hpp"
 #include "image/image_from_file.hpp"
 #include "factory/data_loader.hpp"
@@ -6,6 +26,24 @@
 #include "factory/definition.hpp"
 #include "box_char/box.hpp"
 #include "filters/line.hpp"
+
+#include "strategies/utils/basic_proportionality.hpp"
+#include "strategies/hdirection.hpp"
+#include "strategies/hdirection2.hpp"
+#include "strategies/hgravity.hpp"
+#include "strategies/hgravity2.hpp"
+#include "strategies/proportionality.hpp"
+#include "strategies/dvdirection.hpp"
+#include "strategies/dvdirection2.hpp"
+#include "strategies/dvgravity.hpp"
+#include "strategies/dvgravity2.hpp"
+#include "strategies/density.hpp"
+#include "strategies/dzdensity.hpp"
+
+#include "math/almost_equal.hpp"
+#include "utils/image_compare.hpp"
+
+#include "sassert.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -17,98 +55,458 @@
 
 #include <cstring>
 #include <cerrno>
-#include <cassert>
 
 using std::size_t;
 
-struct CharacterDefinitions
+using string_ref_t = std::reference_wrapper<std::string const>;
+using definition_ref_t = std::reference_wrapper<Definition const>;
+
+
+unsigned get_value(DataLoader::data_base const & data) {
+    return *reinterpret_cast<unsigned const *>(
+        reinterpret_cast<unsigned char const *>(&data) + sizeof(DataLoader::data_base)
+    );
+}
+
+constexpr size_t count_algo_base = 20;
+
+template<class T, size_t N>
+constexpr size_t  size(T(&)[N]) {
+    return N;
+}
+
+struct GroupDefinition
 {
-    std::string c;
-    std::vector<DataLoader::Datas> datas_list;
+    struct {
+        definition_ref_t ref_def;
+        std::array<unsigned, count_algo_base> values;
+    } def_base;
+    std::vector<string_ref_t> are_same;
+
+    GroupDefinition(GroupDefinition const &) = delete;
+    GroupDefinition(GroupDefinition &&) = default;
+    GroupDefinition&operator=(GroupDefinition const &) = delete;
+    GroupDefinition&operator=(GroupDefinition &&) = default;
+
+    GroupDefinition(Definition const & def)
+    : def_base{std::ref(def), {{
+        get_value(def.datas[0]),
+        get_value(def.datas[1]),
+        get_value(def.datas[2]),
+        get_value(def.datas[3]),
+        get_value(def.datas[4]),
+        get_value(def.datas[5]),
+        get_value(def.datas[6]),
+        get_value(def.datas[7]),
+        get_value(def.datas[8]),
+        get_value(def.datas[9]),
+        get_value(def.datas[10]),
+        get_value(def.datas[11]),
+        get_value(def.datas[12]),
+        get_value(def.datas[13]),
+        get_value(def.datas[14]),
+        get_value(def.datas[15]),
+        get_value(def.datas[16]),
+        get_value(def.datas[17]),
+        get_value(def.datas[18]),
+        get_value(def.datas[19]),
+    }}}
+    {}
+
+    std::array<unsigned, 20> const & datas() const { return this->def_base.values; }
+    unsigned data(size_t i) const { return this->def_base.values[i]; }
+    std::string const & c() const { return this->def_base.ref_def.get().c; }
 };
 
-struct DataSorted
+using group_definition_ref_t = std::reference_wrapper<GroupDefinition const>;
+
+
+struct Probability
 {
-    DataLoader const & loader_;
+    group_definition_ref_t gdef;
+    double prob;
 
-    using data_map_type = std::map<std::string, std::vector<DataLoader::Datas>>;
-    using strings_ref_type = std::vector<std::reference_wrapper<std::string const>>;
+    Probability(GroupDefinition const & gdef, double prob = 1)
+    : gdef(gdef)
+    , prob(prob)
+    {}
 
-    data_map_type const datas_map;
-    strings_ref_type const strings_ref;
-    std::vector<unsigned char> enable_;
+    std::string const & c() const { return gdef.get().c(); }
+    unsigned data(size_t i) const { return gdef.get().data(i); }
+    std::vector<string_ref_t> const & are_same() const { return gdef.get().are_same; }
+};
 
-    DataSorted(std::vector<Definition> definitions, DataLoader const & loader)
-    : loader_(loader)
-    , datas_map([&definitions]() {
-        data_map_type m;
-        for (Definition & def : definitions) {
-            m[std::move(def.c)].push_back(std::move(def.datas));
-        }
-        return m;
-    }())
-    , strings_ref([this]() {
-        strings_ref_type cont;
-        for (auto & pair : datas_map) {
-            cont.emplace_back(pair.first);
-        }
-        return cont;
-    }())
-    , enable_(loader.size(), true)
+struct Probabilities
+{
+    using iterator = Probability *;
+
+    Probabilities(size_t sz)
+    : data(static_cast<Probability*>(::operator new(sz * sizeof(Probability))))
+    , current(data)
+    {}
+
+    template<class It>
+    Probabilities(It first, It last)
+    : data(static_cast<Probability*>(::operator new((last-first) * sizeof(Probability))))
+    , current(data + (last-first))
+    { std::copy(first, last, data); }
+
+    Probabilities(Probabilities &&) = delete;
+    Probabilities(Probabilities const &) = delete;
+
+    void swap(Probabilities & p) noexcept
     {
+        std::swap(p.data, data);
+        std::swap(p.current, current);
     }
 
-    strings_ref_type
-    get_characters(DataLoader::Datas const & datas, unsigned percent = 100) const
-    {
-        strings_ref_type ret;
-        strings_ref_type localret;
-        strings_ref_type const * ref = &this->strings_ref;
+    ~Probabilities() {
+      ::operator delete(this->data);
+    }
 
-        for (size_t i = 0; i < this->enable_.size(); ++i) {
-            if (!this->enable_[i]) {
-                continue;
+    iterator begin() const { return data; }
+    iterator end() const { return current; }
+    size_t size() const { return current - data; }
+    bool empty() const { return current == data; }
+    void push_back(Probability const & p) { *current++ = p; }
+    template<class... Args>
+    void emplace_back(Args const & ... args) { *current++ = {args...}; }
+    void clear() { current = data; }
+
+    Probability & front() const { return *data; }
+    Probability & back() const { return *(current-1); }
+    Probability & operator[](size_t i) const { return data[i]; }
+
+    void resize(size_t n) {
+        current = data + n;
+    }
+
+private:
+    Probability * data;
+    Probability * current;
+};
+
+void swap(Probabilities & a, Probabilities & b) noexcept
+{ a.swap(b); }
+
+//using probabilities_t = std::vector<Probability>;
+using probabilities_t = Probabilities;
+
+
+
+void reduce_univers(
+    std::vector<uint64_t> & datas_accepted,
+    std::vector<std::vector<uint64_t>> const & datas,
+    unsigned value
+) {
+    //size_t n = 0;
+    auto accepted_it = datas_accepted.begin();
+    for (auto mask : datas[value]) {
+        *accepted_it &= mask;
+        //n += __builtin_popcountl(*accepted_it);
+        ++accepted_it;
+    }
+    //std::cout << " ## n: " << (n) << std::endl;
+}
+
+
+double accu_probability(std::vector<Probability> const & probs) {
+    return std::accumulate(
+        probs.begin(), probs.end(), 0.,
+        [](double n, Probability const & prob) { return n+prob.prob; }
+        //[](double n, Probability const & prob) { return std::max(n, prob.prob); }
+    );
+}
+
+
+double get_probability(std::vector<Probability> const & probs) {
+    return accu_probability(probs) / probs.size();
+}
+
+
+void sort_and_show_infos(probabilities_t & probabilities) {
+    if (probabilities.empty()) {
+        std::cout << "\033[00;34mbest: 0 ( )\033[0m\n\n";
+        return;
+    }
+
+    std::sort(
+        probabilities.begin(), probabilities.end(),
+        [](Probability const & a, Probability const & b) -> bool {
+            if (a.c() < b.c()) {
+                return true;
             }
+            if (a.c() > b.c()) {
+                return false;
+            }
+            if (a.are_same().size() < b.are_same().size()) {
+                return true;
+            }
+            if (a.are_same().size() > b.are_same().size()) {
+                return false;
+            }
+            auto const pair = std::mismatch(
+                a.are_same().begin(), a.are_same().end(), b.are_same().begin(),
+                std::equal_to<std::string>()
+            );
+            if (pair.first == a.are_same().end()) {
+                return a.prob > b.prob;
+            }
+            return pair.first->get() < pair.second->get();
+        }
+    );
 
-            for (auto & s: *ref) {
-                auto it = this->datas_map.find(s);
-                if (it != this->datas_map.end() && std::any_of(
-                    it->second.begin(),
-                    it->second.end(),
-                    [i, percent, &datas](DataLoader::Datas const & datas_) {
-                        return datas_[i].relationship(datas[i]) >= percent;
+    probabilities.resize(
+        std::unique(
+            probabilities.begin(), probabilities.end(),
+            [](Probability const & a, Probability const & b) {
+                if (a.c() == b.c() && a.are_same().size() == b.are_same().size()) {
+                    return std::equal(
+                        a.are_same().begin(), a.are_same().end(), b.are_same().begin(),
+                        std::equal_to<std::string>()
+                    );
+                }
+                return false;
+            }
+        ) - probabilities.begin()
+    );
+
+    std::sort(
+        probabilities.begin(), probabilities.end(),
+        [](Probability const & a, Probability const & b)
+        { return a.prob > b.prob; }
+    );
+
+    auto print_chars = [](GroupDefinition const & gdef) {
+        std::cout << gdef.c();
+        if (!gdef.are_same.empty()) {
+            for (std::string const & c : gdef.are_same) {
+                std::cout << " " << c;
+            }
+        }
+    };
+
+    auto first = probabilities.begin();
+    std::cout << "\033[00;34mbest: " << first->prob << " ( \033[00;31m";
+    print_chars(first->gdef);
+    for (auto previous = first; ++first != probabilities.end() && !(first->prob < previous->prob); ++previous) {
+        std::cout << " ";
+        print_chars(first->gdef);
+    }
+    std::cout << "\033[0m )\n\n";
+    for (; first != probabilities.end(); ++first) {
+        std::cout << "\033[00;31m";
+        print_chars(first->gdef);
+        std::cout << "\033[0m " << first->prob << "  ";
+    }
+
+    std::cout << "\n\n";
+}
+
+struct compute_image_data_type {
+    std::vector<Definition> const & definitions;
+    std::vector<GroupDefinition> const group_definitions;
+    // [algo][value][data_mask]
+    std::array<std::vector<std::vector<uint64_t>>, count_algo_base> const datas_defs;
+    std::vector<uint64_t> datas_accepted;
+    probabilities_t probabilities;
+    probabilities_t tmp_probabilities;
+    size_t const first_algo;
+
+    std::string result1;
+    std::string result2;
+
+    struct def_img_compare {
+        def_img_compare() {}
+        bool operator()(Image const & a, Image const & b) const
+        { return image_compare(a, b) < 0; }
+    };
+    std::map<Image, std::pair<std::string, std::string>, def_img_compare> sorted_img;
+
+    compute_image_data_type(
+        std::vector<Definition> const & definitions,
+        unsigned const * intervals,
+        size_t const first_algo = 0
+    )
+    : definitions(definitions)
+    , group_definitions([&]() {
+        std::vector<GroupDefinition> group_definitions(definitions.begin(), definitions.end());
+
+        std::sort(
+            group_definitions.begin(), group_definitions.end(),
+            [](GroupDefinition const & lhs, GroupDefinition const & rhs) {
+                bool const is_less = lhs.datas() < rhs.datas();
+                return is_less || (lhs.datas() == rhs.datas() && lhs.c() < rhs.c());
+            }
+        );
+        if (!group_definitions.empty())
+        {
+            auto first = group_definitions.begin();
+            auto prev = group_definitions.begin();
+            auto last = group_definitions.end();
+            while (++first != last) {
+                if (first->datas() == prev->datas()) {
+                    if (prev->are_same.empty() ? first->c() != prev->c() : prev->are_same.empty() && prev->are_same.back().get() != first->c()) {
+                        prev->are_same.push_back(first->c());
                     }
-                )) {
-                    localret.push_back(s);
+                }
+                else {
+                    ++prev;
+                    *prev = std::move(*first);
                 }
             }
-
-            ret.swap(localret);
-            if (ret.empty()) {
-                break;
-            }
-            ref = &ret;
-            localret.clear();
+            group_definitions.erase(++prev, group_definitions.end());
         }
-        return ret;
+
+        std::sort(
+            group_definitions.begin(), group_definitions.end(),
+            [first_algo](GroupDefinition const & lhs, GroupDefinition const & rhs) {
+                return lhs.data(first_algo) < rhs.data(first_algo);
+            }
+        );
+        return group_definitions;
+    }())
+    , datas_defs([&]{
+        std::array<std::vector<std::vector<uint64_t>>, count_algo_base> datas_defs;
+        size_t i = 0;
+        for (auto & datas : datas_defs) {
+            datas.resize(intervals[i] + 1);
+            size_t value = 0;
+            auto const d = intervals[i]/10u;
+            for (std::vector<uint64_t> & data_mask : datas) {
+                data_mask.resize(group_definitions.size() / 64 + (group_definitions.size() % 64 ? 1 : 0));
+                //data_mask.resize(group_definitions.size());
+                size_t idef = 0;
+                for (auto & gdef : this->group_definitions) {
+                    auto const sig_value = gdef.data(i);
+                    if (value < sig_value ? (sig_value <= value + d) : (value <= sig_value + d)) {
+                        data_mask[idef / 64] |= 1ull << (idef % 64);
+                        //data_mask[idef] = 1;
+                    }
+                    ++idef;
+                }
+                ++value;
+            }
+            ++i;
+        }
+        return datas_defs;
+    }())
+    , probabilities(group_definitions.size())
+    , tmp_probabilities(group_definitions.size())
+    , first_algo(first_algo)
+    {}
+};
+
+void compute_image(
+    compute_image_data_type & o,
+    DataLoader::Datas const & datas,
+    Image & img,
+    unsigned const * intervals
+) {
+    o.datas_accepted.clear();
+    o.datas_accepted.resize(o.group_definitions.size() / 64 + (o.group_definitions.size() % 64 ? 1 : 0), ~uint64_t{});
+    //o.datas_accepted.resize(o.group_definitions.size(), 1);
+
+    unsigned constexpr l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
+    for (size_t i : l) {
+        reduce_univers(
+            o.datas_accepted,
+            o.datas_defs[i],
+            get_value(datas[i])
+        );
     }
 
-    bool is_enable(size_t i) const { return this->enable_[i]; }
-    void flip_enable(size_t i) { this->set_enable(i, !this->is_enable(i)); }
-    void set_enable(size_t i, bool x) { this->enable_[i] = x; }
-    void reset_enable(bool x = true) { std::fill(this->enable_.begin(), this->enable_.end(), x); }
-    void flip_enable() { for (auto & x : this->enable_) x = !x; }
-};
+    o.probabilities.clear();
+    for (size_t i = 0; i < o.group_definitions.size(); ++i) {
+        if (o.datas_accepted[i/64] & (1ull << (i %  64))) {
+        //if (o.datas_accepted[i]) {
+            double prob = 1;
+            for (size_t ialgo = 0; ialgo < count_algo_base; ++ialgo) {
+                auto const interval = intervals[ialgo];
+                auto const d = interval/10u;
+                unsigned const sig_value = o.group_definitions[i].data(ialgo);
+                unsigned const value = get_value(datas[ialgo]);
+                prob = prob * (value < sig_value
+                    ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
+                    : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u)
+                ) / 100;
+            }
+            o.probabilities.push_back({o.group_definitions[i], prob});
+        }
+    }
+    o.tmp_probabilities.resize(o.probabilities.size());
+    std::copy(o.probabilities.begin(), o.probabilities.end(), o.tmp_probabilities.begin());
+    sort_and_show_infos(o.tmp_probabilities);
+
+    auto & cache_element = o.sorted_img.emplace(std::move(img), std::pair<std::string, std::string>()).first->second;
+
+    if (o.tmp_probabilities.empty()) {
+        o.result1 += '_';
+        cache_element.first = '_';
+    }
+    else {
+        o.result1 += o.tmp_probabilities.front().c();
+        cache_element.first = o.tmp_probabilities.front().c();
+    }
+
+    if (o.tmp_probabilities.empty()) {
+        o.result2 += '_';
+        cache_element.second = '_';
+    }
+    else if (o.tmp_probabilities[0].prob >= 1/* && tmp_probabilities.size() == 1*/) {
+        o.result2 += o.tmp_probabilities[0].c();
+        cache_element.second = o.tmp_probabilities[0].c();
+    }
+    else {
+        for (size_t i = count_algo_base, e = i + 3; i < e; ++i) {
+            o.tmp_probabilities.clear();
+            for (auto & prob : o.probabilities) {
+                unsigned const x = prob.gdef.get().def_base.ref_def.get().datas[i].relationship(datas[i]);
+                if (x >= 50) {
+                    o.tmp_probabilities.emplace_back(std::move(prob.gdef), prob.prob * x / 100);
+                }
+            }
+            swap(o.probabilities, o.tmp_probabilities);
+        }
+
+        for (size_t i = count_algo_base + 3, e = i + 2; i < e; ++i) {
+            o.tmp_probabilities.clear();
+            for (auto & prob : o.probabilities) {
+                auto first = std::lower_bound(
+                    o.definitions.begin(), o.definitions.end(), prob.c(),
+                    [](Definition const & a, std::string const & s) { return a.c < s; }
+                );
+                for (; first != o.definitions.end() && first->c == prob.c(); ++first) {
+                    if (prob.gdef.get().def_base.ref_def.get().datas[i].relationship(first->datas[i]) >= 50) {
+                        o.tmp_probabilities.push_back(std::move(prob));
+                        break;
+                    }
+                }
+            }
+            swap(o.probabilities, o.tmp_probabilities);
+        }
+
+        sort_and_show_infos(o.probabilities);
+        if (o.probabilities.empty()) {
+            o.result2 += '_';
+            cache_element.second = '_';
+        }
+        else {
+            o.result2 += o.probabilities.front().c();
+            cache_element.second = o.probabilities.front().c();
+        }
+    }
+
+    o.result1 += ' ';
+    o.result2 += ' ';
+}
 
 int main(int ac, char **av)
 {
-    if (ac < 3) {
-        std::cerr << av[0] << " datas images [-i]\n";
+    if (ac < 2) {
+        std::cerr << av[0] << " datas images\n";
         return 1;
     }
-
-    DataLoader loader;
-    all_registy(loader);
 
     std::ifstream file(av[1]);
     if (!file) {
@@ -116,223 +514,85 @@ int main(int ac, char **av)
         return 2;
     }
 
-    auto definitions = read_definitions(file, loader);
+    DataLoader loader;
+    all_registy(loader);
+
+    std::vector<Definition> const definitions = read_definitions(file, loader);
 
     if (!file.eof()) {
         std::cerr << "read error\n";
         return 5;
     }
 
-    DataSorted data_sorted(std::move(definitions), loader);
+    std::cout << " ## definitions.size(): " << definitions.size() << "\n\n";
+
+    unsigned intervals[] = {
+        strategies::hdirection::traits::get_interval(),
+        strategies::hdirection90::traits::get_interval(),
+        strategies::hdirection2::traits::get_interval(),
+        strategies::hdirection290::traits::get_interval(),
+        strategies::hgravity::traits::get_interval(),
+        strategies::hgravity90::traits::get_interval(),
+        strategies::hgravity2::traits::get_interval(),
+        strategies::hgravity290::traits::get_interval(),
+        strategies::proportionality::traits::get_interval(),
+        strategies::dvdirection::traits::get_interval(),
+        strategies::dvdirection90::traits::get_interval(),
+        strategies::dvdirection2::traits::get_interval(),
+        strategies::dvdirection290::traits::get_interval(),
+        strategies::dvgravity::traits::get_interval(),
+        strategies::dvgravity90::traits::get_interval(),
+        strategies::dvgravity2::traits::get_interval(),
+        strategies::dvgravity290::traits::get_interval(),
+        strategies::density::traits::get_interval(),
+        strategies::dzdensity::traits::get_interval(),
+        strategies::dzdensity90::traits::get_interval(),
+    };
+    static_assert(size(intervals) == count_algo_base, "intervals.size error");
+
+    size_t const first_algo = 16;
+    compute_image_data_type compute_image_data(definitions, intervals, first_algo);
+
+    std::cout << " ## group_definitions.size(): " << compute_image_data.group_definitions.size() << "\n\n";
 
     Image img = image_from_file(av[2]);
     Bounds const bounds(img.width(), img.height());
+    size_t x = 0;
 
-    std::string s;
-    std::istringstream iss;
-    bool display_char = false;
-    bool show_one_line = false;
-    bool show_data_if_empty_range = false;
-    bool show_percent = false;
-    unsigned conformity = 100;
+    using resolution_clock = std::chrono::high_resolution_clock;
+    auto t1 = resolution_clock::now();
+    while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
+        //min_y = std::min(cbox.y(), min_y);
+        //bounds_y = std::max(cbox.y() + cbox.h(), bounds_y);
+        //bounds_x = cbox.x() + cbox.w();
+        //std::cerr << "\nbox(" << cbox << ")\n";
 
-    struct Line {
-        std::string c;
-        unsigned i;
-    };
-    std::vector<Line> info_lines;
-    {
-        std::ifstream file("/tmp/l");
-        std::string s; unsigned i;
-        while (file >> s >> i) {
-            info_lines.push_back({s, i});
+        Image img_word = img.section(cbox.index(), cbox.bounds());
+        std::cout << img_word;
+
+        auto it = compute_image_data.sorted_img.find(img_word);
+        if (it != compute_image_data.sorted_img.end()) {
+            compute_image_data.result1 += it->second.first;
+            compute_image_data.result2 += it->second.second;
+            compute_image_data.result1 += ' ';
+            compute_image_data.result2 += ' ';
         }
+        else {
+            auto datas = loader.new_datas(img_word, img_word.rotate90());
+            compute_image(compute_image_data, datas, img_word, intervals);
+        }
+
+        x = cbox.x() + cbox.w();
     }
 
-    do {
-        size_t x = [&] {
-            size_t x = 0;
-            auto d = img.data();
-            for (; x < img.width(); ++x, ++d) {
-                if (!utils::vertical_empty(d, img.bounds())) {
-                    break;
-                }
-            }
-            return x;
-        }();
-        size_t num_word = 0;
-        size_t num_word_ok = 0;
+    {
+        auto t2 = resolution_clock::now();
+        std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
+    }
 
-        size_t const min_x = x;
-        size_t min_y = img.height();
-        size_t bounds_x = 0;
-        size_t bounds_y = 0;
-
-        using resolution_clock = std::chrono::high_resolution_clock;
-        auto t1 = resolution_clock::now();
-        while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
-            min_y = std::min(cbox.y(), min_y);
-            bounds_y = std::max(cbox.y() + cbox.h(), bounds_y);
-            bounds_x = cbox.x() + cbox.w();
-            //std::cerr << "\nbox(" << cbox << ")\n";
-
-            Image const img_word = img.section(cbox.index(), cbox.bounds());
-            //std::cerr << img_word << '\n';
-
-            //Def const def{{}, img_word, loader.new_datas(img_word, img_word.rotate90())};
-            auto data = loader.new_datas(img_word, img_word.rotate90());
-            //std::cerr << data << '\n';
-
-            if (display_char && !show_one_line) {
-                std::cout << img_word << cbox << "\n";
-                std::cout.write(img_word.data(), img_word.area()) << '\n';
-                std::cout << loader.writer(data);
-            }
-
-            auto characters = data_sorted.get_characters(data, conformity);
-            bool const ok = (characters.size() == 1);
-
-            if (num_word < 10) {
-                std::cout << "0";
-            }
-            if (characters.empty()) {
-                std::cout << num_word << " \033[00;31m000\033[0m []";
-
-                if (show_data_if_empty_range) {
-                    std::cout << "\n" << loader.writer(data);
-                }
-            }
-            else {
-                std::cout << num_word << " ";
-                if (ok) {
-                    ++num_word_ok;
-                    std::cout << "\033[00;32m";
-                }
-                auto const sz = characters.size();
-                if (!show_one_line) {
-                    if (sz < 100) {
-                        std::cout << "0";
-                    }
-                    if (sz < 10) {
-                        std::cout << "0";
-                    }
-                }
-                std::cout << sz;
-                if (ok) {
-                    std::cout << "\033[0m";
-                }
-                std::cout << " [";
-                for (auto & c : characters) {
-                    std::cout << c.get() << ' ';
-                }
-                std::cout << "\b]";
-            }
-            std::cout << (show_one_line ? " " : "\n");
-            ++num_word;
-
-            x = cbox.x() + cbox.w();
-        }
-
-        {
-            auto t2 = resolution_clock::now();
-            std::cout << "\nok: " << num_word_ok << " / " << num_word
-              << " : " << std::chrono::duration<double>(t2-t1).count() << "s\n"
-            ;
-
-            Index const text_index(min_x, min_y);
-            Bounds const text_bounds(bounds_x-min_x, bounds_y-min_y);
-            std::cout << "\n box: [" << text_index << " + " << text_bounds << "]\n";
-        }
-
-        if (ac != 4) break;
-        std::cout << "\n";
-
-        auto show_name = [&]() {
-            size_t num_name = 0;
-            for (auto const & name : loader.names()) {
-                if (num_name < 10) {
-                    std::cout << "0";
-                }
-                std::cout << num_name << (data_sorted.is_enable(num_name) ? " x " : "   ") << name << '\n';
-                ++num_name;
-            }
-        };
-        show_name();
-
-        if (conformity != 100) {
-            std::cout << "\n conformity: " << conformity << "\n";
-        }
-
-        std::cin.clear();
-
-        // interactive
-        while ((std::cout << "\ninteractive >>>\n") && std::cin >> s && !s.empty()) {
-            if (s[0] == 'r') {
-                data_sorted.reset_enable();
-                show_name();
-            }
-            else if (s[0] == 'e') {
-                std::getline(std::cin, s);
-                iss.clear();
-                iss.str(s);
-                size_t i;
-                while (iss >> i) {
-                    if (i < loader.size()) {
-                        data_sorted.flip_enable(i);
-                    }
-                    else {
-                        std::cerr << i << " unknow\n";
-                    }
-                }
-                show_name();
-            }
-            else if (s[0] == 's') {
-                show_one_line = !show_one_line;
-            }
-            else if (s[0] == 'd') {
-                display_char = !display_char;
-            }
-            else if (s[0] == 'q') {
-                std::cin.clear(std::ios::eofbit);
-                break;
-            }
-            else if (s[0] == 'x') {
-                data_sorted.flip_enable();
-                show_name();
-            }
-            else if (s[0] == 'c') {
-                break;
-            }
-            else if (s[0] == 'f') {
-                show_data_if_empty_range = !show_data_if_empty_range;
-            }
-            else if (s[0] == '%') {
-                std::cin >> conformity;
-                conformity = std::min(100u, conformity);
-            }
-            else if (s[0] == 'P') {
-                show_percent = !show_percent;
-            }
-            else if (s[0] == 'h') {
-                std::cout <<
-                  "r: reset strategies\n"
-                  "e id id2 ...: enable/disable strategy(ies)\n"
-                  "x: inverse strategies\n"
-                  "s: enable/disable \"one line per word\"\n"
-                  "d: enable/disable \"print image with word\"\n"
-                  "f: enable/disable show_data_if_empty_range\n"
-                  "c: continue\n"
-                  "% percent: percent min\n"
-                  "P: enable/disable show_percent\n"
-                  "q: quit\n"
-                  "h: help\n";
-            }
-            else {
-                std::cerr << "Unknow\n";
-            }
-        }
-        std::cout << std::endl;
-
-        std::cin.ignore(10000, '\n');
-    } while (!std::cin.eof());
+    std::cout
+      << " ## result1: " << (compute_image_data.result1)
+      << "\n ## result2: " << (compute_image_data.result2)
+      << std::endl
+    ;
 }

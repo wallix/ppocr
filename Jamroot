@@ -93,6 +93,7 @@ obj image           : src/image/image.cpp ;
 obj image_from_file : src/image/image_from_file.cpp ;
 obj image_from_string : src/image/image_from_string.cpp ;
 obj definition      : src/factory/definition.cpp ;
+obj read_def_file_and_normalize : src/utils/read_definitions_file_and_normalize.cpp ;
 
 alias strategies_src :
     src/strategies/agravity.cpp
@@ -168,6 +169,7 @@ exe extract_text2 :
 
 exe extract_text3 :
     src/extract_text3.cpp
+    src/utils/image_compare.cpp
     extract_data_src
 : ;
 
@@ -178,6 +180,7 @@ exe extract_text4 :
 
 exe extract_text5 :
     src/extract_text5.cpp
+    src/utils/image_compare.cpp
     extract_data_src
 : ;
 
@@ -199,6 +202,13 @@ exe graphic_datas :
 exe stat_definitions :
     src/stat_definitions.cpp
     registry_src
+    read_def_file_and_normalize
+: ;
+
+exe tree :
+    src/tree.cpp
+    registry_src
+    read_def_file_and_normalize
 : ;
 
 exe normalize_learning :

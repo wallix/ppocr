@@ -462,7 +462,7 @@ void compute_image(compute_image_data_type & o, DataLoader::Datas const & datas,
         intervals[o.first_algo].interval,
         true
     );
-    constexpr unsigned l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
+    unsigned constexpr l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
     static_assert(size(l) == count_algo_base, "l.size error");
     for (size_t i : l) {
         if (!intervals[i].enable || i == o.first_algo) {
@@ -585,7 +585,7 @@ int main(int ac, char **av)
         //std::cerr << "\nbox(" << cbox << ")\n";
 
         Image img_word = img.section(cbox.index(), cbox.bounds());
-        std::cerr << img_word;
+        std::cout << img_word;
 
         auto it = compute_image_data.sorted_img.find(img_word);
         if (it != compute_image_data.sorted_img.end()) {
@@ -604,7 +604,7 @@ int main(int ac, char **av)
 
     {
         auto t2 = resolution_clock::now();
-        std::cout << std::chrono::duration<double>(t2-t1).count() << "s\n";
+        std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
     }
 
     std::cout
