@@ -41,6 +41,7 @@
 #include "strategies/dzdensity.hpp"
 
 #include "math/almost_equal.hpp"
+#include "utils/image_compare.hpp"
 
 #include "sassert.hpp"
 
@@ -51,7 +52,6 @@
 #include <algorithm>
 #include <chrono>
 #include <map>
-#include <set>
 
 #include <cstring>
 #include <cerrno>
@@ -61,18 +61,61 @@ using std::size_t;
 using string_ref_t = std::reference_wrapper<std::string const>;
 using definition_ref_t = std::reference_wrapper<Definition const>;
 
+
+unsigned get_value(DataLoader::data_base const & data) {
+    return *reinterpret_cast<unsigned const *>(
+        reinterpret_cast<unsigned char const *>(&data) + sizeof(DataLoader::data_base)
+    );
+}
+
+constexpr size_t count_algo_base = 20;
+
+template<class T, size_t N>
+constexpr size_t  size(T(&)[N]) {
+    return N;
+}
+
 struct GroupDefinition
 {
-    definition_ref_t def_base;
+    struct {
+        definition_ref_t ref_def;
+        std::array<unsigned, count_algo_base> values;
+    } def_base;
     std::vector<string_ref_t> are_same;
 
+    GroupDefinition(GroupDefinition const &) = delete;
+    GroupDefinition(GroupDefinition &&) = default;
+    GroupDefinition&operator=(GroupDefinition const &) = delete;
+    GroupDefinition&operator=(GroupDefinition &&) = default;
+
     GroupDefinition(Definition const & def)
-    : def_base(def)
+    : def_base{std::ref(def), {{
+        get_value(def.datas[0]),
+        get_value(def.datas[1]),
+        get_value(def.datas[2]),
+        get_value(def.datas[3]),
+        get_value(def.datas[4]),
+        get_value(def.datas[5]),
+        get_value(def.datas[6]),
+        get_value(def.datas[7]),
+        get_value(def.datas[8]),
+        get_value(def.datas[9]),
+        get_value(def.datas[10]),
+        get_value(def.datas[11]),
+        get_value(def.datas[12]),
+        get_value(def.datas[13]),
+        get_value(def.datas[14]),
+        get_value(def.datas[15]),
+        get_value(def.datas[16]),
+        get_value(def.datas[17]),
+        get_value(def.datas[18]),
+        get_value(def.datas[19]),
+    }}}
     {}
 
-    DataLoader::Datas const & datas() const { return this->def_base.get().datas; }
-    DataLoader::data_base const & data(size_t i) const { return this->def_base.get().datas[i]; }
-    std::string const & c() const { return this->def_base.get().c; }
+    std::array<unsigned, 20> const & datas() const { return this->def_base.values; }
+    unsigned data(size_t i) const { return this->def_base.values[i]; }
+    std::string const & c() const { return this->def_base.ref_def.get().c; }
 };
 
 using group_definition_ref_t = std::reference_wrapper<GroupDefinition const>;
@@ -89,7 +132,7 @@ struct Probability
     {}
 
     std::string const & c() const { return gdef.get().c(); }
-    DataLoader::data_base const & data(size_t i) const { return gdef.get().datas()[i]; }
+    unsigned data(size_t i) const { return gdef.get().data(i); }
     std::vector<string_ref_t> const & are_same() const { return gdef.get().are_same; }
 };
 
@@ -151,59 +194,19 @@ using probabilities_t = Probabilities;
 
 
 
-unsigned get_value(DataLoader::data_base const & data) {
-    return *reinterpret_cast<unsigned const *>(
-        reinterpret_cast<unsigned char const *>(&data) + sizeof(DataLoader::data_base)
-    );
-}
-
-
 void reduce_univers(
-    probabilities_t const & probabilities,
-    probabilities_t & probabilities_cp,
-    size_t sig_idx, unsigned value, unsigned interval, bool first
+    std::vector<uint64_t> & datas_accepted,
+    std::vector<std::vector<uint64_t>> const & datas,
+    unsigned value
 ) {
-    auto d = interval/10u;
-
-    auto approximate_get_value = [d, sig_idx, value, interval](GroupDefinition const & gdef) {
-        unsigned const sig_value = get_value(gdef.data(sig_idx));
-        return value < sig_value
-            ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
-            : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u);
-        //return value == sig_value  ? 100 : 0;
-    };
-
-    auto cp = probabilities_cp.begin();
-    if (first) {
-        auto first = std::lower_bound(
-            probabilities.begin(), probabilities.end(), value < d ? 0u : value - d,
-            [&](Probability const & prob, unsigned x) {
-                return get_value(prob.data(sig_idx)) < x;
-            }
-        );
-        auto last = std::upper_bound(
-            first, probabilities.end(), std::min(value + d, interval),
-            [&](unsigned x, Probability const & prob) {
-                return x < get_value(prob.data(sig_idx));
-            }
-        );
-        for (; first != last; ++first) {
-            *cp = {first->gdef, first->prob * approximate_get_value(first->gdef) / 100};
-            ++cp;
-        }
+    //size_t n = 0;
+    auto accepted_it = datas_accepted.begin();
+    for (auto mask : datas[value]) {
+        *accepted_it &= mask;
+        //n += __builtin_popcountl(*accepted_it);
+        ++accepted_it;
     }
-    else {
-        auto first = probabilities.begin();
-        auto last = probabilities.end();
-        for (; first != last; ++first) {
-            if (unsigned x = approximate_get_value(first->gdef)) {
-                *cp = {first->gdef, first->prob * x / 100};
-                ++cp;
-            }
-        }
-    }
-
-    probabilities_cp.resize(cp - probabilities_cp.begin());
+    //std::cout << " ## n: " << (n) << std::endl;
 }
 
 
@@ -300,6 +303,247 @@ void sort_and_show_infos(probabilities_t & probabilities) {
     std::cout << "\n\n";
 }
 
+struct compute_image_data_type {
+    std::vector<Definition> const & definitions;
+    std::vector<GroupDefinition> const group_definitions;
+    std::array<unsigned, 4> const nb_u64;
+    std::vector<uint64_t> datas_accepted;
+    // [cat][algo][value][data_mask]
+    std::array<std::array<std::vector<std::vector<uint64_t>>, count_algo_base>, 4> const datas_defs;
+    probabilities_t probabilities;
+    probabilities_t tmp_probabilities;
+    size_t const first_algo;
+
+    std::string result1;
+    std::string result2;
+
+    struct def_img_compare {
+        def_img_compare() {}
+        bool operator()(Image const & a, Image const & b) const
+        { return image_compare(a, b) < 0; }
+    };
+    std::map<Image, std::pair<std::string, std::string>, def_img_compare> sorted_img;
+
+    static unsigned idx_cat(DataLoader::Datas const & datas) {
+        auto data = reinterpret_cast<unsigned const *>(
+            reinterpret_cast<unsigned char const *>(&datas[23]) + sizeof(DataLoader::data_base)
+        );
+        if (data[0] && data[1]) {
+            return 0;
+        }
+        if (!data[0] && !data[1]) {
+            return 1;
+        }
+        if (data[0] && !data[1]) {
+            return 2;
+        }
+        return 3;
+    }
+
+    static unsigned idx_cat(GroupDefinition const & gdef) {
+        return idx_cat(gdef.def_base.ref_def.get().datas);
+    }
+
+    compute_image_data_type(
+        std::vector<Definition> const & definitions,
+        unsigned const * intervals,
+        size_t const first_algo = 0
+    )
+    : definitions(definitions)
+    , group_definitions([&]() {
+        std::vector<GroupDefinition> group_definitions(definitions.begin(), definitions.end());
+
+        std::sort(
+            group_definitions.begin(), group_definitions.end(),
+            [](GroupDefinition const & lhs, GroupDefinition const & rhs) {
+                bool const is_less = lhs.datas() < rhs.datas();
+                return is_less || (lhs.datas() == rhs.datas() && lhs.c() < rhs.c());
+            }
+        );
+        if (!group_definitions.empty())
+        {
+            auto first = group_definitions.begin();
+            auto prev = group_definitions.begin();
+            auto last = group_definitions.end();
+            while (++first != last) {
+                if (first->datas() == prev->datas()) {
+                    if (prev->are_same.empty() ? first->c() != prev->c() : prev->are_same.empty() && prev->are_same.back().get() != first->c()) {
+                        prev->are_same.push_back(first->c());
+                    }
+                }
+                else {
+                    ++prev;
+                    *prev = std::move(*first);
+                }
+            }
+            group_definitions.erase(++prev, group_definitions.end());
+        }
+
+        std::sort(
+            group_definitions.begin(), group_definitions.end(),
+            [first_algo](GroupDefinition const & lhs, GroupDefinition const & rhs) {
+                return idx_cat(lhs) < idx_cat(rhs)
+                   ||  (idx_cat(lhs) == idx_cat(rhs) && lhs.data(first_algo) < rhs.data(first_algo));
+            }
+        );
+        return group_definitions;
+    }())
+    , nb_u64([&]() {
+        std::array<unsigned, 4> cat{{}};
+        for (GroupDefinition const & gdef : group_definitions) {
+            ++cat[idx_cat(gdef)];
+        }
+        return cat;
+    }())
+    , datas_accepted((*std::max_element(std::begin(nb_u64), std::end(nb_u64)) + 63) / 64)
+    , datas_defs([&]{
+        std::array<std::array<std::vector<std::vector<uint64_t>>, count_algo_base>, 4> datas_defs;
+        unsigned accu_shift = 0;
+        for (size_t icat = 0; icat < datas_defs.size(); ++icat) {
+            size_t i = 0;
+            for (auto & datas : datas_defs[icat]) {
+                datas.resize(intervals[i] + 1);
+                size_t value = 0;
+                auto const d = intervals[i]/10u;
+                for (std::vector<uint64_t> & data_mask : datas) {
+                    data_mask.resize((nb_u64[icat] + 63) / 64);
+                    //data_mask.resize(group_definitions.size());
+                    size_t idef = 0;
+                    auto first = this->group_definitions.begin() + accu_shift;
+                    auto last = first + nb_u64[icat];
+                    for (; first != last; ++first) {
+                        auto const sig_value = first->data(i);
+                        if (value < sig_value ? (sig_value <= value + d) : (value <= sig_value + d)) {
+                            data_mask[idef / 64] |= 1ull << (idef % 64);
+                        }
+                        ++idef;
+                    }
+                    ++value;
+                }
+                ++i;
+            }
+            accu_shift += nb_u64[icat];
+        }
+        assert(accu_shift == this->group_definitions.size());
+
+        return datas_defs;
+    }())
+    , probabilities(group_definitions.size())
+    , tmp_probabilities(group_definitions.size())
+    , first_algo(first_algo)
+    {
+        this->result1.reserve(100);
+        this->result2.reserve(100);
+    }
+};
+
+void compute_image(
+    compute_image_data_type & o,
+    DataLoader::Datas const & datas,
+    Image & img,
+    unsigned const * intervals
+) {
+    auto const icat = compute_image_data_type::idx_cat(datas);
+    auto const nb_u64 = o.nb_u64[icat];
+    auto const shift_idx = std::accumulate(o.nb_u64.begin(), o.nb_u64.begin()+icat, 0);
+    auto & datas_defs = o.datas_defs[icat];
+
+    o.datas_accepted.clear();
+    o.datas_accepted.resize((nb_u64 + 63) / 64, ~uint64_t{});
+
+    unsigned constexpr l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
+    for (size_t i : l) {
+        reduce_univers(
+            o.datas_accepted,
+            datas_defs[i],
+            get_value(datas[i])
+        );
+    }
+
+    o.probabilities.clear();
+    for (size_t i = 0; i < nb_u64; ++i) {
+        if (o.datas_accepted[i/64] & (1ull << (i %  64))) {
+            double prob = 1;
+            for (size_t ialgo = 0; ialgo < count_algo_base; ++ialgo) {
+                auto const interval = intervals[ialgo];
+                auto const d = interval/10u;
+                unsigned const sig_value = o.group_definitions[shift_idx+i].data(ialgo);
+                unsigned const value = get_value(datas[ialgo]);
+                prob = prob * (value < sig_value
+                    ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
+                    : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u)
+                ) / 100;
+            }
+            o.probabilities.push_back({o.group_definitions[shift_idx+i], prob});
+        }
+    }
+    o.tmp_probabilities.resize(o.probabilities.size());
+    std::copy(o.probabilities.begin(), o.probabilities.end(), o.tmp_probabilities.begin());
+    sort_and_show_infos(o.tmp_probabilities);
+
+    auto & cache_element = o.sorted_img.emplace(std::move(img), std::pair<std::string, std::string>()).first->second;
+
+    if (o.tmp_probabilities.empty()) {
+        o.result1 += '_';
+        cache_element.first = '_';
+    }
+    else {
+        o.result1 += o.tmp_probabilities.front().c();
+        cache_element.first = o.tmp_probabilities.front().c();
+    }
+
+    if (o.tmp_probabilities.empty()) {
+        o.result2 += '_';
+        cache_element.second = '_';
+    }
+    else if (o.tmp_probabilities[0].prob >= 1/* && tmp_probabilities.size() == 1*/) {
+        o.result2 += o.tmp_probabilities[0].c();
+        cache_element.second = o.tmp_probabilities[0].c();
+    }
+    else {
+        for (size_t i = count_algo_base, e = i + 3; i < e; ++i) {
+            o.tmp_probabilities.clear();
+            for (auto & prob : o.probabilities) {
+                unsigned const x = prob.gdef.get().def_base.ref_def.get().datas[i].relationship(datas[i]);
+                if (x >= 50) {
+                    o.tmp_probabilities.emplace_back(std::move(prob.gdef), prob.prob * x / 100);
+                }
+            }
+            swap(o.probabilities, o.tmp_probabilities);
+        }
+
+        for (size_t i = count_algo_base + 3, e = i + 2; i < e; ++i) {
+            o.tmp_probabilities.clear();
+            for (auto & prob : o.probabilities) {
+                auto first = std::lower_bound(
+                    o.definitions.begin(), o.definitions.end(), prob.c(),
+                    [](Definition const & a, std::string const & s) { return a.c < s; }
+                );
+                for (; first != o.definitions.end() && first->c == prob.c(); ++first) {
+                    if (prob.gdef.get().def_base.ref_def.get().datas[i].relationship(first->datas[i]) >= 50) {
+                        o.tmp_probabilities.push_back(std::move(prob));
+                        break;
+                    }
+                }
+            }
+            swap(o.probabilities, o.tmp_probabilities);
+        }
+
+        sort_and_show_infos(o.probabilities);
+        if (o.probabilities.empty()) {
+            o.result2 += '_';
+            cache_element.second = '_';
+        }
+        else {
+            o.result2 += o.probabilities.front().c();
+            cache_element.second = o.probabilities.front().c();
+        }
+    }
+
+    o.result1 += ' ';
+    o.result2 += ' ';
+}
+
 int main(int ac, char **av)
 {
     if (ac < 2) {
@@ -325,81 +569,38 @@ int main(int ac, char **av)
 
     std::cout << " ## definitions.size(): " << definitions.size() << "\n\n";
 
-    std::vector<GroupDefinition> group_definitions(definitions.begin(), definitions.end());
-
-    std::sort(
-        group_definitions.begin(), group_definitions.end(),
-        [](GroupDefinition const & lhs, GroupDefinition const & rhs) {
-            bool const is_less = lhs.datas() < rhs.datas();
-            return is_less || (lhs.datas() == rhs.datas() && lhs.c() < rhs.c());
-        }
-    );
-    if (!group_definitions.empty())
-    {
-        auto first = group_definitions.begin();
-        auto prev = group_definitions.begin();
-        auto last = group_definitions.end();
-        while (++first != last) {
-            if (first->datas() == prev->datas()) {
-                if (prev->are_same.empty() ? first->c() != prev->c() : prev->are_same.empty() && prev->are_same.back().get() != first->c()) {
-                    prev->are_same.push_back(first->c());
-                }
-            }
-            else {
-                ++prev;
-               *prev = *std::move(first);
-            }
-        }
-        group_definitions.erase(++prev, group_definitions.end());
-    }
-
-    std::cout << " ## group_definitions.size(): " << group_definitions.size() << "\n\n";
+    unsigned intervals[] = {
+        strategies::hdirection::traits::get_interval(),
+        strategies::hdirection90::traits::get_interval(),
+        strategies::hdirection2::traits::get_interval(),
+        strategies::hdirection290::traits::get_interval(),
+        strategies::hgravity::traits::get_interval(),
+        strategies::hgravity90::traits::get_interval(),
+        strategies::hgravity2::traits::get_interval(),
+        strategies::hgravity290::traits::get_interval(),
+        strategies::proportionality::traits::get_interval(),
+        strategies::dvdirection::traits::get_interval(),
+        strategies::dvdirection90::traits::get_interval(),
+        strategies::dvdirection2::traits::get_interval(),
+        strategies::dvdirection290::traits::get_interval(),
+        strategies::dvgravity::traits::get_interval(),
+        strategies::dvgravity90::traits::get_interval(),
+        strategies::dvgravity2::traits::get_interval(),
+        strategies::dvgravity290::traits::get_interval(),
+        strategies::density::traits::get_interval(),
+        strategies::dzdensity::traits::get_interval(),
+        strategies::dzdensity90::traits::get_interval(),
+    };
+    static_assert(size(intervals) == count_algo_base, "intervals.size error");
 
     size_t const first_algo = 16;
+    compute_image_data_type compute_image_data(definitions, intervals, first_algo);
 
-    std::sort(
-        group_definitions.begin(), group_definitions.end(),
-        [](GroupDefinition const & lhs, GroupDefinition const & rhs) {
-            return lhs.data(first_algo) < rhs.data(first_algo);
-        }
-    );
+    std::cout << " ## group_definitions.size(): " << compute_image_data.group_definitions.size() << "\n\n";
 
     Image img = image_from_file(av[2]);
     Bounds const bounds(img.width(), img.height());
     size_t x = 0;
-
-    probabilities_t const probabilities(group_definitions.begin(), group_definitions.end());
-    probabilities_t cp_probabilities(group_definitions.size());
-    probabilities_t tmp_probabilities(group_definitions.size());
-
-
-    struct { bool enable; unsigned interval; } const intervals[] = {
-        {01, strategies::hdirection::traits::get_interval()},
-        {01, strategies::hdirection90::traits::get_interval()},
-        {01, strategies::hdirection2::traits::get_interval()},
-        {01, strategies::hdirection290::traits::get_interval()},
-        {01, strategies::hgravity::traits::get_interval()},
-        {01, strategies::hgravity90::traits::get_interval()},
-        {01, strategies::hgravity2::traits::get_interval()},
-        {01, strategies::hgravity290::traits::get_interval()},
-        {01, strategies::proportionality::traits::get_interval()},
-        {01, strategies::dvdirection::traits::get_interval()},
-        {01, strategies::dvdirection90::traits::get_interval()},
-        {01, strategies::dvdirection2::traits::get_interval()},
-        {01, strategies::dvdirection290::traits::get_interval()},
-        {01, strategies::dvgravity::traits::get_interval()},
-        {01, strategies::dvgravity90::traits::get_interval()},
-        {01, strategies::dvgravity2::traits::get_interval()},
-        {01, strategies::dvgravity290::traits::get_interval()},
-        {01, strategies::density::traits::get_interval()},
-        {01, strategies::dzdensity::traits::get_interval()},
-        {01, strategies::dzdensity90::traits::get_interval()},
-    };
-
-    std::string result1;
-    std::string result2;
-
-    probabilities_t result_probabilities(group_definitions.size());
 
     using resolution_clock = std::chrono::high_resolution_clock;
     auto t1 = resolution_clock::now();
@@ -409,97 +610,20 @@ int main(int ac, char **av)
         //bounds_x = cbox.x() + cbox.w();
         //std::cerr << "\nbox(" << cbox << ")\n";
 
-        Image const img_word = img.section(cbox.index(), cbox.bounds());
+        Image img_word = img.section(cbox.index(), cbox.bounds());
         std::cout << img_word;
 
-        auto datas = loader.new_datas(img_word, img_word.rotate90());
-
-//         {
-//             std::vector<size_t> reduce_values;
-//             for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
-//                 if (!intervals[i].enable) {
-//                     continue;
-//                 }
-//                 cp_probabilities = probabilities;
-//                 reduce_univers(cp_probabilities, i, get_value(datas[i]), intervals[i].interval);
-//                 reduce_values.emplace_back(cp_probabilities.size());
-//             }
-//
-//             auto i = 0u;
-//             for (auto reduce : reduce_values) {
-//                 if (!intervals[i++].enable) {
-//                     continue;
-//                 }
-//                 std::cout << (i-1) << ") \033[00;36m" << std::setw(4) << reduce << "\033[0m  ";
-//             }
-//             std::cout << "\n";
-//         }
-
-        cp_probabilities.resize(probabilities.size());
-        reduce_univers(probabilities, cp_probabilities, first_algo, get_value(datas[first_algo]), intervals[first_algo].interval, true);
-        for (size_t i = 0; i < sizeof(intervals)/sizeof(intervals[0]); ++i) {
-            if (!intervals[i].enable || i == first_algo) {
-                continue;
-            }
-            reduce_univers(cp_probabilities, cp_probabilities, i, get_value(datas[i]), intervals[i].interval, false);
-        }
-
-        tmp_probabilities.resize(cp_probabilities.size());
-        std::copy(cp_probabilities.begin(), cp_probabilities.end(), tmp_probabilities.begin());
-        sort_and_show_infos(tmp_probabilities);
-        if (tmp_probabilities.empty()) {
-            result1 += '_';
+        auto it = compute_image_data.sorted_img.find(img_word);
+        if (it != compute_image_data.sorted_img.end()) {
+            compute_image_data.result1 += it->second.first;
+            compute_image_data.result2 += it->second.second;
+            compute_image_data.result1 += ' ';
+            compute_image_data.result2 += ' ';
         }
         else {
-            result1 += tmp_probabilities.front().c();
+            auto datas = loader.new_datas(img_word, img_word.rotate90());
+            compute_image(compute_image_data, datas, img_word, intervals);
         }
-
-        if (tmp_probabilities.empty()) {
-            result2 += '_';
-        }
-        else if (tmp_probabilities[0].prob >= 1/* && tmp_probabilities.size() == 1*/) {
-            result2 += tmp_probabilities[0].c();
-        }
-        else {
-            for (size_t i = sizeof(intervals)/sizeof(intervals[0]), e = i + 3; i < e; ++i) {
-                result_probabilities.clear();
-                for (auto & prob : cp_probabilities) {
-                    unsigned const x = prob.data(i).relationship(datas[i]);
-                    if (x >= 50) {
-                        result_probabilities.emplace_back(std::move(prob.gdef), prob.prob * x / 100);
-                    }
-                }
-                swap(cp_probabilities, result_probabilities);
-            }
-
-            for (size_t i = sizeof(intervals)/sizeof(intervals[0]) + 3, e = i + 2; i < e; ++i) {
-                result_probabilities.clear();
-                for (auto & prob : cp_probabilities) {
-                    auto first = std::lower_bound(
-                        definitions.begin(), definitions.end(), prob.c(),
-                        [](Definition const & a, std::string const & s) { return a.c < s; }
-                    );
-                    for (; first != definitions.end() && first->c == prob.c(); ++first) {
-                        if (prob.data(i).relationship(first->datas[i]) >= 50) {
-                            result_probabilities.push_back(std::move(prob));
-                            break;
-                        }
-                    }
-                }
-                swap(cp_probabilities, result_probabilities);
-            }
-
-            sort_and_show_infos(cp_probabilities);
-            if (cp_probabilities.empty()) {
-                result2 += '_';
-            }
-            else {
-                result2 += cp_probabilities.front().c();
-            }
-        }
-
-        result1 += ' ';
-        result2 += ' ';
 
         x = cbox.x() + cbox.w();
     }
@@ -509,5 +633,9 @@ int main(int ac, char **av)
         std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
     }
 
-    std::cout << " ## result1: " << (result1) << "\n ## result2: " << (result2) << std::endl;
+    std::cout
+      << " ## result1: " << (compute_image_data.result1)
+      << "\n ## result2: " << (compute_image_data.result2)
+      << std::endl
+    ;
 }

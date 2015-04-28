@@ -175,6 +175,7 @@ exe extract_text3 :
 
 exe extract_text4 :
     src/extract_text4.cpp
+    src/utils/image_compare.cpp
     extract_data_src
 : ;
 
