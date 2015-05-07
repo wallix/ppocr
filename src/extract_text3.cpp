@@ -403,17 +403,20 @@ void compute_image(
     Image & img,
     unsigned const * intervals
 ) {
-    o.datas_accepted.clear();
-    o.datas_accepted.resize(o.group_definitions.size() / 64 + (o.group_definitions.size() % 64 ? 1 : 0), ~uint64_t{});
-    //o.datas_accepted.resize(o.group_definitions.size(), 1);
-
-    unsigned constexpr l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
-    for (size_t i : l) {
-        reduce_univers(
-            o.datas_accepted,
-            o.datas_defs[i],
-            get_value(datas[i])
-        );
+    {
+        unsigned constexpr l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
+        using std::begin;
+        using std::end;
+        auto first = begin(l);
+        auto last = end(l);
+        o.datas_accepted = o.datas_defs[*first][get_value(datas[*first])];
+        while (++first != last) {
+            reduce_univers(
+                o.datas_accepted,
+                o.datas_defs[*first],
+                get_value(datas[*first])
+            );
+        }
     }
 
     o.probabilities.clear();

@@ -305,14 +305,15 @@ void sort_and_show_infos(probabilities_t & probabilities) {
 
 struct compute_image_data_type {
     std::vector<Definition> const & definitions;
+    size_t const first_algo;
     std::vector<GroupDefinition> const group_definitions;
-    std::array<unsigned, 4> const nb_u64;
+    std::vector<unsigned> const nb_u64;
+    std::vector<unsigned> const shift_u64;
     std::vector<uint64_t> datas_accepted;
-    // [cat][algo][value][data_mask]
-    std::array<std::array<std::vector<std::vector<uint64_t>>, count_algo_base>, 4> const datas_defs;
+    // [values_first_algo][algo][value][data_mask]
+    std::vector<std::array<std::vector<std::vector<uint64_t>>, count_algo_base>> const datas_defs;
     probabilities_t probabilities;
     probabilities_t tmp_probabilities;
-    size_t const first_algo;
 
     std::string result1;
     std::string result2;
@@ -324,23 +325,11 @@ struct compute_image_data_type {
     };
     std::map<Image, std::pair<std::string, std::string>, def_img_compare> sorted_img;
 
-    static unsigned idx_cat(DataLoader::Datas const & datas) {
-        auto data = reinterpret_cast<unsigned const *>(
-            reinterpret_cast<unsigned char const *>(&datas[23]) + sizeof(DataLoader::data_base)
-        );
-        if (data[0] && data[1]) {
-            return 0;
-        }
-        if (!data[0] && !data[1]) {
-            return 1;
-        }
-        if (data[0] && !data[1]) {
-            return 2;
-        }
-        return 3;
+    unsigned idx_cat(DataLoader::Datas const & datas) {
+        return get_value(datas[first_algo]);
     }
 
-    static unsigned idx_cat(GroupDefinition const & gdef) {
+    unsigned idx_cat(GroupDefinition const & gdef) {
         return idx_cat(gdef.def_base.ref_def.get().datas);
     }
 
@@ -350,6 +339,7 @@ struct compute_image_data_type {
         size_t const first_algo = 0
     )
     : definitions(definitions)
+    , first_algo(first_algo)
     , group_definitions([&]() {
         std::vector<GroupDefinition> group_definitions(definitions.begin(), definitions.end());
 
@@ -382,26 +372,51 @@ struct compute_image_data_type {
         std::sort(
             group_definitions.begin(), group_definitions.end(),
             [first_algo](GroupDefinition const & lhs, GroupDefinition const & rhs) {
-                return idx_cat(lhs) < idx_cat(rhs)
-                   ||  (idx_cat(lhs) == idx_cat(rhs) && lhs.data(first_algo) < rhs.data(first_algo));
+                return lhs.data(first_algo) < rhs.data(first_algo);
             }
         );
         return group_definitions;
     }())
     , nb_u64([&]() {
-        std::array<unsigned, 4> cat{{}};
+        std::vector<unsigned> cat;
+        int interval = int(intervals[first_algo]);
+        cat.resize(interval + 1);
         for (GroupDefinition const & gdef : group_definitions) {
-            ++cat[idx_cat(gdef)];
+            int value = int(idx_cat(gdef));
+            int min = std::max(value - interval/10, 0);
+            int max = std::min(value + interval/10, interval);
+            for (; min <= max; ++min) {
+                ++cat[min];
+            }
         }
+        return cat;
+    }())
+    , shift_u64([&]() {
+        std::vector<unsigned> cat;
+        int interval = int(intervals[first_algo]);
+        cat.resize(interval + 1);
+        for (GroupDefinition const & gdef : group_definitions) {
+            int value = int(idx_cat(gdef));
+            ++cat[value];
+        }
+        int d = interval/10 + 1;
+        std::partial_sum(begin(cat), end(cat), begin(cat));
+        std::copy_backward(begin(cat), end(cat)-d, end(cat));
+        std::fill(begin(cat), begin(cat)+d, 0);
+        assert(cat.back() + nb_u64.back() == group_definitions.size());
         return cat;
     }())
     , datas_accepted((*std::max_element(std::begin(nb_u64), std::end(nb_u64)) + 63) / 64)
     , datas_defs([&]{
-        std::array<std::array<std::vector<std::vector<uint64_t>>, count_algo_base>, 4> datas_defs;
-        unsigned accu_shift = 0;
+        std::vector<std::array<std::vector<std::vector<uint64_t>>, count_algo_base>> datas_defs;
+        datas_defs.resize(nb_u64.size());
         for (size_t icat = 0; icat < datas_defs.size(); ++icat) {
             size_t i = 0;
             for (auto & datas : datas_defs[icat]) {
+                if (i == first_algo) {
+                    ++i;
+                    continue;
+                }
                 datas.resize(intervals[i] + 1);
                 size_t value = 0;
                 auto const d = intervals[i]/10u;
@@ -409,7 +424,7 @@ struct compute_image_data_type {
                     data_mask.resize((nb_u64[icat] + 63) / 64);
                     //data_mask.resize(group_definitions.size());
                     size_t idef = 0;
-                    auto first = this->group_definitions.begin() + accu_shift;
+                    auto first = this->group_definitions.begin() + shift_u64[icat];
                     auto last = first + nb_u64[icat];
                     for (; first != last; ++first) {
                         auto const sig_value = first->data(i);
@@ -422,15 +437,12 @@ struct compute_image_data_type {
                 }
                 ++i;
             }
-            accu_shift += nb_u64[icat];
         }
-        assert(accu_shift == this->group_definitions.size());
 
         return datas_defs;
     }())
     , probabilities(group_definitions.size())
     , tmp_probabilities(group_definitions.size())
-    , first_algo(first_algo)
     {
         this->result1.reserve(100);
         this->result2.reserve(100);
@@ -443,24 +455,34 @@ void compute_image(
     Image & img,
     unsigned const * intervals
 ) {
-    auto const icat = compute_image_data_type::idx_cat(datas);
+    auto const icat = o.idx_cat(datas);
     auto const nb_u64 = o.nb_u64[icat];
-    auto const shift_idx = std::accumulate(o.nb_u64.begin(), o.nb_u64.begin()+icat, 0);
     auto & datas_defs = o.datas_defs[icat];
 
-    o.datas_accepted.clear();
-    o.datas_accepted.resize((nb_u64 + 63) / 64, ~uint64_t{});
-
-    unsigned constexpr l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
-    for (size_t i : l) {
-        reduce_univers(
-            o.datas_accepted,
-            datas_defs[i],
-            get_value(datas[i])
-        );
+    {
+        unsigned constexpr l[] {16, 12, 18, 19, 11, 15, 14, 10, 13, 17, 9, 5, 4, 1, 7, 8, 3, 0, 6, 2};
+        using std::begin;
+        using std::end;
+        auto first = begin(l);
+        auto last = end(l);
+        if (*first == o.first_algo) {
+            ++first;
+        }
+        o.datas_accepted = datas_defs[*first][get_value(datas[*first])];
+        while (++first != last) {
+            if (o.first_algo == *first) {
+                continue;
+            }
+            reduce_univers(
+                o.datas_accepted,
+                datas_defs[*first],
+                get_value(datas[*first])
+            );
+        }
     }
 
     o.probabilities.clear();
+    auto const shift_idx = o.shift_u64[icat];
     for (size_t i = 0; i < nb_u64; ++i) {
         if (o.datas_accepted[i/64] & (1ull << (i %  64))) {
             double prob = 1;
