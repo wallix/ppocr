@@ -330,7 +330,7 @@ struct null_pointer { void ** p = nullptr; };
      "\n           ";                                                               \
     (Super_Assert::B * expr).print();                                               \
     std::cerr << std::endl;                                                         \
-    *Super_Assert::null_pointer().p = 0;
+    *Super_Assert::null_pointer().p = nullptr;
 
 #define sassert_message(msg, expr) do {                                   \
   if ((expr) ? 0 : 1) {                                                   \
