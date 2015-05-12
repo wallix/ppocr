@@ -182,31 +182,4 @@ BOOST_AUTO_TEST_CASE(TestTrie)
 
         BOOST_CHECK_EQUAL(str1, oss.str());
     }
-
-    using letters_t = std::vector<char>;
-    std::vector<letters_t> word{
-        {'a'},
-        {'b', 'z'},
-        {'e'},
-        {'r'},
-        {'u', 't'},
-//         {'y'},
-        {'y'},
-    };
-
-    s.clear();
-    if (disambigus(trie, word.begin(), word.end(), s)) {
-        std::cout << s << std::endl;
-    }
-    else {
-        std::cout << "noop\n";
-    }
-
-    s.clear();
-    if (disambigus(flat_trie.nodes(), word.begin(), word.end(), s)) {
-        std::cout << s << std::endl;
-    }
-    else {
-        std::cout << "noop\n";
-    }
 }
