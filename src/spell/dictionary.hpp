@@ -18,37 +18,36 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "spell/dictionary.hpp"
+#ifndef REDEMPTION_SRC_SPELL_DICTIONARY_HPP
+#define REDEMPTION_SRC_SPELL_DICTIONARY_HPP
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
+#include "container/trie.hpp"
 
-#include <cstring>
-#include <cerrno>
+#include <iosfwd>
 
-int main(int ac, char ** av) {
-    if (ac < 2) {
-        std::cerr << av[0] << " words_file...\n";
-        return 1;
-    }
+namespace spell
+{
+    struct Dictionary
+    {
+        class Manipulator {
+        protected:
+            using trie_type = container::flat_trie<char>;
 
-    std::ifstream file;
-    std::vector<std::string> words;
+            trie_type const & trie(Dictionary const & dict)
+            { return dict.trie_; }
+        };
 
-    for (int i = 1; i < ac; ++i) {
-        file.open(av[i]);
-        if (!file) {
-            std::cerr << av[i] << ": " << strerror(errno) << std::endl;
-            continue;
-        }
+        Dictionary(std::vector<std::string> words);
+        Dictionary(container::flat_trie<char> trie);
+        Dictionary(container::trie<char> const & trie);
+        Dictionary() = default;
 
-        std::string s;
-        while (std::getline(file, s)) {
-            words.push_back(s);
-        }
-    }
+    private:
+        container::flat_trie<char> trie_;
+    };
 
-    std::cout << spell::Dictionary(std::move(words));
+    std::istream & operator >> (std::istream & is, Dictionary & dict);
+    std::ostream & operator << (std::ostream & os, Dictionary const & dict);
 }
+
+#endif

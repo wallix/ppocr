@@ -38,7 +38,7 @@ void str_tree(char_trie const & trie, std::string & s, unsigned depth = 0u) {
             s += " @";
         }
         s += '\n';
-        str_tree(node.nodes(), s, depth+1);
+        str_tree(node.childrens(), s, depth+1);
     }
 }
 
@@ -53,7 +53,7 @@ bool disambigus(Trie const & trie, FwIt first, FwIt last, std::string & result) 
                     return true;
                 }
             }
-            else if (!pos->empty() && disambigus(pos->nodes(), first+1, last, result)) {
+            else if (!pos->empty() && disambigus(pos->childrens(), first+1, last, result)) {
                 result += c;
                 return true;
             }

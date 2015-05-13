@@ -57,7 +57,7 @@ struct trie
         template<class U>
         iterator find(U const & x) const { return this->nodes_.find(x); }
 
-        trie const & nodes() const { return this->nodes_; }
+        trie const & childrens() const { return this->nodes_; }
 
         bool is_terminal() const { return this->is_terminal_; }
         std::size_t size() const { return this->nodes_.size(); }
@@ -180,12 +180,12 @@ struct flat_trie
         , x_(x)
         {}
 
-        range nodes() const { return {this->begin(), this->end()}; }
+        range childrens() const { return {this->begin(), this->end()}; }
         iterator begin() const { return this + this->pos_; }
         iterator end() const { return this->begin() + this->size(); }
 
         template<class U>
-        iterator find(U const & x) const { return this->nodes().find(x); }
+        iterator find(U const & x) const { return this->childrens().find(x); }
 
         bool empty() const { return this->count_ == 0; }
         std::size_t size() const { return this->count_; }
@@ -203,6 +203,8 @@ struct flat_trie
     };
 
     using value_type = T;
+
+    flat_trie() = default;
 
     template<class FwIt>
     flat_trie(FwIt first, FwIt last)
@@ -223,7 +225,7 @@ struct flat_trie
         using iterator_base = decltype(x.begin());
         struct deref_it : iterator_base {
             deref_it(iterator_base base) : iterator_base(base) {}
-            trie<T> const * operator * () const { return &iterator_base::operator*().nodes(); };
+            trie<T> const * operator * () const { return &iterator_base::operator*().childrens(); };
         };
         std::vector<trie<T> const *> ptries1(deref_it(x.begin()), deref_it(x.end()));
         std::vector<trie<T> const *> ptries2;
@@ -246,7 +248,7 @@ struct flat_trie
         this->elems_.shrink_to_fit();
     }
 
-    range nodes()
+    range childrens() const
     { return {&this->elems_[0], &this->elems_[0] + (this->elems_.empty() ? 0u : this->elems_[0].size())}; }
 
     node_type const & operator[](std::size_t const & i) const { return this->elems_[i]; }

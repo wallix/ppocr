@@ -18,24 +18,16 @@
 
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestAuthentifierNew
+#define BOOST_TEST_MODULE TestWordDisambiguouser
 #include <boost/test/auto_unit_test.hpp>
 
-#include "container/trie.hpp"
-#include "utils/disambiguous.hpp"
+#include "spell/word_disambiguouser.hpp"
 
-#include <algorithm>
 #include <vector>
 
-using char_trie = container::trie<char>;
-using flat_char_trie = container::flat_trie<char_trie::value_type>;
-
-BOOST_AUTO_TEST_CASE(TestDisambigus)
+BOOST_AUTO_TEST_CASE(TestWordDisambiguouser)
 {
-    std::vector<std::string> strings{"abcd", "abce", "abcehn", "abcehne", "abcehnu", "abcej", "azerty", "abc", "bob", "coco", "paco", "parano"};
-    std::sort(begin(strings), end(strings));
-    char_trie trie(begin(strings), end(strings));
-    flat_char_trie flat_trie(trie);
+    spell::Dictionary dict(std::vector<std::string>{"abcd", "abce", "abcehn", "abcehne", "abcehnu", "abcej", "azerty", "abc", "bob", "coco", "paco", "parano"});
 
     using letters_t = std::vector<char>;
     std::vector<letters_t> word{
@@ -47,21 +39,23 @@ BOOST_AUTO_TEST_CASE(TestDisambigus)
         {'y'},
     };
 
+    spell::WordDisambiguouser disambiguouser;
+
     std::string s;
-    BOOST_CHECK(utils::disambiguous(flat_trie.nodes(), word.begin(), word.end(), s));
+    BOOST_CHECK(disambiguouser(dict, word.begin(), word.end(), s));
     BOOST_CHECK_EQUAL(s, "azerty");
 
     word[1].emplace_back('i');
     s.clear();
-    BOOST_CHECK(utils::disambiguous(flat_trie.nodes(), word.begin(), word.end(), s));
+    BOOST_CHECK(disambiguouser(dict, word.begin(), word.end(), s));
     BOOST_CHECK_EQUAL(s, "azerty");
 
     word.emplace_back(1, 'y');
     s.clear();
-    BOOST_CHECK(!utils::disambiguous(flat_trie.nodes(), word.begin(), word.end(), s));
+    BOOST_CHECK(!disambiguouser(dict, word.begin(), word.end(), s));
 
     word.pop_back();
     word.pop_back();
     s.clear();
-    BOOST_CHECK(!utils::disambiguous(flat_trie.nodes(), word.begin(), word.end(), s));
+    BOOST_CHECK(!disambiguouser(dict, word.begin(), word.end(), s));
 }

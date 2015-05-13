@@ -128,6 +128,7 @@ obj image_from_file : src/image/image_from_file.cpp ;
 obj image_from_string : src/image/image_from_string.cpp ;
 obj definition      : src/factory/definition.cpp ;
 obj read_def_file_and_normalize : src/utils/read_definitions_file_and_normalize.cpp ;
+obj dictionary      : src/spell/dictionary.cpp ;
 
 alias strategies_src :
     src/strategies/agravity.cpp
@@ -256,6 +257,7 @@ exe normalize_learning :
 
 exe make_trie_dictionary :
     src/make_trie_dictionary.cpp
+    dictionary
 : ;
 
 #
@@ -378,8 +380,9 @@ unit-test test_trie :
     tests/container/test_trie.cpp
     libboost_unit_test : ;
 
-unit-test test_disambigus :
-    tests/utils/test_disambigus.cpp
+unit-test test_word_disambiguouser :
+    tests/spell/test_word_disambiguouser.cpp
+    dictionary
     libboost_unit_test : ;
 
 #unit-test test_new_ocr : tests/test_test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
