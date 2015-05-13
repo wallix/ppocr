@@ -254,6 +254,10 @@ exe normalize_learning :
     image_src
 : ;
 
+exe make_trie_dictionary :
+    src/make_trie_dictionary.cpp
+: ;
+
 #
 # Unit Tests
 #

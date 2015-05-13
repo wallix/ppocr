@@ -90,17 +90,17 @@ public:
         }
         else if (first != last) {
             if (first->size() <= depth + 1) {
-                while (first != last && first->size() <= depth + 1) {
+                do {
                     this->nodes_.emplace_back((*first)[depth], true);
                     ++first;
-                }
+                } while (first != last && first->size() <= depth + 1);
                 this->trie_back_().insert_after(first, last, depth+1);
             }
             else {
                 while (first != last) {
                     auto middle = std::upper_bound(
                         first, last, (*first)[depth],
-                        [depth](char c, std::string & s){ return c < s[depth]; }
+                        [depth](char c, std::string & s){ return depth < s.size() && c < s[depth]; }
                     );
                     this->nodes_.emplace_back((*first)[depth]);
                     this->trie_back_().insert_after(first, middle, depth+1);
