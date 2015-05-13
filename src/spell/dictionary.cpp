@@ -19,6 +19,7 @@
 */
 
 #include "dictionary.hpp"
+#include "utils/utf.hpp"
 
 #include <fstream>
 #include <algorithm>
@@ -28,21 +29,30 @@
 
 namespace spell {
 
-Dictionary::Dictionary(container::trie<char> const & trie)
+Dictionary::Dictionary(container::trie<uint32_t> const & trie)
 : trie_(trie)
 {}
 
-Dictionary::Dictionary(container::flat_trie<char> trie)
+Dictionary::Dictionary(container::flat_trie<uint32_t> trie)
 : trie_(std::move(trie))
 {}
 
-Dictionary::Dictionary(std::vector<std::string> words)
-: trie_((
-    std::sort(words.begin(), words.end()),
-    words.erase(std::unique(words.begin(), words.end()), words.end()),
-    container::trie<char>(words.begin(), words.end())
-))
-{}
+Dictionary::Dictionary(std::vector<std::string> const & words)
+{
+    std::vector<std::vector<uint32_t>> uwords;
+    for (auto & old_word : words) {
+        std::vector<uint32_t> new_word;
+        utf::UTF8toUnicodeIterator it(old_word.data());
+        for (uint32_t c; (c = *it); ++it) {
+            new_word.push_back(c);
+        }
+        uwords.push_back(std::move(new_word));
+    }
+
+    std::sort(uwords.begin(), uwords.end());
+    uwords.erase(std::unique(uwords.begin(), uwords.end()), uwords.end());
+    this->trie_ = container::trie<uint32_t>(uwords.begin(), uwords.end());
+}
 
 namespace {
     struct IODictionary : Dictionary::Manipulator
@@ -53,7 +63,7 @@ std::ostream& operator<<(std::ostream& os, Dictionary const & dict)
 {
     for (auto node : IODictionary().trie(dict).all()) {
         os
-          << unsigned(node.get()) << " "
+          << node.get() << " "
           << node.relative_pos() << " "
           << node.size() << " "
           << node.is_terminal()
@@ -64,15 +74,15 @@ std::ostream& operator<<(std::ostream& os, Dictionary const & dict)
 
 std::istream& operator>>(std::istream& is, Dictionary & dict)
 {
-    using trie_type = container::flat_trie<char>;
+    using trie_type = container::flat_trie<uint32_t>;
     std::vector<trie_type::node_type> nodes;
-    unsigned c;
+    trie_type::value_type c;
     unsigned pos;
     unsigned sz;
     bool terminal;
     char e1, e2, e3, e4;
     while (is >> c >> e1 >> pos >> e2 >> sz >> e3 >> terminal >> e4) {
-        if (e1 != ' ' || e2 != ' ' || e3 != ' ' || e4 != '\n' || c < 256u) {
+        if (e1 != ' ' || e2 != ' ' || e3 != ' ' || e4 != '\n') {
             throw std::runtime_error("bad format");
         }
         nodes.emplace_back(c, pos, sz, terminal);

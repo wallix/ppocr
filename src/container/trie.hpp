@@ -98,9 +98,10 @@ public:
             }
             else {
                 while (first != last) {
+                    using value_iterator = typename std::iterator_traits<RandIt>::value_type;
                     auto middle = std::upper_bound(
                         first, last, (*first)[depth],
-                        [depth](char c, std::string & s){ return depth < s.size() && c < s[depth]; }
+                        [depth](T const & c, value_iterator & s){ return depth < s.size() && c < s[depth]; }
                     );
                     this->nodes_.emplace_back((*first)[depth]);
                     this->trie_back_().insert_after(first, middle, depth+1);
@@ -160,7 +161,7 @@ struct flat_trie
     };
 
     struct node_type {
-        using size_type = unsigned char; // TODO depends on T
+        using size_type = unsigned; // TODO depends on T
         using value_type = T;
 
         static_assert(~size_type{} >= ~typename std::make_unsigned<T>::type(), "unimplemented");

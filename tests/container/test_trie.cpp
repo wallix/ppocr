@@ -62,15 +62,19 @@ bool disambigus(Trie const & trie, FwIt first, FwIt last, std::string & result) 
     return false;
 }
 
+#ifndef CXX_ENABLE_ASAN
 #include <sys/time.h>
 #include <sys/resource.h>
+#endif
 
 BOOST_AUTO_TEST_CASE(TestTrie)
 {
+#ifndef CXX_ENABLE_ASAN
     {
         rlimit rlim{10000000, 10000000};
         setrlimit(RLIMIT_AS, &rlim);
     }
+#endif
 
     std::vector<std::string> strings{"abcd", "abce", "abcehn", "abcehne", "abcehnu", "abcej", "azerty", "abc", "bob", "coco", "paco", "parano"};
     std::sort(begin(strings), end(strings));

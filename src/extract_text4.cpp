@@ -43,6 +43,9 @@
 #include "math/almost_equal.hpp"
 #include "utils/image_compare.hpp"
 
+#include "spell/dictionary.hpp"
+#include "spell/word_disambiguouser.hpp"
+
 #include "sassert.hpp"
 
 #include <iostream>
@@ -314,6 +317,8 @@ struct compute_image_data_type {
     std::vector<std::array<std::vector<std::vector<uint64_t>>, count_algo_base>> const datas_defs;
     probabilities_t probabilities;
     probabilities_t tmp_probabilities;
+    spell::WordDisambiguouser word_disambiguouser;
+    std::vector<std::vector<std::string>> ambiguous;
 
     std::string result1;
     std::string result2;
@@ -323,7 +328,7 @@ struct compute_image_data_type {
         bool operator()(Image const & a, Image const & b) const
         { return image_compare(a, b) < 0; }
     };
-    std::map<Image, std::pair<std::string, std::string>, def_img_compare> sorted_img;
+    std::map<Image, std::pair<std::string, std::vector<std::string>>, def_img_compare> sorted_img;
 
     unsigned idx_cat(DataLoader::Datas const & datas) {
         return get_value(datas[first_algo]);
@@ -451,6 +456,7 @@ struct compute_image_data_type {
 
 void compute_image(
     compute_image_data_type & o,
+    spell::Dictionary const & dict,
     DataLoader::Datas const & datas,
     Image & img,
     unsigned const * intervals
@@ -503,7 +509,7 @@ void compute_image(
     std::copy(o.probabilities.begin(), o.probabilities.end(), o.tmp_probabilities.begin());
     sort_and_show_infos(o.tmp_probabilities);
 
-    auto & cache_element = o.sorted_img.emplace(std::move(img), std::pair<std::string, std::string>()).first->second;
+    auto & cache_element = o.sorted_img.emplace(std::move(img), std::pair<std::string, std::vector<std::string>>()).first->second;
 
     if (o.tmp_probabilities.empty()) {
         o.result1 += '_';
@@ -516,11 +522,13 @@ void compute_image(
 
     if (o.tmp_probabilities.empty()) {
         o.result2 += '_';
-        cache_element.second = '_';
+        o.ambiguous.push_back({});
+        cache_element.second.push_back({"_"});
     }
     else if (o.tmp_probabilities[0].prob >= 1/* && tmp_probabilities.size() == 1*/) {
         o.result2 += o.tmp_probabilities[0].c();
-        cache_element.second = o.tmp_probabilities[0].c();
+        o.ambiguous.push_back({o.tmp_probabilities[0].c()});
+        cache_element.second.push_back({o.tmp_probabilities[0].c()});
     }
     else {
         for (size_t i = count_algo_base, e = i + 3; i < e; ++i) {
@@ -554,11 +562,17 @@ void compute_image(
         sort_and_show_infos(o.probabilities);
         if (o.probabilities.empty()) {
             o.result2 += '_';
-            cache_element.second = '_';
+            o.ambiguous.push_back({});
+            cache_element.second.push_back({"_"});
         }
         else {
+            std::vector<std::string> characters;
+            for (auto & prob : o.probabilities) {
+                characters.push_back(prob.c());
+                cache_element.second.push_back(prob.c());
+            }
+            o.ambiguous.push_back(std::move(characters));
             o.result2 += o.probabilities.front().c();
-            cache_element.second = o.probabilities.front().c();
         }
     }
 
@@ -569,7 +583,7 @@ void compute_image(
 int main(int ac, char **av)
 {
     if (ac < 2) {
-        std::cerr << av[0] << " datas images\n";
+        std::cerr << av[0] << " datas images [dict.trie]\n";
         return 1;
     }
 
@@ -577,6 +591,16 @@ int main(int ac, char **av)
     if (!file) {
         std::cerr << strerror(errno) << '\n';
         return 2;
+    }
+
+    spell::Dictionary dict;
+    if (ac > 2) {
+        std::ifstream file(av[3]);
+        if (!file) {
+            std::cerr << av[3] << ": error: " << strerror(errno) << '\n';
+            return 7;
+        }
+        file >> dict;
     }
 
     DataLoader loader;
@@ -635,16 +659,21 @@ int main(int ac, char **av)
         Image img_word = img.section(cbox.index(), cbox.bounds());
         std::cout << img_word;
 
+        if (x + 4 < cbox.x()) {
+            compute_image_data.ambiguous.push_back({" "});
+        }
+
         auto it = compute_image_data.sorted_img.find(img_word);
         if (it != compute_image_data.sorted_img.end()) {
             compute_image_data.result1 += it->second.first;
-            compute_image_data.result2 += it->second.second;
+            compute_image_data.result2 += it->second.second.front();
+            compute_image_data.ambiguous.push_back(it->second.second);
             compute_image_data.result1 += ' ';
             compute_image_data.result2 += ' ';
         }
         else {
             auto datas = loader.new_datas(img_word, img_word.rotate90());
-            compute_image(compute_image_data, datas, img_word, intervals);
+            compute_image(compute_image_data, dict, datas, img_word, intervals);
         }
 
         x = cbox.x() + cbox.w();
@@ -655,9 +684,30 @@ int main(int ac, char **av)
         std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
     }
 
+    std::string result3;
+    auto search_fn = [](std::vector<std::string> const & s) {
+        return s.empty() || (s.front().size() == 1 && s.front().front() == ' ');
+    };
+    auto first = compute_image_data.ambiguous.begin();
+    auto last = compute_image_data.ambiguous.end();
+    first = std::find_if_not(first, last, search_fn);
+    while (first != last) {
+        auto middle = std::find_if(first, last, search_fn);
+        if (!compute_image_data.word_disambiguouser(dict, first, middle, result3)) {
+            for (; first != middle; ++first) {
+                if (!first->empty()) {
+                    result3 += first->front();
+                }
+            }
+        }
+        result3 += ' ';
+        first = std::find_if_not(middle, last, search_fn);
+    }
+
     std::cout
       << " ## result1: " << (compute_image_data.result1)
       << "\n ## result2: " << (compute_image_data.result2)
+      << "\n ## result3: " << (result3)
       << std::endl
     ;
 }

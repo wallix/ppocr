@@ -29,14 +29,14 @@ BOOST_AUTO_TEST_CASE(TestWordDisambiguouser)
 {
     spell::Dictionary dict(std::vector<std::string>{"abcd", "abce", "abcehn", "abcehne", "abcehnu", "abcej", "azerty", "abc", "bob", "coco", "paco", "parano"});
 
-    using letters_t = std::vector<char>;
-    std::vector<letters_t> word{
-        {'a'},
-        {'b', 'z'},
-        {'e'},
-        {'r'},
-        {'u', 't'},
-        {'y'},
+    using characters_t = std::vector<std::string>;
+    std::vector<characters_t> word{
+        {"a"},
+        {"b", "z"},
+        {"e"},
+        {"r"},
+        {"u", "t"},
+        {"y"},
     };
 
     spell::WordDisambiguouser disambiguouser;
@@ -45,12 +45,12 @@ BOOST_AUTO_TEST_CASE(TestWordDisambiguouser)
     BOOST_CHECK(disambiguouser(dict, word.begin(), word.end(), s));
     BOOST_CHECK_EQUAL(s, "azerty");
 
-    word[1].emplace_back('i');
+    word[1].emplace_back("i");
     s.clear();
     BOOST_CHECK(disambiguouser(dict, word.begin(), word.end(), s));
     BOOST_CHECK_EQUAL(s, "azerty");
 
-    word.emplace_back(1, 'y');
+    word.emplace_back(1, "y");
     s.clear();
     BOOST_CHECK(!disambiguouser(dict, word.begin(), word.end(), s));
 

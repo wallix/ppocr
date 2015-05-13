@@ -31,19 +31,19 @@ namespace spell
     {
         class Manipulator {
         protected:
-            using trie_type = container::flat_trie<char>;
+            using trie_type = container::flat_trie<uint32_t>;
 
             trie_type const & trie(Dictionary const & dict)
             { return dict.trie_; }
         };
 
-        Dictionary(std::vector<std::string> words);
-        Dictionary(container::flat_trie<char> trie);
-        Dictionary(container::trie<char> const & trie);
+        Dictionary(std::vector<std::string> const & words);
+        Dictionary(container::flat_trie<uint32_t> trie);
+        Dictionary(container::trie<uint32_t> const & trie);
         Dictionary() = default;
 
     private:
-        container::flat_trie<char> trie_;
+        container::flat_trie<uint32_t> trie_;
     };
 
     std::istream & operator >> (std::istream & is, Dictionary & dict);

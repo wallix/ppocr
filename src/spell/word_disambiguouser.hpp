@@ -22,13 +22,14 @@
 #define REDEMPTION_SRC_SPELL_WORD_DISAMBIGUOUSER_HPP
 
 #include "dictionary.hpp"
+#include "utils/utf.hpp"
 
 namespace spell {
 
 struct WordDisambiguouser : Dictionary::Manipulator
 {
-    template<class FwRngIt>
-    bool operator()(Dictionary const & dict, FwRngIt first, FwRngIt last, std::string & output)
+    template<class FwRngStrIt>
+    bool operator()(Dictionary const & dict, FwRngStrIt first, FwRngStrIt last, std::string & output)
     {
         if (first == last || this->trie(dict).all().empty()) {
             return false;
@@ -46,26 +47,50 @@ struct WordDisambiguouser : Dictionary::Manipulator
     }
 
 private:
-    // <trie_type::node_type&, uchar[sizeof(FwRngIt)]> stack;
+    // <trie_type::node_type&, uchar[sizeof(FwRngStrIt)]> stack;
 
-    template<class FwRngIt>
-    bool disambiguous_impl(trie_type::range rng, FwRngIt first, FwRngIt last, std::string & output) {
-        for (auto & c : *first) {
-            auto pos = rng.find(c);
-            if (pos != rng.end()) {
-                if (first + 1 == last) {
-                    if (pos->is_terminal()) {
-                        output += c;
+    template<class FwRngStrIt>
+    bool disambiguous_impl(trie_type::range rng, FwRngStrIt first, FwRngStrIt last, std::string & output) {
+        for (auto & s : *first) {
+            utf::UTF8toUnicodeIterator it(s.data());
+            for (uint32_t c; (c = *it); ++it) {
+                auto pos = rng.find(c);
+                if (pos != rng.end()) {
+                    if (first + 1 == last) {
+                        if (pos->is_terminal()) {
+                            set_c(output, c);
+                            return true;
+                        }
+                    }
+                    else if (!pos->empty() && disambiguous_impl(pos->childrens(), first+1, last, output)) {
+                        set_c(output, c);
                         return true;
                     }
-                }
-                else if (!pos->empty() && disambiguous_impl(pos->childrens(), first+1, last, output)) {
-                    output += c;
-                    return true;
                 }
             }
         }
         return false;
+    }
+
+    void set_c(std::string & s, uint64_t code) {
+        char c[] = {
+            char((code & 0xFF000000) >> 24),
+            char((code & 0x00FF0000) >> 16),
+            char((code & 0x0000FF00) >> 8),
+            char((code & 0x000000FF)),
+        };
+        if (c[0]) {
+            s.append(&c[0], &c[4]);
+        }
+        else if (c[1]) {
+            s.append(&c[1], &c[4]);
+        }
+        else if (c[2]) {
+            s.append(&c[2], &c[4]);
+        }
+        else {
+            s += c;
+        }
     }
 };
 
