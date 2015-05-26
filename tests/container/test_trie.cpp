@@ -96,6 +96,9 @@ BOOST_AUTO_TEST_CASE(TestTrie)
     );
 
     flat_char_trie flat_trie(trie);
+
+    BOOST_CHECK_EQUAL(flat_trie.childrens().size(), 4);
+
     {
         std::stringstream oss;
         auto write = [](std::stringstream & oss, flat_char_trie const & flat_trie) {

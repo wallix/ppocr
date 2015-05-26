@@ -24,6 +24,7 @@
 #include "dictionary.hpp"
 #include "utils/utf.hpp"
 
+
 namespace spell {
 
 struct WordDisambiguouser : Dictionary::Manipulator
@@ -34,50 +35,58 @@ struct WordDisambiguouser : Dictionary::Manipulator
         if (first == last || this->trie(dict).all().empty()) {
             return false;
         }
-        auto const sz = output.size();
+        auto sz = output.size();
         if (disambiguous_impl(this->trie(dict).childrens(), first, last, output)) {
-            auto first = output.begin() + sz;
-            auto last = output.end();
-            for (; first < --last; ++first) {
-                std::iter_swap(first, last);
-            }
+            std::swap_ranges(output.begin() + sz, output.begin() + sz + (output.size() - sz) / 2, output.rbegin());
             return true;
         }
         return false;
     }
 
 private:
-    // <trie_type::node_type&, uchar[sizeof(FwRngStrIt)]> stack;
-
     template<class FwRngStrIt>
     bool disambiguous_impl(trie_type::range rng, FwRngStrIt first, FwRngStrIt last, std::string & output) {
         for (auto & s : *first) {
-            utf::UTF8toUnicodeIterator it(s.data());
-            for (uint32_t c; (c = *it); ++it) {
-                auto pos = rng.find(c);
-                if (pos != rng.end()) {
-                    if (first + 1 == last) {
-                        if (pos->is_terminal()) {
-                            set_c(output, c);
-                            return true;
-                        }
-                    }
-                    else if (!pos->empty() && disambiguous_impl(pos->childrens(), first+1, last, output)) {
+            if (disambiguous_utf_char(rng, first, last, utf::UTF8Iterator(s.data()), output)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    template<class FwRngStrIt>
+    bool disambiguous_utf_char(trie_type::range rng, FwRngStrIt first, FwRngStrIt last, utf::UTF8Iterator it, std::string & output) {
+        auto const c = *it;
+        auto pos = rng.lower_bound(c);
+        if (pos != rng.end() && pos->get() == c) {
+            if (first + 1 == last) {
+                if (pos->is_terminal()) {
+                    set_c(output, c);
+                    return true;
+                }
+            }
+            else if (!pos->empty()) {
+                if (*++it) {
+                    if (disambiguous_utf_char(pos->childrens(), first, last, it, output)) {
                         set_c(output, c);
                         return true;
                     }
+                }
+                else if (disambiguous_impl(pos->childrens(), first+1, last, output)) {
+                    set_c(output, c);
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    void set_c(std::string & s, uint64_t code) {
+    void set_c(std::string & s, uint32_t code) {
         char c[] = {
-            char((code & 0xFF000000) >> 24),
-            char((code & 0x00FF0000) >> 16),
-            char((code & 0x0000FF00) >> 8),
             char((code & 0x000000FF)),
+            char((code & 0x0000FF00) >> 8),
+            char((code & 0x00FF0000) >> 16),
+            char((code & 0xFF000000) >> 24),
         };
         if (c[0]) {
             s.append(&c[0], &c[4]);
@@ -89,7 +98,7 @@ private:
             s.append(&c[2], &c[4]);
         }
         else {
-            s += c;
+            s += c[3];
         }
     }
 };

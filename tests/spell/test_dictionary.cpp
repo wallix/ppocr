@@ -53,10 +53,10 @@ BOOST_AUTO_TEST_CASE(TestDisctionary)
 
     io >> dict2;
 
-    struct CheckDictionary : spell::Dictionary::Manipulator {
-        CheckDictionary() {}
+    struct DictionaryCheck : spell::Dictionary::Manipulator {
+        DictionaryCheck() {}
 
-        bool operator()(spell::Dictionary & dict1, spell::Dictionary & dict2) {
+        bool operator()(spell::Dictionary & dict1, spell::Dictionary & dict2) const {
             auto & c1 = this->trie(dict1).all();
             auto & c2 = this->trie(dict2).all();
             using T = decltype(*c1.begin());
@@ -70,5 +70,15 @@ BOOST_AUTO_TEST_CASE(TestDisctionary)
         }
     };
 
-    BOOST_CHECK(CheckDictionary()(dict1, dict2));
+    struct DictionarySize : spell::Dictionary::Manipulator {
+        DictionarySize() {}
+
+        std::size_t operator()(spell::Dictionary && dict) const {
+            return this->trie(dict).all().size();
+        }
+    };
+
+    BOOST_CHECK(DictionaryCheck()(dict1, dict2));
+
+    BOOST_CHECK_EQUAL(DictionarySize()(spell::Dictionary({"à"})), 1);
 }

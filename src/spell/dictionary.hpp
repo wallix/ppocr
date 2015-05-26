@@ -33,7 +33,7 @@ namespace spell
         protected:
             using trie_type = container::flat_trie<uint32_t>;
 
-            trie_type const & trie(Dictionary const & dict)
+            trie_type const & trie(Dictionary const & dict) const
             { return dict.trie_; }
         };
 

@@ -55,7 +55,7 @@ struct trie
         iterator end() const { return this->nodes_.end(); }
 
         template<class U>
-        iterator find(U const & x) const { return this->nodes_.find(x); }
+        iterator lower_bound(U const & x) const { return this->nodes_.lower_bound(x); }
 
         trie const & childrens() const { return this->nodes_; }
 
@@ -103,7 +103,7 @@ public:
     bool empty() const { return this->nodes_.empty(); }
 
     template<class U>
-    iterator find(U const & x) const {
+    iterator lower_bound(U const & x) const {
         return std::lower_bound(this->begin(), this->end(), x, [](node_type const & node, U const & x) {
             return node.get() < x;
         });
@@ -135,7 +135,7 @@ struct flat_trie
         std::size_t empty() const { return this->beg_ == this->end_; }
 
         template<class U>
-        iterator find(U const & x) const {
+        iterator lower_bound(U const & x) const {
             return std::lower_bound(this->begin(), this->end(), x, [](node_type const & node, U const & x) {
                 return node.get() < x;
             });
@@ -172,7 +172,7 @@ struct flat_trie
         iterator end() const { return this->begin() + this->size(); }
 
         template<class U>
-        iterator find(U const & x) const { return this->childrens().find(x); }
+        iterator lower_bound(U const & x) const { return this->childrens().lower_bound(x); }
 
         bool empty() const { return this->count_ == 0; }
         std::size_t size() const { return this->count_; }
@@ -236,7 +236,12 @@ struct flat_trie
     }
 
     range childrens() const
-    { return {&this->elems_[0], &this->elems_[0] + (this->elems_.empty() ? 0u : this->elems_[0].size())}; }
+    {
+        return {
+            &this->elems_[0],
+            &this->elems_[0] + (this->elems_.empty() ? 0u : this->elems_[0].relative_pos())
+        };
+    }
 
     node_type const & operator[](std::size_t const & i) const { return this->elems_[i]; }
 

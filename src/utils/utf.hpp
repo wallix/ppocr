@@ -78,6 +78,61 @@ namespace utf {
         uint8_t const * pos() const
         { return this->source; }
     };
+
+    class UTF8Iterator
+    {
+        const uint8_t * source;
+        uint32_t ucode = 0;
+
+    public:
+        UTF8Iterator(const uint8_t * str)
+        : source(str)
+        { ++*this; }
+
+        UTF8Iterator(const char * str)
+        : UTF8Iterator(reinterpret_cast<const uint8_t*>(str))
+        {}
+
+        UTF8Iterator & operator++()
+        {
+            this->ucode = *source;
+            ++source;
+            switch (this->ucode >> 4 ){
+                case 0:
+                case 1: case 2: case 3:
+                case 4: case 5: case 6: case 7:
+                break;
+                /* handle U+0080..U+07FF inline : 2 bytes sequences */
+                case 0xC: case 0xD:
+                    this->ucode = (this->ucode << 8) | source[0];
+                    source += 1;
+                break;
+                /* handle U+8FFF..U+FFFF inline : 3 bytes sequences */
+                case 0xE:
+                    this->ucode = (this->ucode << 16) | (source[0] << 8) | source[1];
+                    source += 2;
+                break;
+                case 0xF:
+                    this->ucode = (this->ucode << 24) | (source[0] << 16) | (source[1] << 8) | source[2];
+                    source += 3;
+                break;
+                // these should never happen on valid UTF8
+                default: //case 8: case 9: case 0x0A: case 0x0B:
+                    ucode = 0;
+                break;
+            }
+            return *this;
+        }
+
+        uint32_t operator*() const
+        { return this->ucode; }
+
+        uint32_t code() const
+        { return this->ucode; }
+
+        uint8_t const * pos() const
+        { return this->source; }
+    };
 }
 
 #endif

@@ -527,8 +527,16 @@ void compute_image(
     }
     else if (o.tmp_probabilities[0].prob >= 1/* && tmp_probabilities.size() == 1*/) {
         o.result2 += o.tmp_probabilities[0].c();
-        o.ambiguous.push_back({o.tmp_probabilities[0].c()});
-        cache_element.second.push_back({o.tmp_probabilities[0].c()});
+        for (auto & prob : o.tmp_probabilities) {
+            if (!(prob.prob >= 1)) {
+                break;
+            }
+            cache_element.second.push_back(prob.c());
+            for (auto & c : prob.are_same()) {
+                cache_element.second.push_back(c);
+            }
+        }
+        o.ambiguous.push_back(cache_element.second);
     }
     else {
         for (size_t i = count_algo_base, e = i + 3; i < e; ++i) {
@@ -566,12 +574,17 @@ void compute_image(
             cache_element.second.push_back({"_"});
         }
         else {
-            std::vector<std::string> characters;
+            auto prob_limit = o.probabilities.front().prob;
             for (auto & prob : o.probabilities) {
-                characters.push_back(prob.c());
+                if (prob.prob < prob_limit) {
+                    break;
+                }
                 cache_element.second.push_back(prob.c());
+                for (auto & c : prob.are_same()) {
+                    cache_element.second.push_back(c);
+                }
             }
-            o.ambiguous.push_back(std::move(characters));
+            o.ambiguous.push_back(cache_element.second);
             o.result2 += o.probabilities.front().c();
         }
     }
@@ -683,14 +696,22 @@ int main(int ac, char **av)
         x = cbox.x() + cbox.w();
     }
 
-    {
-        auto t2 = resolution_clock::now();
-        std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
-    }
+    auto t2 = resolution_clock::now();
+    std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
 
     std::string result3;
     auto search_fn = [](std::vector<std::string> const & s) {
-        return s.empty() || (s.front().size() == 1 && s.front().front() == ' ');
+        return s.empty() || (s.front().size() == 1
+            && (s.front().front() == ' '
+             || s.front().front() == '\''
+             || s.front().front() == ','
+             // punct
+             || s.front().front() == '.'
+             || s.front().front() == '!'
+             || s.front().front() == '?'
+             || s.front().front() == '"'
+            )
+        );
     };
     auto first = compute_image_data.ambiguous.begin();
     auto last = compute_image_data.ambiguous.end();
@@ -704,9 +725,23 @@ int main(int ac, char **av)
                 }
             }
         }
-        result3 += ' ';
-        first = std::find_if_not(middle, last, search_fn);
+
+        for (; middle != last; ++middle) {
+            if (middle->empty()) {
+                result3 += '?';
+            }
+            else if (search_fn(*middle)) {
+                result3 += middle->front();
+            }
+            else {
+                break;
+            }
+        }
+        first = middle;
     }
+
+    auto t3 = resolution_clock::now();
+    std::cerr << std::chrono::duration<double>(t3-t1).count() << "s\n";
 
     std::cout
       << " ## result1: " << (compute_image_data.result1)

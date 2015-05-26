@@ -24,8 +24,6 @@
 #include <fstream>
 #include <algorithm>
 
-#include <iostream>
-
 
 namespace spell {
 
@@ -42,7 +40,7 @@ Dictionary::Dictionary(std::vector<std::string> const & words)
     std::vector<std::vector<uint32_t>> uwords;
     for (auto & old_word : words) {
         std::vector<uint32_t> new_word;
-        utf::UTF8toUnicodeIterator it(old_word.data());
+        utf::UTF8Iterator it(old_word.data());
         for (uint32_t c; (c = *it); ++it) {
             new_word.push_back(c);
         }
