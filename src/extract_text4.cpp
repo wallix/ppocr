@@ -601,6 +601,10 @@ int main(int ac, char **av)
             return 7;
         }
         file >> dict;
+        if (!file.eof()) {
+            std::cerr << "read error\n";
+            return 7;
+        }
     }
 
     DataLoader loader;

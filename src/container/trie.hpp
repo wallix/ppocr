@@ -82,32 +82,18 @@ public:
 
     template<class RandIt>
     void insert_after(RandIt first, RandIt last, unsigned depth = 0u) {
-        if (last - first == 1) {
-            for (auto back = this; depth != first->size(); ++depth) {
-                back->nodes_.emplace_back((*first)[depth], depth + 1 == first->size());
-                back = &back->trie_back_();
+        while (first != last) {
+            using value_iterator = typename std::iterator_traits<RandIt>::value_type;
+            auto middle = std::upper_bound(
+                first, last, (*first)[depth],
+                [depth](T const & c, value_iterator & s){ return depth < s.size() && c < s[depth]; }
+            );
+            this->nodes_.emplace_back((*first)[depth], depth + 1 == first->size());
+            if (first->size() == depth + 1) {
+                ++first;
             }
-        }
-        else if (first != last) {
-            if (first->size() <= depth + 1) {
-                do {
-                    this->nodes_.emplace_back((*first)[depth], true);
-                    ++first;
-                } while (first != last && first->size() <= depth + 1);
-                this->trie_back_().insert_after(first, last, depth+1);
-            }
-            else {
-                while (first != last) {
-                    using value_iterator = typename std::iterator_traits<RandIt>::value_type;
-                    auto middle = std::upper_bound(
-                        first, last, (*first)[depth],
-                        [depth](T const & c, value_iterator & s){ return depth < s.size() && c < s[depth]; }
-                    );
-                    this->nodes_.emplace_back((*first)[depth]);
-                    this->trie_back_().insert_after(first, middle, depth+1);
-                    first = middle;
-                }
-            }
+            this->trie_back_().insert_after(first, middle, depth+1);
+            first = middle;
         }
     }
 
