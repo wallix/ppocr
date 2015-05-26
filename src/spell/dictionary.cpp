@@ -24,7 +24,7 @@
 #include <fstream>
 #include <algorithm>
 
-#include <cassert>
+#include <iostream>
 
 
 namespace spell {
@@ -74,6 +74,18 @@ std::ostream& operator<<(std::ostream& os, Dictionary const & dict)
 
 std::istream& operator>>(std::istream& is, Dictionary & dict)
 {
+    struct Saver {
+        std::ios & io_;
+        std::ios::fmtflags flags_;
+
+        Saver(std::ios & io)
+        : io_(io), flags_(io.flags())
+        { io.unsetf(std::ios::skipws); }
+
+        ~Saver()
+        { this->io_.flags(flags_); }
+    } saver{is};
+
     using trie_type = container::flat_trie<uint32_t>;
     std::vector<trie_type::node_type> nodes;
     trie_type::value_type c;

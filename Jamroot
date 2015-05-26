@@ -388,5 +388,10 @@ unit-test test_word_disambiguouser :
     dictionary
     libboost_unit_test : ;
 
+unit-test test_dictionary :
+    tests/spell/test_dictionary.cpp
+    dictionary
+    libboost_unit_test : ;
+
 #unit-test test_new_ocr : tests/test_test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
 

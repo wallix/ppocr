@@ -18,7 +18,7 @@
 
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestAuthentifierNew
+#define BOOST_TEST_MODULE TestTrie
 #include <boost/test/auto_unit_test.hpp>
 
 #include "container/trie.hpp"
@@ -40,26 +40,6 @@ void str_tree(char_trie const & trie, std::string & s, unsigned depth = 0u) {
         s += '\n';
         str_tree(node.childrens(), s, depth+1);
     }
-}
-
-template<class Trie, class FwIt>
-bool disambigus(Trie const & trie, FwIt first, FwIt last, std::string & result) {
-    for (auto & c : *first) {
-        auto pos = trie.find(c);
-        if (pos != trie.end()) {
-            if (last - first == 1) {
-                if (pos->is_terminal()) {
-                    result += c;
-                    return true;
-                }
-            }
-            else if (!pos->empty() && disambigus(pos->childrens(), first+1, last, result)) {
-                result += c;
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 #ifndef CXX_ENABLE_ASAN
