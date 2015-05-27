@@ -13,13 +13,12 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_DEFINITION_HPP
-#define REDEMPTION_DEFINITION_HPP
+#ifndef PPOCR_DEFINITION_HPP
+#define PPOCR_DEFINITION_HPP
 
 #include "image/image.hpp"
 #include "data_loader.hpp"
@@ -27,6 +26,8 @@
 #include <string>
 #include <iosfwd>
 
+
+namespace ppocr {
 
 struct Definition
 {
@@ -46,5 +47,7 @@ void write_definition(std::ostream & os, Definition const & def, DataLoader cons
 void read_definition(std::istream& is, Definition & def, DataLoader const & loader);
 
 std::vector<Definition> read_definitions(std::istream& is, DataLoader const & loader);
+
+}
 
 #endif

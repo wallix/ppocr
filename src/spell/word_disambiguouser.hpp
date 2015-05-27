@@ -13,19 +13,18 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_SPELL_WORD_DISAMBIGUOUSER_HPP
-#define REDEMPTION_SRC_SPELL_WORD_DISAMBIGUOUSER_HPP
+#ifndef PPOCR_SRC_SPELL_WORD_DISAMBIGUOUSER_HPP
+#define PPOCR_SRC_SPELL_WORD_DISAMBIGUOUSER_HPP
 
 #include "dictionary.hpp"
 #include "utils/utf.hpp"
 
 
-namespace spell {
+namespace ppocr { namespace spell {
 
 struct WordDisambiguouser : Dictionary::Manipulator
 {
@@ -87,22 +86,12 @@ private:
             char((code & 0x0000FF00) >> 8),
             char((code & 0x00FF0000) >> 16),
             char((code & 0xFF000000) >> 24),
+            '\0'
         };
-        if (c[0]) {
-            s.append(&c[0], &c[4]);
-        }
-        else if (c[1]) {
-            s.append(&c[1], &c[4]);
-        }
-        else if (c[2]) {
-            s.append(&c[2], &c[4]);
-        }
-        else {
-            s += c[3];
-        }
+        s += c;
     }
 };
 
-}
+} }
 
 #endif

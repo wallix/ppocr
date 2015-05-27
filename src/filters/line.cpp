@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-namespace filters {
+namespace ppocr { namespace filters {
 
 static size_t const invalid_result = ~size_t{};
 
@@ -134,4 +134,4 @@ std::ostream& operator<<(std::ostream& os, line_position pos)
 std::istream& operator>>(std::istream& os, line_position & pos)
 { return utils::read_enum(os, pos); }
 
-}
+} }

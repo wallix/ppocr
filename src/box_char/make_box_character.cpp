@@ -24,6 +24,8 @@
 #include "box_char/box.hpp"
 #include "image/image.hpp"
 
+namespace ppocr {
+
 namespace utils {
     bool horizontal_empty(Pixel const * d, size_t w) {
         for (auto e = d+w; d != e; ++d) {
@@ -102,6 +104,8 @@ Box make_box_character(Image const & image, Index const & idx, Bounds const & bn
 
     ++h;
     return {{x, y}, {w, h}};
+}
+
 }
 
 #endif

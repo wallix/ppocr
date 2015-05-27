@@ -28,6 +28,8 @@
 #include "strategies/hbar.hpp"
 
 
+namespace ppocr {
+
 void all_registy(DataLoader& loader)
 {
 #define REGISTRY(name) loader.registry<strategies::name>(#name)
@@ -76,4 +78,6 @@ void all_registy(DataLoader& loader)
     REGISTRY(zone);
     REGISTRY(proportionality_zone);
 #undef REGISTRY
+}
+
 }

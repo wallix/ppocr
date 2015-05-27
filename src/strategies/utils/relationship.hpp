@@ -13,13 +13,12 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_UTILS_RELATIONSHIP_HPP
-#define REDEMPTION_UTILS_RELATIONSHIP_HPP
+#ifndef PPOCR_UTILS_RELATIONSHIP_HPP
+#define PPOCR_UTILS_RELATIONSHIP_HPP
 
 #include <type_traits>
 
@@ -27,7 +26,7 @@
 #include "sassert.hpp"
 
 
-namespace strategies { namespace utils {
+namespace ppocr { namespace strategies { namespace utils {
 
 template<class T, class U>
 unsigned compute_relationship(T const & a, T const & b, U const & interval)
@@ -64,6 +63,6 @@ unsigned cardinal_relationship(CardinalDirection2 a, CardinalDirection2 b)
 { return mask_relationship(static_cast<unsigned>(a), static_cast<unsigned>(b), 7, 3, 4); }
 
 
-} }
+} } }
 
 #endif

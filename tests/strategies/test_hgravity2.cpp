@@ -33,6 +33,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 using D = unsigned;
 
 static D to_hgravity2_value(Bounds bnd, const char * data_text)

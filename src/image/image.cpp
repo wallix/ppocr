@@ -3,8 +3,12 @@
 
 #include <cassert>
 
-using cP = Pixel const *;
-using P = Pixel *;
+namespace ppocr {
+
+namespace {
+    using cP = Pixel const *;
+    using P = Pixel *;
+}
 
 Image::Image(const Bounds& bounds, PtrImageData data)
 : data_(std::move(data))
@@ -68,3 +72,4 @@ std::ostream & operator<<(std::ostream & os, Image const & image)
     return os;
 }
 
+}

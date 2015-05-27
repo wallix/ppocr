@@ -12,20 +12,22 @@
 *   You should have received a copy of the GNU General Public License
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_UTILS_UNIQUE_SORT_DEFINITION_HPP
-#define REDEMPTION_UTILS_UNIQUE_SORT_DEFINITION_HPP
+#ifndef PPOCR_UTILS_UNIQUE_SORT_DEFINITION_HPP
+#define PPOCR_UTILS_UNIQUE_SORT_DEFINITION_HPP
 
 #include "factory/definition.hpp"
 
 #include <vector>
 
+namespace ppocr {
 
 void unique_sort_definitions(std::vector<Definition> & defs);
+
+}
 
 #endif

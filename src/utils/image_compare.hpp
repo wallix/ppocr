@@ -13,31 +13,38 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_UTILS_IMAGE_COMPARE_HPP
-#define REDEMPTION_UTILS_IMAGE_COMPARE_HPP
+#ifndef PPOCR_UTILS_IMAGE_COMPARE_HPP
+#define PPOCR_UTILS_IMAGE_COMPARE_HPP
 
 #include <functional>
+
+namespace ppocr {
 
 class Image;
 
 int image_compare(Image const & a, Image const & b);
 
+}
+
 namespace std {
     template<>
-    struct less<Image>
+    struct less< ::ppocr::Image>
     {
         constexpr less() noexcept {}
 
-        bool operator()(Image const & a, Image const & b) const
-        { return image_compare(a, b) < 0; }
+        bool operator()(::ppocr::Image const & a, ::ppocr::Image const & b) const
+        { return ::ppocr::image_compare(a, b) < 0; }
     };
 }
 
+namespace ppocr {
+
 using image_less = std::less<Image>;
+
+}
 
 #endif

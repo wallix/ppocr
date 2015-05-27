@@ -26,6 +26,8 @@
 #include <memory>
 
 
+namespace ppocr {
+
 using Pixel = char;
 
 inline bool is_pix_letter(Pixel pix) noexcept
@@ -228,6 +230,8 @@ namespace rng
         }
         return it != last;
     }
+}
+
 }
 
 #endif

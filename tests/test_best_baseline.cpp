@@ -32,6 +32,8 @@
 
 #define IMAGE_PATH "./tests/images/"
 
+using namespace ppocr;
+
 BOOST_AUTO_TEST_CASE(TestBestBaseline)
 {
    unsigned baselines[] {15, 15, 18, 15, 7, 15, 7};

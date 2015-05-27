@@ -13,22 +13,25 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_UTILS_READ_DEFINITIONS_FILE_AND_NORMALIZE_HPP
-#define REDEMPTION_SRC_UTILS_READ_DEFINITIONS_FILE_AND_NORMALIZE_HPP
+#ifndef PPOCR_SRC_UTILS_READ_DEFINITIONS_FILE_AND_NORMALIZE_HPP
+#define PPOCR_SRC_UTILS_READ_DEFINITIONS_FILE_AND_NORMALIZE_HPP
 
 #include "factory/definition.hpp"
 
 #include <vector>
 #include <iosfwd>
 
+namespace ppocr {
+
 class DataLoader;
 
 std::vector<Definition>
 read_definitions_file_and_normalize(char const * file, DataLoader & loader, std::ostream * out = nullptr);
+
+}
 
 #endif

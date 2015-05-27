@@ -13,20 +13,19 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_UTILS_ENUM_IO_HPP
-#define REDEMPTION_SRC_UTILS_ENUM_IO_HPP
+#ifndef PPOCR_SRC_UTILS_ENUM_IO_HPP
+#define PPOCR_SRC_UTILS_ENUM_IO_HPP
 
 #include <ostream>
 #include <istream>
 #include <type_traits>
 
 
-namespace utils {
+namespace ppocr { namespace utils {
 
 template<class EnumT>
 inline std::ostream & write_enum(std::ostream & os, EnumT e)
@@ -59,6 +58,6 @@ namespace details {
 template<class E> inline details::WriteEnum<E> write_enum(E e) { return {e}; }
 template<class E> inline details::ReadEnum<E> read_enum(E & e) { return {e}; }
 
-}
+} }
 
 #endif

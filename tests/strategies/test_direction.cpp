@@ -34,6 +34,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 using D = strategies::direction::cardinal_direction;
 
 static D to_directtion_id(Bounds bnd, const char * data_text)

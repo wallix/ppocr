@@ -33,6 +33,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 static int to_gravity2_id(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);

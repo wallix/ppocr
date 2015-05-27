@@ -8,8 +8,7 @@
 #include <ostream>
 #include <istream>
 
-namespace strategies
-{
+namespace ppocr { namespace strategies {
 
 static int horizontal_compass(const Image& img)
 {
@@ -33,4 +32,4 @@ std::istream& operator>>(std::istream& is, compass& d)
 std::ostream& operator<<(std::ostream& os, const compass& d)
 { return os << d.direction(); }
 
-}
+} }

@@ -28,6 +28,8 @@
 #include <cstring>
 #include <cerrno>
 
+using namespace ppocr;
+
 int main(int ac, char ** av) {
     if (ac < 2) {
         std::cerr << av[0] << " words_file...\n";

@@ -29,6 +29,8 @@
 #include <cerrno>
 #include <cassert>
 
+using namespace ppocr;
+
 using std::size_t;
 
 int main(int ac, char **av)

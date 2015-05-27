@@ -33,6 +33,8 @@
 #include <sys/resource.h>
 #endif
 
+using namespace ppocr;
+
 BOOST_AUTO_TEST_CASE(TestDisctionary)
 {
 #ifndef CXX_ENABLE_ASAN
@@ -43,17 +45,17 @@ BOOST_AUTO_TEST_CASE(TestDisctionary)
 #endif
 
     std::vector<std::string> strings{"abcd", "abce", "abcehn", "abcehne", "abcehnu", "abcej", "azerty", "abc", "bob", "coco", "paco", "parano"};
-    spell::Dictionary dict1(strings);
+    ppocr::spell::Dictionary dict1(strings);
 
     std::stringstream io;
 
     io << dict1;
 
-    spell::Dictionary dict2;
+    ppocr::spell::Dictionary dict2;
 
     io >> dict2;
 
-    struct DictionaryCheck : spell::Dictionary::Manipulator {
+    struct DictionaryCheck : ppocr::spell::Dictionary::Manipulator {
         DictionaryCheck() {}
 
         bool operator()(spell::Dictionary & dict1, spell::Dictionary & dict2) const {
@@ -70,15 +72,15 @@ BOOST_AUTO_TEST_CASE(TestDisctionary)
         }
     };
 
-    struct DictionarySize : spell::Dictionary::Manipulator {
+    struct DictionarySize : ppocr::spell::Dictionary::Manipulator {
         DictionarySize() {}
 
-        std::size_t operator()(spell::Dictionary && dict) const {
+        std::size_t operator()(ppocr::spell::Dictionary && dict) const {
             return this->trie(dict).all().size();
         }
     };
 
     BOOST_CHECK(DictionaryCheck()(dict1, dict2));
 
-    BOOST_CHECK_EQUAL(DictionarySize()(spell::Dictionary({"à"})), 1);
+    BOOST_CHECK_EQUAL(DictionarySize()(ppocr::spell::Dictionary({"à"})), 1);
 }

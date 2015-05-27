@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+using namespace ppocr;
+
 int main(int ac, char **av)
 {
     int i_ac = 0;

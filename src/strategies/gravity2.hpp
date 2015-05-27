@@ -13,15 +13,16 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_GRAVITY2_HPP
-#define REDEMPTION_STRATEGIES_GRAVITY2_HPP
+#ifndef PPOCR_STRATEGIES_GRAVITY2_HPP
+#define PPOCR_STRATEGIES_GRAVITY2_HPP
 
 #include <iosfwd>
+
+namespace ppocr {
 
 class Image;
 
@@ -52,6 +53,8 @@ namespace strategies
     };
 
     std::ostream & operator<<(std::ostream &, gravity2 const &);
+}
+
 }
 
 #endif

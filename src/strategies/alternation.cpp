@@ -14,8 +14,7 @@
 #define MAKE_SEQUENCE_ALTERNATION(name, img, x, y, B) make_alternations(img, x, y, B)
 #endif
 
-namespace strategies
-{
+namespace ppocr { namespace strategies {
 
 template<class T>
 alternations::alternations_type
@@ -96,4 +95,4 @@ std::istream & operator>>(std::istream & is, alternations & seq_alternations)
     return is;
 }
 
-}
+} }

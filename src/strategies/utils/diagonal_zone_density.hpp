@@ -13,20 +13,19 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_STRATEGIES_UTILS_DIAGONAL_ZONE_DENSITY_HPP
-#define REDEMPTION_SRC_STRATEGIES_UTILS_DIAGONAL_ZONE_DENSITY_HPP
+#ifndef PPOCR_SRC_STRATEGIES_UTILS_DIAGONAL_ZONE_DENSITY_HPP
+#define PPOCR_SRC_STRATEGIES_UTILS_DIAGONAL_ZONE_DENSITY_HPP
 
 #include "image/image.hpp"
 
 #include <algorithm>
 
 
-namespace strategies { namespace utils {
+namespace ppocr { namespace strategies { namespace utils {
 
 namespace details_ {
     template<class Fn>
@@ -65,6 +64,6 @@ unsigned diagonal_zone_density(const Image& img)
     return unsigned(res * 100 / area);
 }
 
-} }
+} } }
 
 #endif

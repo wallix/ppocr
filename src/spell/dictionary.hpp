@@ -13,41 +13,41 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_SPELL_DICTIONARY_HPP
-#define REDEMPTION_SRC_SPELL_DICTIONARY_HPP
+#ifndef PPOCR_SRC_SPELL_DICTIONARY_HPP
+#define PPOCR_SRC_SPELL_DICTIONARY_HPP
 
 #include "container/trie.hpp"
 
 #include <iosfwd>
 
-namespace spell
+namespace ppocr { namespace spell {
+
+struct Dictionary
 {
-    struct Dictionary
-    {
-        class Manipulator {
-        protected:
-            using trie_type = container::flat_trie<uint32_t>;
+    class Manipulator {
+    protected:
+        using trie_type = container::flat_trie<uint32_t>;
 
-            trie_type const & trie(Dictionary const & dict) const
-            { return dict.trie_; }
-        };
-
-        Dictionary(std::vector<std::string> const & words);
-        Dictionary(container::flat_trie<uint32_t> trie);
-        Dictionary(container::trie<uint32_t> const & trie);
-        Dictionary() = default;
-
-    private:
-        container::flat_trie<uint32_t> trie_;
+        trie_type const & trie(Dictionary const & dict) const
+        { return dict.trie_; }
     };
 
-    std::istream & operator >> (std::istream & is, Dictionary & dict);
-    std::ostream & operator << (std::ostream & os, Dictionary const & dict);
-}
+    Dictionary(std::vector<std::string> const & words);
+    Dictionary(container::flat_trie<uint32_t> trie);
+    Dictionary(container::trie<uint32_t> const & trie);
+    Dictionary() = default;
+
+private:
+    container::flat_trie<uint32_t> trie_;
+};
+
+std::istream & operator >> (std::istream & is, Dictionary & dict);
+std::ostream & operator << (std::ostream & os, Dictionary const & dict);
+
+} }
 
 #endif

@@ -6,7 +6,7 @@
 #include <istream>
 
 
-namespace strategies {
+namespace ppocr { namespace strategies {
 
 zone::zone(const Image& img, const Image& /*img90*/)
 {
@@ -45,4 +45,4 @@ std::istream& operator>>(std::istream& is, zone& zone)
     return is;
 }
 
-}
+} }

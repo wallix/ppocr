@@ -10,8 +10,7 @@
 #include <cassert>
 
 
-namespace strategies
-{
+namespace ppocr {namespace strategies {
 
 static unsigned horizontal_gravity2(const Image& img)
 {
@@ -40,4 +39,4 @@ std::istream& operator>>(std::istream& is, gravity2& d)
 std::ostream& operator<<(std::ostream& os, const gravity2& d)
 { return os << d.id(); }
 
-}
+} }

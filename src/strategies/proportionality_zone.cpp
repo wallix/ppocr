@@ -7,7 +7,7 @@
 #include <ostream>
 #include <istream>
 
-namespace strategies {
+namespace ppocr { namespace strategies {
 
 proportionality_zone::proportionality_zone(const Image& img, const Image& /*img90*/)
 {
@@ -65,4 +65,4 @@ std::istream& operator>>(std::istream& is, proportionality_zone& proportionality
     return is;
 }
 
-}
+} }

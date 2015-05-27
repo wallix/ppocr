@@ -9,6 +9,8 @@
 #include "mln/io/pbm/load.hh"
 #include "rgb8.hpp"
 
+namespace ppocr {
+
 template<class T, class ToPix>
 Image image2d_to_Image(mln::image2d<T> const & img, ToPix to_pix)
 {
@@ -53,3 +55,4 @@ Image image_from_file(const char * filename, unsigned luminance)
     });
 }
 
+}

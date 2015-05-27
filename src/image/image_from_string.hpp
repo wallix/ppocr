@@ -13,17 +13,20 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_IMAGE_FROM_STRING_HPP
-#define REDEMPTION_IMAGE_FROM_STRING_HPP
+#ifndef PPOCR_IMAGE_FROM_STRING_HPP
+#define PPOCR_IMAGE_FROM_STRING_HPP
 
 #include "coordinate.hpp"
 #include "image.hpp"
 
+namespace ppocr {
+
 Image image_from_string(Bounds const & bnd, const char * data);
+
+}
 
 #endif

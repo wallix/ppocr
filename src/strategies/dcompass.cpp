@@ -8,8 +8,7 @@
 #include <istream>
 
 
-namespace strategies
-{
+namespace ppocr { namespace strategies {
 
 static unsigned count_dcompass(Bounds const & bnd, Pixel const * p, Pixel const * ep, bool is_top)
 {
@@ -57,4 +56,4 @@ std::istream& operator>>(std::istream& is, dcompass& d)
 std::ostream& operator<<(std::ostream& os, const dcompass& d)
 { return os << d.direction(); }
 
-}
+} }

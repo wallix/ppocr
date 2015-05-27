@@ -10,6 +10,8 @@
 #include <cerrno>
 #include <cstring>
 
+using namespace ppocr;
+
 static int search_baseline(const char * imagefilename) {
     Image img = image_from_file(imagefilename);
     //std::cerr << img << '\n';

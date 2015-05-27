@@ -5,7 +5,7 @@
 #include "image/image.hpp"
 
 
-namespace strategies {
+namespace ppocr { namespace strategies {
 
 static unsigned compute_hdirection2(const Image& img)
 {
@@ -30,5 +30,4 @@ unsigned int hdirection290_traits::get_interval() { return 100; }
 unsigned int hdirection2_traits::best_difference() { return 5; }
 unsigned int hdirection290_traits::best_difference() { return 5; }
 
-
-}
+} }

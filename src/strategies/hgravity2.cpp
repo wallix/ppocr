@@ -5,7 +5,7 @@
 #include "image/image.hpp"
 
 
-namespace strategies {
+namespace ppocr { namespace strategies {
 
 static unsigned compute_hgravity2(const Image& img)
 {
@@ -31,4 +31,4 @@ unsigned int hgravity290_traits::get_interval() { return 100; }
 unsigned int hgravity2_traits::best_difference() { return 5; }
 unsigned int hgravity290_traits::best_difference() { return 5; }
 
-}
+} }

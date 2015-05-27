@@ -34,6 +34,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 using D = unsigned;
 
 static D to_ddensity_id(Bounds bnd, const char * data_text)

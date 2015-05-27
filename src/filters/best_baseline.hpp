@@ -13,19 +13,18 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_FILTERS_BEST_BASELINE_HPP
-#define REDEMPTION_SRC_FILTERS_BEST_BASELINE_HPP
+#ifndef PPOCR_SRC_FILTERS_BEST_BASELINE_HPP
+#define PPOCR_SRC_FILTERS_BEST_BASELINE_HPP
 
 #include <algorithm>
 #include <map>
 
 
-namespace filters {
+namespace ppocr { namespace filters {
 
 using std::size_t;
 
@@ -47,6 +46,6 @@ best_baseline(FwIt first, FwIt last)
     })->first;
 }
 
-}
+} }
 
 #endif

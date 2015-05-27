@@ -34,6 +34,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 using CardinalDirection = strategies::dcompass::cardinal_direction;
 
 static CardinalDirection to_dcompass_d(Bounds bnd, const char * data_text)

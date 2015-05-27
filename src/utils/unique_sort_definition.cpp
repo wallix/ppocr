@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <tuple>
 
+namespace ppocr {
+
 void unique_sort_definitions(std::vector< Definition >& defs)
 {
     if (defs.empty()) {
@@ -37,4 +39,6 @@ void unique_sort_definitions(std::vector< Definition >& defs)
     defs.erase(std::unique(defs.begin(), defs.end(), [](Definition const & a, Definition const & b) {
         return a.c == b.c && a.font_name == b.font_name && a.img == b.img;
     }), defs.end());
+}
+
 }

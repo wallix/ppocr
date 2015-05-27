@@ -13,8 +13,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
@@ -24,7 +23,7 @@
 
 #include "image/image.hpp"
 
-namespace strategies {
+namespace ppocr { namespace strategies {
 
 static unsigned compute_hdirection(const Image& img)
 {
@@ -45,4 +44,4 @@ unsigned int hdirection90_traits::get_interval() { return 200; }
 unsigned int hdirection_traits::best_difference() { return 10; }
 unsigned int hdirection90_traits::best_difference() { return 10; }
 
-}
+} }

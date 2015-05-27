@@ -13,19 +13,18 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_GRAVITY_HPP
-#define REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_GRAVITY_HPP
+#ifndef PPOCR_STRATEGIES_UTILS_HORIZONTAL_GRAVITY_HPP
+#define PPOCR_STRATEGIES_UTILS_HORIZONTAL_GRAVITY_HPP
 
 #include "image/image.hpp"
 #include "top_bottom.hpp"
 
 
-namespace strategies { namespace utils {
+namespace ppocr { namespace strategies { namespace utils {
 
 /**
  * Multiply each pixel with the distance [\a bnd.h(), y]
@@ -67,6 +66,6 @@ inline TopBottom horizontal_gravity(const Image& img)
     return {top, bottom};
 }
 
-} }
+} } }
 
 #endif

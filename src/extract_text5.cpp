@@ -56,6 +56,8 @@
 #include <cstring>
 #include <cerrno>
 
+using namespace ppocr;
+
 using std::size_t;
 
 using string_ref_t = std::reference_wrapper<std::string const>;

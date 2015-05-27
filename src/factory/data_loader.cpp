@@ -7,6 +7,7 @@
 #include <ostream>
 #include <cstring>
 
+namespace ppocr {
 
 bool DataLoader::Datas::operator<(const DataLoader::Datas& other) const
 {
@@ -104,4 +105,6 @@ void DataLoader::write(std::ostream& os, DataLoader::Datas const & datas) const
         os << '\n';
         ++it;
     }
+}
+
 }

@@ -13,17 +13,16 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_STRATEGIES_DZDENSITY_HPP
-#define REDEMPTION_SRC_STRATEGIES_DZDENSITY_HPP
+#ifndef PPOCR_SRC_STRATEGIES_DZDENSITY_HPP
+#define PPOCR_SRC_STRATEGIES_DZDENSITY_HPP
 
 #include "utils/basic_proportionality.hpp"
 
-namespace strategies {
+namespace ppocr { namespace strategies {
 
 /*
     ____/__
@@ -52,6 +51,6 @@ struct dzdensity90_traits {
 using dzdensity = basic_proportionality<dzdensity_traits>;
 using dzdensity90 = basic_proportionality<dzdensity90_traits>;
 
-}
+} }
 
 #endif

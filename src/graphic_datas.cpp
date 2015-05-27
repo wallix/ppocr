@@ -48,6 +48,8 @@
 
 #include "sassert.hpp"
 
+using namespace ppocr;
+
 struct EventBySignature
 {
     std::vector<unsigned> events_by_sig_;

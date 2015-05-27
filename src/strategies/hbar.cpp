@@ -5,7 +5,7 @@
 #include <ostream>
 #include <istream>
 
-namespace strategies { namespace details_ {
+namespace ppocr { namespace strategies { namespace details_ {
 
 basic_hbar::basic_hbar(const Image& img)
 {
@@ -31,4 +31,4 @@ std::istream& operator>>(std::istream& is, basic_hbar& hbar)
 std::ostream& operator<<(std::ostream& os, const basic_hbar& hbar)
 { return os << hbar.count(); }
 
-} }
+} } }

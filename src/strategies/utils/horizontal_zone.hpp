@@ -13,18 +13,17 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_ZONE_HPP
-#define REDEMPTION_STRATEGIES_UTILS_HORIZONTAL_ZONE_HPP
+#ifndef PPOCR_STRATEGIES_UTILS_HORIZONTAL_ZONE_HPP
+#define PPOCR_STRATEGIES_UTILS_HORIZONTAL_ZONE_HPP
 
 #include "image/image.hpp"
 #include "top_bottom.hpp"
 
-namespace strategies { namespace utils {
+namespace ppocr { namespace strategies { namespace utils {
 
 inline unsigned horizontal_box_zone_0_1_2(const Image& img, unsigned d)
 {
@@ -46,6 +45,6 @@ inline unsigned horizontal_zone_1_2_3_4_5(const Image& img, TopBottom const & to
         : 3;
 }
 
-} }
+} } }
 
 #endif

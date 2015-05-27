@@ -33,6 +33,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 static strategies::proportionality to_proportion(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);

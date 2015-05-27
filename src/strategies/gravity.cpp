@@ -11,8 +11,7 @@
 
 #include <type_traits>
 
-namespace strategies
-{
+namespace ppocr { namespace strategies {
 
 gravity::gravity(const Image& img, const Image& img90)
 : d(static_cast<cardinal_direction>(
@@ -30,4 +29,4 @@ std::istream& operator>>(std::istream& is, gravity& d)
 std::ostream& operator<<(std::ostream& os, const gravity& d)
 { return os << d.id(); }
 
-}
+} }

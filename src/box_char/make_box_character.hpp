@@ -13,15 +13,17 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_MAKE_BOX_CHARACTER_HPP
-#define REDEMPTION_MAKE_BOX_CHARACTER_HPP
+#ifndef PPOCR_MAKE_BOX_CHARACTER_HPP
+#define PPOCR_MAKE_BOX_CHARACTER_HPP
 
 #include "box.hpp"
+
+
+namespace ppocr {
 
 class Image;
 
@@ -32,5 +34,6 @@ namespace utils {
 
 Box make_box_character(Image const & image, Index const & idx, Bounds const & bnd);
 
+}
 
 #endif

@@ -13,8 +13,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
@@ -26,7 +25,7 @@
 
 #include <iostream>
 
-namespace strategies {
+namespace ppocr { namespace strategies {
 
 unsigned dzdensity_traits::compute(const Image& img, const Image&)
 { return utils::diagonal_zone_density(img); }
@@ -40,4 +39,4 @@ unsigned int dzdensity90_traits::get_interval() { return 100; }
 unsigned int dzdensity_traits::best_difference() { return 5; }
 unsigned int dzdensity90_traits::best_difference() { return 5; }
 
-}
+} }

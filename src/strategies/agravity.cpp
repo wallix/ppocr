@@ -13,8 +13,7 @@
 #include <cmath>
 
 
-namespace strategies
-{
+namespace ppocr { namespace strategies {
 
 agravity::agravity(const Image& img, const Image& img90)
 {
@@ -60,4 +59,4 @@ std::ostream& operator<<(std::ostream& os, const agravity& ag)
     return os;
 }
 
-}
+} }

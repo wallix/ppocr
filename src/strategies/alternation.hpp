@@ -13,17 +13,17 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_ALTERNATION_HPP
-#define REDEMPTION_STRATEGIES_ALTERNATION_HPP
+#ifndef PPOCR_STRATEGIES_ALTERNATION_HPP
+#define PPOCR_STRATEGIES_ALTERNATION_HPP
 
 #include <array>
 #include <iosfwd>
 
+namespace ppocr {
 
 class Image;
 
@@ -131,6 +131,8 @@ namespace strategies
 
 
     /// TODO alternations -> alternation< Hl1>,  alternation< Hl2>,  alternation< Hm1>, etc
+}
+
 }
 
 #endif

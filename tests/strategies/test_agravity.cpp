@@ -33,6 +33,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 using strategies::agravity;
 
 static agravity to_gravity(Bounds bnd, const char * data_text)

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+namespace ppocr {
 
 int image_compare(Image const & a, Image const & b)
 {
@@ -24,4 +25,6 @@ int image_compare(Image const & a, Image const & b)
         return 0;
     }
     return (*pair.first < *pair.second) ? -1 : 1;
+}
+
 }

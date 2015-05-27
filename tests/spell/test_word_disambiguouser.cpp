@@ -25,6 +25,8 @@
 
 #include <vector>
 
+using namespace ppocr;
+
 BOOST_AUTO_TEST_CASE(TestWordDisambiguouser)
 {
     spell::Dictionary dict(std::vector<std::string>{

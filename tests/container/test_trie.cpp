@@ -27,6 +27,8 @@
 #include <vector>
 #include <iomanip>
 
+using namespace ppocr;
+
 using char_trie = container::trie<char>;
 using flat_char_trie = container::flat_trie<char_trie::value_type>;
 

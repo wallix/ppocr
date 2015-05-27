@@ -3,6 +3,7 @@
 #include <ostream>
 #include <istream>
 
+namespace ppocr {
 
 Definition::Definition(std::string c, std::string font_name, Image img, DataLoader::Datas data)
 : c(std::move(c))
@@ -48,4 +49,6 @@ std::vector<Definition> read_definitions(std::istream& is, DataLoader const & lo
         }
     }
     return definitions;
+}
+
 }

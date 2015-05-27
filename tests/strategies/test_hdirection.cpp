@@ -35,6 +35,8 @@
 
 using D = unsigned;
 
+using namespace ppocr;
+
 static D to_hdirection_value(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);

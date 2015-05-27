@@ -13,17 +13,18 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
-*   Author(s): http://en.cppreference.com/w/cpp/types/numeric_limits/epsilon
+*   Copyright (C) Wallix 2015
+*   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_MATH_ALMOST_EQUAL_HPP
-#define REDEMPTION_MATH_ALMOST_EQUAL_HPP
+#ifndef PPOCR_MATH_ALMOST_EQUAL_HPP
+#define PPOCR_MATH_ALMOST_EQUAL_HPP
 
 #include <type_traits>
 #include <limits>
 #include <cmath>
+
+namespace ppocr {
 
 template<class T>
 typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
@@ -36,5 +37,6 @@ almost_equal(T x, T y, int ulp)
         || std::abs(x-y) < std::numeric_limits<T>::min();
 }
 
+}
 
 #endif

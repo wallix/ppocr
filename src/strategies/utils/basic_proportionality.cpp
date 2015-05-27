@@ -6,8 +6,7 @@
 #include <istream>
 
 
-namespace strategies
-{
+namespace ppocr { namespace strategies {
 
 void details_::check_interval(unsigned x, unsigned interval) { sassert(x <= interval); }
 
@@ -25,4 +24,4 @@ std::istream& operator>>(std::istream& is, proportionality_base & prop)
 std::ostream& operator<<(std::ostream& os, const proportionality_base & prop)
 { return os << prop.value(); }
 
-}
+} }

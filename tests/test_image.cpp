@@ -33,6 +33,8 @@
 
 #define IMAGE_PATH "./tests/images/"
 
+using namespace ppocr;
+
 BOOST_AUTO_TEST_CASE(TestImage)
 {
     Image img = image_from_file(IMAGE_PATH "image1.pbm");

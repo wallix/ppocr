@@ -33,6 +33,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 using L = strategies::zone;
 
 static L mk_zone(Bounds bnd, const char * data_text)

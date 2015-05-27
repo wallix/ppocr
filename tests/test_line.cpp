@@ -31,6 +31,8 @@
 #include "filters/line.hpp"
 #include "image/image_from_string.hpp"
 
+using namespace ppocr;
+
 BOOST_AUTO_TEST_CASE(TestLine)
 {
     DataLoader loader;

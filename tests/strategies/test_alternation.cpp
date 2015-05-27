@@ -33,6 +33,8 @@
 
 #define IMAGE_PATH "./images/"
 
+using namespace ppocr;
+
 BOOST_AUTO_TEST_CASE(TestAlternation)
 {
     Image img = image_from_string({6, 7},

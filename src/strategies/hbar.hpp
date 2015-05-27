@@ -13,15 +13,16 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_STRATEGIES_HBAR_HPP
-#define REDEMPTION_SRC_STRATEGIES_HBAR_HPP
+#ifndef PPOCR_SRC_STRATEGIES_HBAR_HPP
+#define PPOCR_SRC_STRATEGIES_HBAR_HPP
 
 #include <iosfwd>
+
+namespace ppocr {
 
 class Image;
 
@@ -68,6 +69,8 @@ struct hbar90 : details_::basic_hbar {
     hbar90(unsigned n) : details_::basic_hbar(n) {}
     hbar90(const Image &, const Image & img90) : details_::basic_hbar(img90) {}
 };
+
+}
 
 }
 

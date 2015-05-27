@@ -51,6 +51,8 @@
 #include <cstring>
 #include <cerrno>
 
+using namespace ppocr;
+
 unsigned get_value(DataLoader::data_base const & data) {
     return *reinterpret_cast<unsigned const *>(
         reinterpret_cast<unsigned char const *>(&data) + sizeof(DataLoader::data_base)

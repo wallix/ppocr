@@ -8,6 +8,8 @@
 #include <cstring>
 #include <cerrno>
 
+namespace ppocr {
+
 std::vector<Definition> read_definitions_file_and_normalize(
     const char* filename, DataLoader& loader, std::ostream * out
 ) {
@@ -47,4 +49,6 @@ std::vector<Definition> read_definitions_file_and_normalize(
     }
 
     return definitions;
+}
+
 }

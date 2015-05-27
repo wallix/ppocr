@@ -13,6 +13,8 @@
 #include <cassert>
 #include <stdexcept>
 
+using namespace ppocr;
+
 static void load_file(
     std::vector<Definition> & definitions, DataLoader const & loader,
     const char * imagefilename, const char * textfilename, const char * fontname,

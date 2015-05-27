@@ -13,15 +13,14 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_UTILS_CARDINAL_DIRECTION_HPP
-#define REDEMPTION_STRATEGIES_UTILS_CARDINAL_DIRECTION_HPP
+#ifndef PPOCR_STRATEGIES_UTILS_CARDINAL_DIRECTION_HPP
+#define PPOCR_STRATEGIES_UTILS_CARDINAL_DIRECTION_HPP
 
-namespace strategies { namespace utils {
+namespace ppocr { namespace strategies { namespace utils {
 
 enum class CardinalDirection : unsigned
 {
@@ -65,6 +64,6 @@ enum class CardinalDirection2 : unsigned
     SOUTH2_WEST2 = (SOUTH2 & 7) | (WEST2 & (7<<3)),
 };
 
-} }
+} } }
 
 #endif

@@ -12,8 +12,7 @@
 #include <type_traits>
 
 
-namespace strategies
-{
+namespace ppocr { namespace strategies {
 
 direction::direction(const Image& img, const Image& img90)
 : d(static_cast<cardinal_direction>(
@@ -31,4 +30,4 @@ std::istream& operator>>(std::istream& is, direction& d)
 std::ostream& operator<<(std::ostream& os, const direction& d)
 { return os << d.id(); }
 
-}
+} }

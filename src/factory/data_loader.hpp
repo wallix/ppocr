@@ -13,13 +13,12 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Product name: redemption, a FLOSS RDP proxy
-*   Copyright (C) Wallix 2010-2015
+*   Copyright (C) Wallix 2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_STRATEGIES_HPP
-#define REDEMPTION_STRATEGIES_HPP
+#ifndef PPOCR_STRATEGIES_HPP
+#define PPOCR_STRATEGIES_HPP
 
 #include "utils/make_unique.hpp"
 
@@ -27,6 +26,8 @@
 #include <memory>
 #include <iosfwd>
 
+
+namespace ppocr {
 
 template<class IteratorBase, class Proxy>
 struct proxy_iterator : IteratorBase, private Proxy
@@ -291,5 +292,7 @@ inline std::istream & operator>>(std::istream & is, DataLoader::DatasReader r)
 
 inline std::ostream & operator<<(std::ostream & os, DataLoader::DatasWriter w)
 { w.loader.write(os, w.datas); return os; }
+
+}
 
 #endif
