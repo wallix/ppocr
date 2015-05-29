@@ -131,6 +131,8 @@ obj image_from_string : src/image/image_from_string.cpp ;
 obj definition      : src/factory/definition.cpp ;
 obj read_def_file_and_normalize : src/utils/read_definitions_file_and_normalize.cpp ;
 obj dictionary      : src/spell/dictionary.cpp ;
+obj glyphs_loader   : src/loader2/glyphs_loader.cpp ;
+obj image_compare   : src/utils/image_compare.cpp ;
 
 alias strategies_src :
     src/strategies/agravity.cpp
@@ -199,27 +201,27 @@ alias extract_data_src :
 
 exe extract_text2 :
     src/extract_text2.cpp
-    src/utils/image_compare.cpp
+    image_compare
     extract_data_src
     filter_src
 : ;
 
 exe extract_text3 :
     src/extract_text3.cpp
-    src/utils/image_compare.cpp
+    image_compare
     extract_data_src
 : ;
 
 exe extract_text4 :
     src/extract_text4.cpp
-    src/utils/image_compare.cpp
+    image_compare
     extract_data_src
     dictionary
 : ;
 
 exe extract_text5 :
     src/extract_text5.cpp
-    src/utils/image_compare.cpp
+    image_compare
     extract_data_src
 : ;
 
@@ -253,7 +255,7 @@ exe tree :
 exe normalize_learning :
     src/normalize_learning.cpp
     src/utils/unique_sort_definition.cpp
-    src/utils/image_compare.cpp
+    image_compare
     registry_src
     image_src
 : ;
@@ -261,6 +263,24 @@ exe normalize_learning :
 exe make_trie_dictionary :
     src/make_trie_dictionary.cpp
     dictionary
+: ;
+
+
+exe write_data :
+    src/write_data.cpp
+    glyphs_loader
+    image_src
+    box_character_src
+    image_from_file_src
+: ;
+
+exe normalize_data :
+    src/normalize_data.cpp
+    glyphs_loader
+    image_src
+    image_compare
+    box_character_src
+    image_from_file_src
 : ;
 
 #
@@ -393,10 +413,20 @@ unit-test test_dictionary :
     dictionary
     libboost_unit_test : ;
 
-unit-test test_loader :
-    tests/loader2/test_loader.cpp
+
+unit-test test_datas_loader :
+    tests/loader2/test_datas_loader.cpp
     src/strategies/hgravity.cpp
     src/strategies/hdirection.cpp
+    image
+    image_from_string
+    libboost_unit_test : ;
+
+unit-test test_glyphs_loader :
+    tests/loader2/test_glyphs_loader.cpp
+    glyphs_loader
+    coordinate
+    image_compare
     image
     image_from_string
     libboost_unit_test : ;

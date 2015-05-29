@@ -34,14 +34,15 @@ struct array_compare_relationship
 
     result_type operator()(value_type const & a, value_type const & b) const
     {
-        R ret{};
+        R n{};
         auto it = std::begin(a);
-        for (auto && i : b) {
+        for (auto const & i : b) {
             if (*it == i) {
-                ++ret;
+                ++n;
             }
+            ++it;
         }
-        return R(ret * R{100} / a.size());
+        return R(n * R{100} / a.size());
     }
 };
 

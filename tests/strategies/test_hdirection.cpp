@@ -33,20 +33,22 @@
 
 #define IMAGE_PATH "./images/"
 
-using D = unsigned;
-
 using namespace ppocr;
+
+using D = ppocr::strategies::hdirection::value_type;
+
+strategies::hdirection hdirection;
 
 static D to_hdirection_value(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::hdirection(img, img.rotate90()).value();
+    return hdirection.load(img, img/*.rotate90()*/);
 }
 
 BOOST_AUTO_TEST_CASE(TestHDirection)
 {
     D value;
-    auto hInterval = strategies::hdirection::traits::get_interval() / 2;
+    auto hInterval = hdirection.relationship().count() / 2;
 
     value = to_hdirection_value({3, 3},
         "---"
@@ -99,14 +101,14 @@ BOOST_AUTO_TEST_CASE(TestHDirection)
     );
     BOOST_CHECK_EQUAL(value, (hInterval*2) / 4);
 
-    using strategies::hdirection;
+    auto const & relationship = hdirection.relationship();
 
-    BOOST_CHECK_EQUAL(100, hdirection(hInterval).relationship(hInterval));
-    BOOST_CHECK_EQUAL(50, hdirection(hInterval*2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75, hdirection(hInterval+hInterval/2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75, hdirection(hInterval/2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75,  hdirection(hInterval/2).relationship(0));
-    BOOST_CHECK_EQUAL(25,  hdirection(hInterval/2).relationship(hInterval*2));
-    BOOST_CHECK_EQUAL(92,  hdirection(hInterval/2).relationship(hInterval/3));
-    BOOST_CHECK_EQUAL(79,  hdirection(88).relationship(45));
+    BOOST_CHECK_EQUAL(100, relationship(hInterval, hInterval));
+    BOOST_CHECK_EQUAL(50,  relationship(hInterval*2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship(hInterval+hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, 0));
+    BOOST_CHECK_EQUAL(25,  relationship(hInterval/2, hInterval*2));
+    BOOST_CHECK_EQUAL(92,  relationship(hInterval/2, hInterval/3));
+    BOOST_CHECK_EQUAL(79,  relationship(88, 45));
 }

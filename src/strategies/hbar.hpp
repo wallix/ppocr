@@ -30,7 +30,7 @@ namespace strategies {
 
 struct hbar
 {
-    using value_type = bool;
+    using value_type = unsigned;
     using relationship_type = equal_relationship<value_type>;
 
     static constexpr bool one_axis = true;

@@ -35,18 +35,20 @@
 
 using namespace ppocr;
 
-using D = unsigned;
+using D = strategies::hgravity2::value_type;
+
+strategies::hgravity2 hgravity2;
 
 static D to_hgravity2_value(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::hgravity2(img, img.rotate90()).value();
+    return hgravity2.load(img, img/*.rotate90()*/);
 }
 
 BOOST_AUTO_TEST_CASE(TestHGravity2)
 {
     D value;
-    auto hInterval = strategies::hgravity2::traits::get_interval() / 2;
+    auto hInterval = hgravity2.relationship().count() / 2;
 
     value = to_hgravity2_value({3, 3},
         "xxx"
@@ -92,14 +94,14 @@ BOOST_AUTO_TEST_CASE(TestHGravity2)
     );
     BOOST_CHECK_EQUAL(value, (9 + 2 - 4) *100/18);
 
-    using strategies::hgravity2;
+    auto const & relationship = hgravity2.relationship();
 
-    BOOST_CHECK_EQUAL(100, hgravity2(hInterval).relationship(hInterval));
-    BOOST_CHECK_EQUAL(50, hgravity2(hInterval*2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75, hgravity2(hInterval+hInterval/2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75, hgravity2(hInterval/2).relationship(hInterval));
-    BOOST_CHECK_EQUAL(75,  hgravity2(hInterval/2).relationship(0));
-    BOOST_CHECK_EQUAL(25,  hgravity2(hInterval/2).relationship(hInterval*2));
-    BOOST_CHECK_EQUAL(91,  hgravity2(hInterval/2).relationship(hInterval/3));
-    BOOST_CHECK_EQUAL(57,  hgravity2(88).relationship(45));
+    BOOST_CHECK_EQUAL(100, relationship(hInterval, hInterval));
+    BOOST_CHECK_EQUAL(50,  relationship(hInterval*2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship(hInterval+hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, 0));
+    BOOST_CHECK_EQUAL(25,  relationship(hInterval/2, hInterval*2));
+    BOOST_CHECK_EQUAL(91,  relationship(hInterval/2, hInterval/3));
+    BOOST_CHECK_EQUAL(57,  relationship(88, 45));
 }

@@ -35,26 +35,25 @@
 
 using namespace ppocr;
 
-using L = strategies::zone;
+strategies::zone zone_;
+using A = strategies::zone::value_type;
 
-static L mk_zone(Bounds bnd, const char * data_text)
+static A mk_zone(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::zone(img, img.rotate90());
+    return zone_.load(img, img/*.rotate90()*/);
 }
 
 BOOST_AUTO_TEST_CASE(TestLoop)
 {
-    L zone;
-
-    using A = L::value_type;
+    A zone;
 
     zone = mk_zone({3, 3},
         "xxx"
         "---"
         "-x-"
     );
-    BOOST_CHECK((zone.datas() == A{1, 0, 0, 1, 1, 1, 0}));
+    BOOST_CHECK((zone == A{1, 0, 0, 1, 1, 1, 0}));
 
     zone = mk_zone({3, 5},
         "--x"
@@ -63,7 +62,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "xxx"
         "--x"
     );
-    BOOST_CHECK((zone.datas() == A{0, 1, 1, 1, 1, 2, 0}));
+    BOOST_CHECK((zone == A{0, 1, 1, 1, 1, 2, 0}));
 
     zone = mk_zone({3, 4},
         "-x-"
@@ -71,7 +70,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "xxx"
         "x-x"
     );
-    BOOST_CHECK((zone.datas() == A{0, 1, 2, 1, 1, 1, 1}));
+    BOOST_CHECK((zone == A{0, 1, 2, 1, 1, 1, 1}));
 
     zone = mk_zone({5, 6},
         "--x--"
@@ -81,5 +80,5 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "x---x"
         "x---x"
     );
-    BOOST_CHECK((zone.datas() == A{0, 1, 2, 1, 1, 1, 1}));
+    BOOST_CHECK((zone == A{0, 1, 2, 1, 1, 1, 1}));
 }

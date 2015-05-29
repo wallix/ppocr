@@ -35,15 +35,17 @@
 
 using namespace ppocr;
 
-static unsigned to_hbar_value(Bounds bnd, const char * data_text)
+strategies::hbar hbar;
+
+static strategies::hbar::value_type to_hbar_value(Bounds bnd, const char * data_text)
 {
     Image img = image_from_string(bnd, data_text);
-    return strategies::hbar(img, img).count();
+    return hbar.load(img, img);
 }
 
 BOOST_AUTO_TEST_CASE(TestHBar)
 {
-    unsigned value;
+    strategies::hbar::value_type value;
 
     value = to_hbar_value({3, 3},
         "---"
@@ -136,9 +138,9 @@ BOOST_AUTO_TEST_CASE(TestHBar)
     BOOST_CHECK_EQUAL(value, 2);
 
 
-    using strategies::hbar;
+    auto const & relationship = hbar.relationship();
 
-    BOOST_CHECK_EQUAL(100, hbar(0).relationship(0));
-    BOOST_CHECK_EQUAL(100, hbar(2).relationship(2));
-    BOOST_CHECK_EQUAL(0, hbar(2).relationship(1));
+    BOOST_CHECK_EQUAL(true, relationship(0, 0));
+    BOOST_CHECK_EQUAL(true, relationship(2, 2));
+    BOOST_CHECK_EQUAL(false, relationship(2, 1));
 }

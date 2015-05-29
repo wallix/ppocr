@@ -37,6 +37,8 @@ struct interval_relationship
     result_type operator()(value_type const & a, value_type const & b) const
     { return utils::compute_relationship(a, b, count_); }
 
+    value_type const & count() const { return this->count_; }
+
 private:
     value_type count_;
 };
