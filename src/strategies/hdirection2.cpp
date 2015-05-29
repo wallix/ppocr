@@ -7,7 +7,7 @@
 
 namespace ppocr { namespace strategies {
 
-static unsigned compute_hdirection2(const Image& img)
+hdirection2::value_type hdirection2::load(Image const & img, Image const & /*img90*/) const
 {
     auto const area = img.height() / 2 * img.width();
     if (!area) {
@@ -18,16 +18,10 @@ static unsigned compute_hdirection2(const Image& img)
     return ret;
 }
 
-unsigned hdirection2_traits::compute(const Image& img, const Image&)
-{ return compute_hdirection2(img); }
+hdirection2::relationship_type hdirection2::relationship() const
+{ return {100}; }
 
-unsigned hdirection290_traits::compute(const Image&, const Image& img90)
-{ return compute_hdirection2(img90); }
-
-unsigned int hdirection2_traits::get_interval() { return 100; }
-unsigned int hdirection290_traits::get_interval() { return 100; }
-
-unsigned int hdirection2_traits::best_difference() { return 5; }
-unsigned int hdirection290_traits::best_difference() { return 5; }
+unsigned hdirection2::best_difference() const
+{ return 5; }
 
 } }

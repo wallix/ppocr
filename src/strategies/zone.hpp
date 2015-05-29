@@ -21,7 +21,8 @@
 #define PPOCR_SRC_STRATEGIES_ZONE_HPP
 
 #include <array>
-#include <iosfwd>
+
+#include "relationship/array_compare.hpp"
 
 namespace ppocr {
 
@@ -29,46 +30,29 @@ class Image;
 
 namespace strategies {
 
-    struct zone {
-        enum {
-            top_left_is_letter,
-            bottom_right_is_letter,
-            number_top_alternations,
-            number_right_alternations,
-            number_bottom_alternations,
-            number_left_alternations,
-            number_internal_alternations,
-            number_index
-        };
-        using value_type = std::array<unsigned, number_index>;
-
-        zone() = default;
-        zone(value_type const & datas) : datas_(datas) {}
-
-        zone(const Image & img, const Image & img90);
-
-        bool operator<(zone const & other) const
-        { return datas_ < other.datas_; }
-
-        bool operator==(zone const & other) const
-        { return this->datas_ == other.datas_; }
-
-        value_type const & datas() const noexcept { return datas_; }
-
-        unsigned relationship(zone const & other) const;
-
-        unsigned best_difference() const { return 10u; }
-
-        friend std::istream & operator>>(std::istream &, zone &);
-
-    private:
-        value_type datas_ = /*value_type*/{{}};
+struct zone {
+    enum {
+        top_left_is_letter,
+        bottom_right_is_letter,
+        number_top_alternations,
+        number_right_alternations,
+        number_bottom_alternations,
+        number_left_alternations,
+        number_internal_alternations,
+        number_index
     };
 
-    std::ostream & operator<<(std::ostream &, zone const &);
+    using relationship_type = array_compare_relationship<unsigned, number_index>;
+    using value_type = relationship_type::value_type;
 
-}
+    static constexpr bool one_axis = false;
 
-}
+    value_type load(const Image & img, const Image & /*img90*/) const;
+
+    constexpr relationship_type relationship() const { return {}; }
+    constexpr unsigned best_difference() const { return 20; }
+};
+
+} }
 
 #endif

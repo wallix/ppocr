@@ -18,14 +18,12 @@
 */
 
 #include "density.hpp"
-#include <image/image.hpp>
 
-namespace ppocr {
+#include "image/image.hpp"
 
-unsigned int strategies::density_traits::get_interval()
-{ return 100; }
+namespace ppocr { namespace strategies {
 
-unsigned int strategies::density_traits::compute(const Image& img, const Image& /*img90*/)
+density::value_type density::load(const Image& img, const Image& /*img90*/) const
 {
     size_t count = 0;
     auto first = img.data();
@@ -38,6 +36,10 @@ unsigned int strategies::density_traits::compute(const Image& img, const Image& 
     return count * 100 / img.area();
 }
 
-unsigned int strategies::density_traits::best_difference() { return 5; }
+density::relationship_type density::relationship() const
+{ return {100}; }
 
-}
+unsigned density::best_difference() const
+{ return 5; }
+
+} }

@@ -25,23 +25,17 @@
 
 namespace ppocr { namespace strategies {
 
-static unsigned compute_dvdirection(const Image& img)
+dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img90*/) const
 {
     auto const top_bottom = utils::diagonal_vertical_direction(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-unsigned dvdirection_traits::compute(const Image& img, const Image&)
-{ return compute_dvdirection(img); }
+dvdirection::relationship_type dvdirection::relationship() const
+{ return {200}; }
 
-unsigned dvdirection90_traits::compute(const Image&, const Image& img90)
-{ return compute_dvdirection(img90); }
-
-unsigned int dvdirection_traits::get_interval() { return 200; }
-unsigned int dvdirection90_traits::get_interval() { return 200; }
-
-unsigned int dvdirection_traits::best_difference() { return 10; }
-unsigned int dvdirection90_traits::best_difference() { return 10; }
+unsigned dvdirection::best_difference() const
+{ return 10; }
 
 } }

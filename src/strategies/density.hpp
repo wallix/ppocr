@@ -20,17 +20,26 @@
 #ifndef PPOCR_SRC_STRATEGIES_DENSITY_HPP
 #define PPOCR_SRC_STRATEGIES_DENSITY_HPP
 
-#include "utils/basic_proportionality.hpp"
+#include "relationship/interval.hpp"
 
-namespace ppocr { namespace strategies {
+namespace ppocr {
 
-struct density_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
+class Image;
+
+namespace strategies {
+
+struct density
+{
+    using value_type = unsigned;
+    using relationship_type = interval_relationship<value_type>;
+
+    static constexpr bool one_axis = false;
+
+    value_type load(Image const & img, Image const & /*img90*/) const;
+
+    relationship_type relationship() const;
+    unsigned best_difference() const;
 };
-
-using density = basic_proportionality<density_traits>;
 
 } }
 

@@ -25,7 +25,7 @@
 
 namespace ppocr { namespace strategies {
 
-static unsigned compute_dvdirection2(const Image& img)
+dvdirection2::value_type dvdirection2::load(const Image& img, const Image& img90) const
 {
     auto const area = utils::diagonal_vertical_direction_area(img);
     if (!area) {
@@ -37,16 +37,10 @@ static unsigned compute_dvdirection2(const Image& img)
     return ret;
 }
 
-unsigned dvdirection2_traits::compute(const Image& img, const Image&)
-{ return compute_dvdirection2(img); }
+dvdirection2::relationship_type dvdirection2::relationship() const
+{ return {100}; }
 
-unsigned dvdirection290_traits::compute(const Image&, const Image& img90)
-{ return compute_dvdirection2(img90); }
-
-unsigned int dvdirection2_traits::get_interval() { return 100; }
-unsigned int dvdirection290_traits::get_interval() { return 100; }
-
-unsigned int dvdirection2_traits::best_difference() { return 5; }
-unsigned int dvdirection290_traits::best_difference() { return 5; }
+unsigned dvdirection2::best_difference() const
+{ return 5; }
 
 } }

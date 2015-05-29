@@ -16,24 +16,27 @@
 
 namespace ppocr { namespace strategies {
 
-template<class T>
-alternations::alternations_type
-make_alternations(const Image & img, Index const & idx, T const & bounds)
-{
-    auto range = hrange(img, idx, bounds);
-    auto it = range.begin();
-    auto last = range.end();
+namespace {
+    template<class T>
+    alternations::alternations_type
+    make_alternations(const Image & img, Index const & idx, T const & bounds)
+    {
+        auto range = hrange(img, idx, bounds);
+        auto it = range.begin();
+        auto last = range.end();
 
-    alternations::alternations_type alternations{*it, 1};
-    while (rng::next_alternation(it, last)) {
-        ++alternations.count;
+        alternations::alternations_type alternations{*it, 1};
+        while (rng::next_alternation(it, last)) {
+            ++alternations.count;
+        }
+
+        return alternations;
     }
-
-    return alternations;
 }
 
-alternations::alternations(const Image& img, const Image& img90)
+alternations::value_type alternations::load(const Image& img, const Image& img90) const
 {
+    alternations::value_type seq_alternations;
     auto it = seq_alternations.begin();
 
     {
@@ -60,39 +63,10 @@ alternations::alternations(const Image& img, const Image& img90)
     }
 
     assert(it == seq_alternations.end());
+    return seq_alternations;
 }
 
-unsigned alternations::relationship(const alternations& other) const
-{
-    auto it = this->seq_alternations.begin();
-    unsigned nb_equal = 0;
-    for (auto const & x : other.seq_alternations) {
-        if (x == *it) {
-            ++nb_equal;
-        }
-        ++it;
-    }
-    return nb_equal * 100 / this->seq_alternations.size();
-}
-
-unsigned int alternations::best_difference() const
+unsigned alternations::best_difference() const
 { return 10; }
-
-
-std::ostream & operator<<(std::ostream & os, alternations const & seq_alternations)
-{
-    for (auto const & alternations : seq_alternations) {
-        os << alternations.start_contains_letter << ' ' << alternations.count << ' ';
-    }
-    return os;
-}
-
-std::istream & operator>>(std::istream & is, alternations & seq_alternations)
-{
-    for (auto & alternations : seq_alternations.seq_alternations) {
-        is >> alternations.start_contains_letter >> alternations.count;
-    }
-    return is;
-}
 
 } }

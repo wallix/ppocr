@@ -20,54 +20,25 @@
 #ifndef PPOCR_SRC_STRATEGIES_HBAR_HPP
 #define PPOCR_SRC_STRATEGIES_HBAR_HPP
 
-#include <iosfwd>
+#include "relationship/equal.hpp"
 
 namespace ppocr {
 
 class Image;
 
-
 namespace strategies {
 
-namespace details_ {
-    struct basic_hbar {
-        basic_hbar() = default;
-        basic_hbar(unsigned n) : n_(n) {}
+struct hbar
+{
+    using value_type = bool;
+    using relationship_type = equal_relationship<value_type>;
 
-        basic_hbar(const Image & img);
+    static constexpr bool one_axis = true;
 
-        bool operator<(basic_hbar const & other) const
-        { return n_ < other.n_; }
+    value_type load(Image const & img, Image const & /*img90*/) const;
 
-        bool operator==(basic_hbar const & other) const
-        { return this->n_ == other.n_; }
-
-        unsigned count() const noexcept { return n_; }
-
-        unsigned relationship(basic_hbar const & other) const
-        { return other.n_ == n_ ? 100 : 0; }
-
-        unsigned best_difference() const { return 1; }
-
-        friend std::istream & operator>>(std::istream &, basic_hbar &);
-
-    private:
-        unsigned n_ = 0;
-    };
-
-    std::ostream & operator<<(std::ostream &, basic_hbar const &);
-}
-
-struct hbar : details_::basic_hbar {
-    hbar() = default;
-    hbar(unsigned n) : details_::basic_hbar(n) {}
-    hbar(const Image & img, const Image &) : details_::basic_hbar(img) {}
-};
-
-struct hbar90 : details_::basic_hbar {
-    hbar90() = default;
-    hbar90(unsigned n) : details_::basic_hbar(n) {}
-    hbar90(const Image &, const Image & img90) : details_::basic_hbar(img90) {}
+    constexpr relationship_type relationship() const { return {}; }
+    constexpr unsigned best_difference() const { return 0; }
 };
 
 }

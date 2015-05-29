@@ -20,9 +20,13 @@
 #ifndef PPOCR_SRC_STRATEGIES_DZDENSITY_HPP
 #define PPOCR_SRC_STRATEGIES_DZDENSITY_HPP
 
-#include "utils/basic_proportionality.hpp"
+#include "relationship/interval.hpp"
 
-namespace ppocr { namespace strategies {
+namespace ppocr {
+
+class Image;
+
+namespace strategies {
 
 /*
     ____/__
@@ -36,20 +40,18 @@ namespace ppocr { namespace strategies {
     -/----
 */
 
-struct dzdensity_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
-};
+struct dzdensity
+{
+    using value_type = unsigned;
+    using relationship_type = interval_relationship<value_type>;
 
-struct dzdensity90_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
-};
+    static constexpr bool one_axis = true;
 
-using dzdensity = basic_proportionality<dzdensity_traits>;
-using dzdensity90 = basic_proportionality<dzdensity90_traits>;
+    value_type load(Image const & img, Image const & /*img90*/) const;
+
+    relationship_type relationship() const;
+    unsigned best_difference() const;
+};
 
 } }
 

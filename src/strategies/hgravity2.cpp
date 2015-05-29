@@ -7,7 +7,7 @@
 
 namespace ppocr { namespace strategies {
 
-static unsigned compute_hgravity2(const Image& img)
+hgravity2::value_type hgravity2::load(Image const & img, Image const & /*img90*/) const
 {
     auto const hby2 = img.height()/2;
     if (!hby2) {
@@ -19,16 +19,10 @@ static unsigned compute_hgravity2(const Image& img)
     return ret;
 }
 
-unsigned hgravity2_traits::compute(const Image& img, const Image&)
-{ return compute_hgravity2(img); }
+hgravity2::relationship_type hgravity2::relationship() const
+{ return {100}; }
 
-unsigned hgravity290_traits::compute(const Image&, const Image& img90)
-{ return compute_hgravity2(img90); }
-
-unsigned int hgravity2_traits::get_interval() { return 100; }
-unsigned int hgravity290_traits::get_interval() { return 100; }
-
-unsigned int hgravity2_traits::best_difference() { return 5; }
-unsigned int hgravity290_traits::best_difference() { return 5; }
+unsigned hgravity2::best_difference() const
+{ return 5; }
 
 } }

@@ -20,24 +20,26 @@
 #ifndef PPOCR_SRC_STRATEGIES_DVDIRECTION2_HPP
 #define PPOCR_SRC_STRATEGIES_DVDIRECTION2_HPP
 
-#include "utils/basic_proportionality.hpp"
+#include "relationship/interval.hpp"
 
-namespace ppocr { namespace strategies {
+namespace ppocr {
 
-struct dvdirection2_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
+class Image;
+
+namespace strategies {
+
+struct dvdirection2
+{
+    using value_type = unsigned;
+    using relationship_type = interval_relationship<value_type>;
+
+    static constexpr bool one_axis = true;
+
+    value_type load(Image const & img, Image const & /*img90*/) const;
+
+    relationship_type relationship() const;
+    unsigned best_difference() const;
 };
-
-struct dvdirection290_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
-};
-
-using dvdirection2 = basic_proportionality<dvdirection2_traits>;
-using dvdirection290 = basic_proportionality<dvdirection290_traits>;
 
 } }
 

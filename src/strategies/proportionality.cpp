@@ -18,17 +18,18 @@
 */
 
 #include "proportionality.hpp"
-#include "utils/relationship.hpp"
 #include "image/image.hpp"
 
 
 namespace ppocr { namespace strategies {
 
-unsigned int proportionality_traits::compute(const Image& img, const Image& /*img90*/)
+proportionality::value_type proportionality::load(Image const & img, Image const & /*img90*/) const
 { return img.width() * 100 / (img.width() + img.height()); }
 
-unsigned int proportionality_traits::get_interval() { return 100; }
+proportionality::relationship_type proportionality::relationship() const
+{ return {100}; }
 
-unsigned int proportionality_traits::best_difference() { return 5; }
+unsigned proportionality::best_difference() const
+{ return 5; }
 
 } }

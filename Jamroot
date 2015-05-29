@@ -393,5 +393,13 @@ unit-test test_dictionary :
     dictionary
     libboost_unit_test : ;
 
+unit-test test_loader :
+    tests/loader2/test_loader.cpp
+    src/strategies/hgravity.cpp
+    src/strategies/hdirection.cpp
+    image
+    image_from_string
+    libboost_unit_test : ;
+
 #unit-test test_new_ocr : tests/test_test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
 

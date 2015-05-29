@@ -25,23 +25,17 @@
 
 namespace ppocr { namespace strategies {
 
-static unsigned compute_hdirection(const Image& img)
+hdirection::value_type hdirection::load(Image const & img, Image const & /*img90*/) const
 {
     auto const top_bottom = utils::horizontal_direction(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-unsigned hdirection_traits::compute(const Image& img, const Image&)
-{ return compute_hdirection(img); }
+hdirection::relationship_type hdirection::relationship() const
+{ return {200}; }
 
-unsigned hdirection90_traits::compute(const Image&, const Image& img90)
-{ return compute_hdirection(img90); }
-
-unsigned int hdirection_traits::get_interval() { return 200; }
-unsigned int hdirection90_traits::get_interval() { return 200; }
-
-unsigned int hdirection_traits::best_difference() { return 10; }
-unsigned int hdirection90_traits::best_difference() { return 10; }
+unsigned hdirection::best_difference() const
+{ return 10; }
 
 } }

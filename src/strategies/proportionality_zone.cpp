@@ -4,13 +4,14 @@
 #include "utils/relationship.hpp"
 
 #include <algorithm>
-#include <ostream>
-#include <istream>
+#include <functional>
 
 namespace ppocr { namespace strategies {
 
-proportionality_zone::proportionality_zone(const Image& img, const Image& /*img90*/)
+proportionality_zone::value_type proportionality_zone::load(Image const & img, Image const & /*img90*/) const
 {
+    proportionality_zone::value_type ret;
+
     utils::ZoneInfo zone_info = utils::count_zone(img);
 
     for (auto & x : zone_info.right) zone_info.top.insert(x);
@@ -23,46 +24,29 @@ proportionality_zone::proportionality_zone(const Image& img, const Image& /*img9
     }
 
     for (auto & x : zone_info.top) {
-        this->datas_.push_back(x.second * 100 / area);
+        ret.push_back(x.second * 100 / area);
     }
 
-    std::sort(this->datas_.begin(), this->datas_.end());
+    std::sort(ret.begin(), ret.end());
+
+    return ret;
 }
 
-unsigned proportionality_zone::relationship(const proportionality_zone& other) const
+proportionality_zone::relationship_type::result_type
+proportionality_zone::relationship_type::operator()(const value_type& a, const value_type& b) const
 {
-    if (other.datas_.size() != this->datas_.size()) {
+    if (a.size() != b.size()) {
         return 0;
     }
-    if (datas_.empty()) {
+    if (a.empty()) {
         return 100;
     }
     unsigned const total = std::inner_product(
-        datas_.begin(), datas_.end(), other.datas_.begin(), 0u
+        a.begin(), a.end(), b.begin(), 0u
       , std::plus<unsigned>()
       , [](unsigned a, unsigned b) { return a*100/(a+b); }
-    ) / datas_.size();
+    ) / a.size();
     return utils::compute_relationship(total, 50u, 100u);
-}
-
-std::ostream& operator<<(std::ostream& os, const proportionality_zone& proportionality_zone)
-{
-    os << proportionality_zone.datas().size();
-    for (auto & x : proportionality_zone.datas()) {
-        os << ' ' << x;
-    }
-    return os;
-}
-
-std::istream& operator>>(std::istream& is, proportionality_zone& proportionality_zone)
-{
-    size_t n;
-    is >> n;
-    proportionality_zone.datas_.resize(n);
-    for (auto & x : proportionality_zone.datas_) {
-        is >> x;
-    }
-    return is;
 }
 
 } }

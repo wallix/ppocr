@@ -20,24 +20,26 @@
 #ifndef PPOCR_SRC_STRATEGIES_HDIRECTION_HPP
 #define PPOCR_SRC_STRATEGIES_HDIRECTION_HPP
 
-#include "utils/basic_proportionality.hpp"
+#include "relationship/interval.hpp"
 
-namespace ppocr { namespace strategies {
+namespace ppocr {
 
-struct hdirection_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
+class Image;
+
+namespace strategies {
+
+struct hdirection
+{
+    using value_type = unsigned;
+    using relationship_type = interval_relationship<value_type>;
+
+    static constexpr bool one_axis = true;
+
+    value_type load(Image const & img, Image const & /*img90*/) const;
+
+    relationship_type relationship() const;
+    unsigned best_difference() const;
 };
-
-struct hdirection90_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
-};
-
-using hdirection = basic_proportionality<hdirection_traits>;
-using hdirection90 = basic_proportionality<hdirection90_traits>;
 
 } }
 

@@ -34,7 +34,7 @@ unsigned compute_relationship(T const & a, T const & b, U const & interval)
     using integer = typename std::conditional<std::is_signed<T>::value, int, unsigned>::type;
     auto d = integer{100} - ((a < b) ? b-a : a-b) * integer{100} / interval;
     assert(0 <= d && d <= 100);
-    return d;
+    return unsigned(d);
 }
 
 inline

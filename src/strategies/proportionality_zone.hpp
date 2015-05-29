@@ -21,7 +21,6 @@
 #define PPOCR_SRC_STRATEGIES_PROPORTIONALITY_ZONE_HPP
 
 #include <vector>
-#include <iosfwd>
 
 namespace ppocr {
 
@@ -29,33 +28,24 @@ class Image;
 
 namespace strategies {
 
-    struct proportionality_zone {
+struct proportionality_zone {
+    struct relationship_type {
         using value_type = std::vector<unsigned>;
+        using result_type = bool;
 
-        proportionality_zone() = default;
-        proportionality_zone(value_type const & datas) : datas_(datas) {}
+        constexpr relationship_type() noexcept {}
 
-        proportionality_zone(const Image & img, const Image & img90);
-
-        bool operator<(proportionality_zone const & other) const
-        { return datas_ < other.datas_; }
-
-        bool operator==(proportionality_zone const & other) const
-        { return this->datas_ == other.datas_; }
-
-        value_type const & datas() const noexcept { return datas_; }
-
-        unsigned relationship(proportionality_zone const & other) const;
-
-        unsigned best_difference() const { return 10u; }
-
-        friend std::istream & operator>>(std::istream &, proportionality_zone &);
-
-    private:
-        value_type datas_;
+        result_type operator()(value_type const & a, value_type const & b) const;
     };
+    using value_type = relationship_type::value_type;
 
-    std::ostream & operator<<(std::ostream &, proportionality_zone const &);
+    static constexpr bool one_axis = false;
+
+    value_type load(Image const & img, Image const & /*img90*/) const;
+
+    constexpr relationship_type relationship() const { return {}; }
+    constexpr unsigned best_difference() const { return 20u; }
+};
 
 } }
 

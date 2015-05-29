@@ -13,32 +13,32 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Copyright (C) Wallix 2015
+*   Copyright (C) Wallix 2010-2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef PPOCR_STRATEGIES_PROPORTIONALITY_HPP
-#define PPOCR_STRATEGIES_PROPORTIONALITY_HPP
+#ifndef PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
+#define PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
 
-#include "relationship/interval.hpp"
+#include "../utils/relationship.hpp"
 
-namespace ppocr {
+namespace ppocr { namespace strategies {
 
-class Image;
-
-namespace strategies {
-
-struct proportionality
+template<class T, class R = T>
+struct interval_relationship
 {
-    using value_type = unsigned;
-    using relationship_type = interval_relationship<value_type>;
+    using value_type = T;
+    using result_type = R;
 
-    static constexpr bool one_axis = true;
+    constexpr interval_relationship(T const & count) noexcept
+    : count_(count)
+    {}
 
-    value_type load(Image const & img, Image const & /*img90*/) const;
+    result_type operator()(value_type const & a, value_type const & b) const
+    { return utils::compute_relationship(a, b, count_); }
 
-    relationship_type relationship() const;
-    unsigned best_difference() const;
+private:
+    value_type count_;
 };
 
 } }

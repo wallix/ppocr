@@ -20,24 +20,26 @@
 #ifndef PPOCR_SRC_STRATEGIES_HGRAVITY2_HPP
 #define PPOCR_SRC_STRATEGIES_HGRAVITY2_HPP
 
-#include "utils/basic_proportionality.hpp"
+#include "relationship/interval.hpp"
 
-namespace ppocr { namespace strategies {
+namespace ppocr {
 
-struct hgravity2_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
+class Image;
+
+namespace strategies {
+
+struct hgravity2
+{
+    using value_type = unsigned;
+    using relationship_type = interval_relationship<value_type>;
+
+    static constexpr bool one_axis = true;
+
+    value_type load(Image const & img, Image const & /*img90*/) const;
+
+    relationship_type relationship() const;
+    unsigned best_difference() const;
 };
-
-struct hgravity290_traits {
-    static unsigned get_interval();
-    static unsigned compute(Image const & img, Image const & img90);
-    static unsigned best_difference();
-};
-
-using hgravity2 = basic_proportionality<hgravity2_traits>;
-using hgravity290 = basic_proportionality<hgravity290_traits>;
 
 } }
 

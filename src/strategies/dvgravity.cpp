@@ -25,23 +25,17 @@
 
 namespace ppocr { namespace strategies {
 
-static unsigned compute_dvgravity(const Image& img)
+dvgravity::value_type dvgravity::load(Image const & img, Image const & /*img90*/) const
 {
     auto const top_bottom = utils::diagonal_vertical_gravity(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-unsigned dvgravity_traits::compute(const Image& img, const Image&)
-{ return compute_dvgravity(img); }
+dvgravity::relationship_type dvgravity::relationship() const
+{ return 200; }
 
-unsigned dvgravity90_traits::compute(const Image&, const Image& img90)
-{ return compute_dvgravity(img90); }
-
-unsigned int dvgravity_traits::get_interval() { return 200; }
-unsigned int dvgravity90_traits::get_interval() { return 200; }
-
-unsigned int dvgravity_traits::best_difference() { return 10; }
-unsigned int dvgravity90_traits::best_difference() { return 10; }
+unsigned dvgravity::best_difference() const
+{ return 10; }
 
 } }

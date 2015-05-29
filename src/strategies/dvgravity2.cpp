@@ -25,7 +25,7 @@
 
 namespace ppocr { namespace strategies {
 
-static unsigned compute_dvgravity2(const Image& img)
+dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90*/) const
 {
     auto const area = utils::diagonal_vertical_gravity_area(img);
     if (!area) {
@@ -37,16 +37,10 @@ static unsigned compute_dvgravity2(const Image& img)
     return ret;
 }
 
-unsigned dvgravity2_traits::compute(const Image& img, const Image&)
-{ return compute_dvgravity2(img); }
+dvgravity2::relationship_type dvgravity2::relationship() const
+{ return {100}; }
 
-unsigned dvgravity290_traits::compute(const Image&, const Image& img90)
-{ return compute_dvgravity2(img90); }
-
-unsigned int dvgravity2_traits::get_interval() { return 100; }
-unsigned int dvgravity290_traits::get_interval() { return 100; }
-
-unsigned int dvgravity2_traits::best_difference() { return 5; }
-unsigned int dvgravity290_traits::best_difference() { return 5; }
+unsigned dvgravity2::best_difference() const
+{ return 5; }
 
 } }

@@ -21,7 +21,8 @@
 #define PPOCR_STRATEGIES_ALTERNATION_HPP
 
 #include <array>
-#include <iosfwd>
+
+#include "relationship/array_compare.hpp"
 
 namespace ppocr {
 
@@ -81,56 +82,33 @@ namespace strategies
      *           :xxxx|x|xx   :                        |xxx|xxxx|   |
      *           ::::::-:::::::                        :---::::::---:
      */
-    struct alternations
-    {
-        struct alternations_type {
-            bool start_contains_letter;
-            std::size_t count;
+struct alternations
+{
+    struct alternations_type {
+        bool start_contains_letter;
+        std::size_t count;
 
-            bool operator==(alternations_type const & other) const noexcept
-            { return start_contains_letter == other.start_contains_letter && count == other.count; }
+        bool operator==(alternations_type const & other) const noexcept
+        { return start_contains_letter == other.start_contains_letter && count == other.count; }
 
-            bool operator<(alternations_type const & other) const noexcept
-            {
-                return count < other.count
-                    || (count == other.count && start_contains_letter < other.start_contains_letter);
-            }
-        };
-        using sequence_type = std::array<alternations_type, 7>;
-
-        alternations() = default;
-
-        alternations(const Image & img, const Image & img90);
-
-        alternations_type const & operator[](size_t i) const /*noexcept*/
-        { return seq_alternations[i]; }
-
-        std::size_t size() const noexcept { return seq_alternations.size(); }
-
-        sequence_type::const_iterator begin() const noexcept
-        { return seq_alternations.begin(); }
-        sequence_type::const_iterator end() const noexcept
-        { return seq_alternations.end(); }
-
-        bool operator<(alternations const & other) const
-        { return seq_alternations < other.seq_alternations; }
-
-        bool operator==(alternations const & other) const
-        { return seq_alternations == other.seq_alternations; }
-
-        unsigned relationship(const alternations& other) const;
-        unsigned best_difference() const;
-
-        friend std::istream & operator>>(std::istream &, alternations &);
-
-    private:
-        sequence_type seq_alternations;
+        bool operator<(alternations_type const & other) const noexcept
+        {
+            return count < other.count
+                || (count == other.count && start_contains_letter < other.start_contains_letter);
+        }
     };
 
-    std::ostream & operator<<(std::ostream &, alternations const &);
+    using relationship_type = array_compare_relationship<alternations_type, 7>;
+    using value_type = relationship_type::value_type;
 
+    static constexpr bool one_axis = false;
 
-    /// TODO alternations -> alternation< Hl1>,  alternation< Hl2>,  alternation< Hm1>, etc
+    value_type load(Image const & img, Image const & /*img90*/) const;
+
+    constexpr relationship_type relationship() const { return {}; }
+    unsigned best_difference() const;
+};
+
 }
 
 }
