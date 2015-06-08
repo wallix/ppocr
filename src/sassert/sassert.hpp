@@ -271,7 +271,6 @@ SAssert<const T&>
 operator*(const SAssert<>&, const T& x)
 { return {x}; }
 
-constexpr SAssert<> B;
 
 #define MOP(op)\
 template<typename T, typename U>\
@@ -328,7 +327,7 @@ struct null_pointer { void ** p = nullptr; };
     ":\n" SASSERT_COLOR_FUNCTION << SASSERT_FUNCTION << SASSERT_COLOR_RESET         \
     ":\nAssertion `" SASSERT_COLOR_EXPR PP_CAT(expr) SASSERT_COLOR_RESET "` failed" \
      "\n           ";                                                               \
-    (Super_Assert::B * expr).print();                                               \
+    (Super_Assert::SAssert<>() * expr).print();                                     \
     std::cerr << std::endl;                                                         \
     *Super_Assert::null_pointer().p = nullptr;
 
