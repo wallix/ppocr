@@ -32,8 +32,7 @@ proportionality_zone::value_type proportionality_zone::load(Image const & img, I
     return ret;
 }
 
-proportionality_zone::relationship_type::result_type
-proportionality_zone::relationship_type::operator()(const value_type& a, const value_type& b) const
+unsigned proportionality_zone::relationship_type::operator()(const value_type& a, const value_type& b) const
 {
     if (a.size() != b.size()) {
         return 0;
@@ -48,5 +47,9 @@ proportionality_zone::relationship_type::operator()(const value_type& a, const v
     ) / a.size();
     return utils::compute_relationship(total, 50u, 100u);
 }
+
+std::size_t proportionality_zone::relationship_type::count() const
+{ return 101; }
+
 
 } }

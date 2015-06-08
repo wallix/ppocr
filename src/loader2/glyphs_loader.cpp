@@ -18,6 +18,7 @@
 */
 
 #include "glyphs_loader.hpp"
+#include "image_io.hpp"
 
 #include <ostream>
 #include <istream>
@@ -42,13 +43,7 @@ std::istream & operator>>(std::istream& is, Views & views) {
 }
 
 std::istream & operator>>(std::istream& is, Glyph & glyph) {
-    Bounds bnd;
-    if (is >> bnd) {
-        std::unique_ptr<Pixel[]> p(new Pixel[bnd.area()]);
-        //decltype(file)::sentry sentry(file);
-        is.rdbuf()->snextc();
-        is.read(p.get(), bnd.area());
-        glyph.img = Image(bnd, std::move(p));
+    if (read_img(is, glyph.img)) {
         is >> glyph.views;
     }
     return is;
@@ -76,9 +71,7 @@ std::ostream & operator<<(std::ostream& os, Views const & views) {
 }
 
 std::ostream & operator<<(std::ostream& os, Glyph const & glyph) {
-    os << glyph.img.bounds() << ' ';
-    os.write(glyph.img.data(), glyph.img.area());
-    return os << "\n" << glyph.views;
+    return write_img(os, glyph.img) << "\n" << glyph.views;
 }
 
 std::ostream & operator<<(std::ostream& os, Glyphs const & glyphs) {

@@ -20,6 +20,8 @@
 #ifndef PPOCR_SRC_STRATEGIES_RELATIONSHIP_EQUAL_RELATIONSHIP_HPP
 #define PPOCR_SRC_STRATEGIES_RELATIONSHIP_EQUAL_RELATIONSHIP_HPP
 
+#include <cstddef>
+
 namespace ppocr { namespace strategies {
 
 template<class T>
@@ -32,6 +34,8 @@ struct equal_relationship
 
     result_type operator()(value_type const & a, value_type const & b) const
     { return a == b; }
+
+    std::size_t count() const { return 2; }
 };
 
 } }

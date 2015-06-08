@@ -13,35 +13,24 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
+*   Product name: redemption, a FLOSS RDP proxy
 *   Copyright (C) Wallix 2010-2015
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
-#define PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
+#ifndef PPOCR_SRC_LOADER2_IMAGE_IO_HPP
+#define PPOCR_SRC_LOADER2_IMAGE_IO_HPP
 
-#include "../utils/relationship.hpp"
+#include <iosfwd>
 
-namespace ppocr { namespace strategies {
+namespace ppocr {
 
-template<class T, class R = T>
-struct interval_relationship
-{
-    using value_type = T;
-    using result_type = R;
+class Image;
 
-    constexpr interval_relationship(T const & interval) noexcept
-    : interval_(interval)
-    {}
+namespace loader2 {
 
-    result_type operator()(value_type const & a, value_type const & b) const
-    { return utils::compute_relationship(a, b, interval_); }
-
-    std::size_t count() const { return std::size_t(this->interval_) + 1; }
-
-private:
-    value_type interval_;
-};
+std::istream & read_img(std::istream &, Image &);
+std::ostream & write_img(std::ostream &, Image const &);
 
 } }
 

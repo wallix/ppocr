@@ -1,24 +1,25 @@
 #!/bin/bash
 
-if [ $# -lt 3 ] || [ ! -x "$1" ] || [ ! -x "$2" ] ; then
-  echo learning_bin normalize_bin font_dir... >&2
+if [ $# -lt 1 ] || [ ! -x "$1" ] ; then
+  echo $0 write_glyphs_bin >&2
   exit 1
 fi
 
-learning_bin=$1
-normalize_bin=$2
-shift 2
+write_glyphs="$(pwd)/$1"
+# shift &
 
-temp=/tmp/$$-learning
+cd "$(dirname "$0")"/resources/fonts/generated
 
-for d in "$@" ; do
-  font="$(basename "$d")"
-  for f in "$d"/*.pbm ; do
-    "$learning_bin" "$f" "${f:0:-3}"txt "$font"
-    [ $? != 0 ] && echo "$f" >&2
+for d in * ; do
+  for f in "$d"/*.pnm ; do
+    "$write_glyphs" -l 100 "$f" ~/ocr/latin_letters "$d" || return $?
   done
-done > "$temp"
+done
 
-$normalize_bin "$temp"
+cd ..
 
-rm "$temp"
+for d in cyrillic_tahoma_8_bold noname russian segoeUI_11 segoeUI_8_bold tahoma_8_bold trebuchetMS_10_bold ; do
+  for f in "$d/"*.pbm ; do 
+    "$write_glyphs" -l 100 "$f" "${f:0:-3}txt" "$d" || return $?
+  done 
+done 

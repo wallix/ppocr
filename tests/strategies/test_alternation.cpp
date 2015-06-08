@@ -21,9 +21,6 @@
 #define BOOST_TEST_MODULE TestAuthentifierNew
 #include <boost/test/auto_unit_test.hpp>
 
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
-
 #define LOGNULL
 //#define LOGPRINT
 
@@ -31,7 +28,7 @@
 #include "image/image_from_string.hpp"
 #include "image/image.hpp"
 
-#define IMAGE_PATH "./images/"
+#include <sstream>
 
 using namespace ppocr;
 
@@ -81,4 +78,14 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
     BOOST_CHECK(a2[6] == alternations_t({1, 3}));
     BOOST_CHECK_EQUAL(5*100/7, relationship(a, a2));
     BOOST_CHECK_EQUAL(5*100/7, relationship(a2, a));
+
+    std::stringstream ss;
+    for (auto & x : a2) {
+        ss << x << ' ';
+    }
+    strategies::alternations::value_type a3;
+    for (auto & x : a3) {
+        ss >> x;
+    }
+    BOOST_CHECK(a2 == a3);
 }

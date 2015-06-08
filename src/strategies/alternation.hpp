@@ -21,6 +21,7 @@
 #define PPOCR_STRATEGIES_ALTERNATION_HPP
 
 #include <array>
+#include <iosfwd>
 
 #include "relationship/array_compare.hpp"
 
@@ -108,6 +109,9 @@ struct alternations
     constexpr relationship_type relationship() const { return {}; }
     unsigned best_difference() const;
 };
+
+std::ostream & operator<<(std::ostream &, alternations::alternations_type const &);
+std::istream & operator>>(std::istream &, alternations::alternations_type &);
 
 }
 

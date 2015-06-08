@@ -17,31 +17,37 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
-#define PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
+#ifndef PPOCR_SRC_UTILS_READ_FILE_HPP
+#define PPOCR_SRC_UTILS_READ_FILE_HPP
 
-#include "../utils/relationship.hpp"
+#include <fstream>
+#include <stdexcept>
+#include <cerrno>
+#include <cstring>
 
-namespace ppocr { namespace strategies {
+namespace ppocr { namespace utils {
 
-template<class T, class R = T>
-struct interval_relationship
-{
-    using value_type = T;
-    using result_type = R;
+template<class T>
+void read_file(T & x, char const * filename) {
+    std::ifstream file(filename);
 
-    constexpr interval_relationship(T const & interval) noexcept
-    : interval_(interval)
-    {}
+    if (!file) {
+        throw std::runtime_error(std::string(filename) + " : open error: " + strerror(errno));
+    }
 
-    result_type operator()(value_type const & a, value_type const & b) const
-    { return utils::compute_relationship(a, b, interval_); }
+    file >> x;
 
-    std::size_t count() const { return std::size_t(this->interval_) + 1; }
+    if (!file.eof()) {
+        throw std::runtime_error(std::string(filename) + " : read error: " + strerror(errno));
+    }
+}
 
-private:
-    value_type interval_;
-};
+template<class T>
+T load_from_file(char const * filename) {
+    T ret;
+    read_file(ret, filename);
+    return ret;
+}
 
 } }
 

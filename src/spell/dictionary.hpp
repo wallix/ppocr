@@ -41,6 +41,8 @@ struct Dictionary
     Dictionary(container::trie<uint32_t> const & trie);
     Dictionary() = default;
 
+    bool empty() const { return this->trie_.all().empty(); }
+
 private:
     container::flat_trie<uint32_t> trie_;
 };

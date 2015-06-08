@@ -17,32 +17,28 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
-#define PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
+#ifndef PPOCR_SRC_UTILS_REINDEX_HPP
+#define PPOCR_SRC_UTILS_REINDEX_HPP
 
-#include "../utils/relationship.hpp"
+#include <utility>
+#include <vector>
 
-namespace ppocr { namespace strategies {
+namespace ppocr {
+namespace utils {
 
-template<class T, class R = T>
-struct interval_relationship
-{
-    using value_type = T;
-    using result_type = R;
+template<class Index, class T>
+void reindex(std::vector<Index> const & indexes, std::vector<T> & cont) {
+    std::vector<T> new_cont;
+    new_cont.resize(cont.size());
+    auto it = new_cont.begin();
+    for (auto i : indexes) {
+        *it = std::move(cont[i]);
+        ++it;
+    }
+    cont = std::move(new_cont);
+}
 
-    constexpr interval_relationship(T const & interval) noexcept
-    : interval_(interval)
-    {}
-
-    result_type operator()(value_type const & a, value_type const & b) const
-    { return utils::compute_relationship(a, b, interval_); }
-
-    std::size_t count() const { return std::size_t(this->interval_) + 1; }
-
-private:
-    value_type interval_;
-};
-
-} }
+}
+}
 
 #endif

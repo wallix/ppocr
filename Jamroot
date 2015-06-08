@@ -133,6 +133,7 @@ obj read_def_file_and_normalize : src/utils/read_definitions_file_and_normalize.
 obj dictionary      : src/spell/dictionary.cpp ;
 obj glyphs_loader   : src/loader2/glyphs_loader.cpp ;
 obj image_compare   : src/utils/image_compare.cpp ;
+obj loader2_image_io : src/loader2/image_io.cpp ;
 
 alias strategies_src :
     src/strategies/agravity.cpp
@@ -266,19 +267,65 @@ exe make_trie_dictionary :
 : ;
 
 
-exe write_data :
-    src/write_data.cpp
+exe write_glyphs :
+    src/write_glyphs.cpp
+    loader2_image_io
     glyphs_loader
     image_src
     box_character_src
     image_from_file_src
 : ;
 
-exe normalize_data :
-    src/normalize_data.cpp
+exe normalize_glyphs :
+    src/normalize_glyphs.cpp
+    loader2_image_io
     glyphs_loader
     image_src
     image_compare
+    box_character_src
+    image_from_file_src
+: ;
+
+exe write_datas :
+    src/write_datas.cpp
+    loader2_image_io
+    strategies_src
+    image_src
+    box_character_src
+    image_from_file_src
+: ;
+
+exe write_datas2 :
+    src/write_datas2.cpp
+    loader2_image_io
+    glyphs_loader
+    strategies_src
+    image_src
+    image_compare
+    box_character_src
+    image_from_file_src
+: ;
+
+exe extract_text6 :
+    src/extract_text6.cpp
+    image_compare
+    glyphs_loader
+    dictionary
+    loader2_image_io
+    strategies_src
+    image_src
+    box_character_src
+    image_from_file_src
+: ;
+
+exe extract_text8 :
+    src/extract_text8.cpp
+    image_compare
+    glyphs_loader
+    dictionary
+    loader2_image_io
+    strategies_src
+    image_src
     box_character_src
     image_from_file_src
 : ;
@@ -330,6 +377,12 @@ unit-test test_proportionality :
     src/strategies/proportionality.cpp
     image_from_string_src
     src/strategies/utils/basic_proportionality.cpp
+    libboost_unit_test : ;
+
+unit-test test_proportionality_zone :
+    tests/strategies/test_proportionality_zone.cpp
+    src/strategies/proportionality_zone.cpp
+    image_from_string_src
     libboost_unit_test : ;
 
 
@@ -429,6 +482,10 @@ unit-test test_glyphs_loader :
     image_compare
     image
     image_from_string
+    libboost_unit_test : ;
+
+unit-test test_reindex :
+    tests/utils/reindex.cpp
     libboost_unit_test : ;
 
 #unit-test test_new_ocr : tests/test_test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;

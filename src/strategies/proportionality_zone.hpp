@@ -31,18 +31,19 @@ namespace strategies {
 struct proportionality_zone {
     struct relationship_type {
         using value_type = std::vector<unsigned>;
-        using result_type = bool;
+        using result_type = unsigned;
 
         constexpr relationship_type() noexcept {}
 
         result_type operator()(value_type const & a, value_type const & b) const;
+
+        std::size_t count() const;
     };
     using value_type = relationship_type::value_type;
 
-    static constexpr bool one_axis = false;
-
     value_type load(Image const & img, Image const & /*img90*/) const;
 
+    static constexpr bool one_axis() { return false; }
     constexpr relationship_type relationship() const { return {}; }
     constexpr unsigned best_difference() const { return 20u; }
 };

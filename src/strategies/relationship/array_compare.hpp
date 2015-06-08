@@ -44,6 +44,8 @@ struct array_compare_relationship
         }
         return R(n * R{100} / a.size());
     }
+
+    std::size_t count() const { return 101; }
 };
 
 } }

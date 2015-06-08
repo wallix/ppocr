@@ -50,15 +50,44 @@
 
 #include "strategies/hbar.hpp"
 
+#include "loader2/datas_loader.hpp"
+
+#include <ostream>
+#include <istream>
+
 namespace ppocr {
 
-#define REGISTRY(name, policy) \
-    loader2::Strategy<strategies::name, loader2::PolicyLoader::policy>
+#define REGISTRY(name) \
+    loader2::Strategy<strategies::name, loader2::PolicyLoader::img>
 #define REGISTRY2(name) \
     loader2::Strategy<strategies::name, loader2::PolicyLoader::img>, \
     loader2::Strategy<strategies::name, loader2::PolicyLoader::img90>
 
-using PpOcrLoader = loader2::Loader<
+namespace details_ {
+    template<class... Strategies>
+    struct pp_ocr_strategies
+    {};
+
+    template<class Strategies1, class Strategies2>
+    struct pp_ocr_merge_strategies;
+
+    template<class... Strategies1, class... Strategies2>
+    struct pp_ocr_merge_strategies<pp_ocr_strategies<Strategies1...>, pp_ocr_strategies<Strategies2...>>
+    { using type = pp_ocr_strategies<Strategies1..., Strategies2...>; };
+
+    template<class Strategies>
+    struct pp_ocr_to_datas;
+
+    template<class... Strategies>
+    struct pp_ocr_to_datas<pp_ocr_strategies<Strategies...>>
+    { using type = loader2::Datas<Strategies...>; };
+}
+
+#ifdef IN_IDE_PARSER
+using PpOcrDatas = loader2::Datas<
+#else
+using PpOcrSimpleDatas = details_::pp_ocr_strategies<
+#endif
     REGISTRY2(hdirection),
     REGISTRY2(hdirection2),
 
@@ -84,16 +113,147 @@ using PpOcrLoader = loader2::Loader<
 
     REGISTRY (density),
 
-    REGISTRY2(dzdensity),
+    REGISTRY2(dzdensity)
+#ifdef IN_IDE_PARSER
+,
+#else
+>;
 
+using PpOcrComplexDatas = details_::pp_ocr_strategies<
+#endif
     REGISTRY2(hbar),
 
+    REGISTRY (alternations)
+#ifdef IN_IDE_PARSER
+,
+#else
+>;
 
-    REGISTRY (alternations),
-
+using PpOcrExclusiveDatas = details_::pp_ocr_strategies<
+#endif
     REGISTRY (zone),
     REGISTRY (proportionality_zone)
 >;
+
+#ifndef IN_IDE_PARSER
+using PpOcrDatas = details_::pp_ocr_to_datas<
+    details_::pp_ocr_merge_strategies<
+        PpOcrSimpleDatas,
+        details_::pp_ocr_merge_strategies<PpOcrComplexDatas, PpOcrExclusiveDatas>::type
+    >::type
+>::type;
+#endif
+
+
+// TODO other file
+
+namespace details_ {
+    struct WriteApplyData {
+        std::ostream & os_;
+
+        template<class Data>
+        void operator()(Data const & data) const {
+            if (!this->os_) {
+                return;
+            }
+
+            for (auto & x : data.data()) {
+                this->write(x);
+            }
+            this->os_ << '\n';
+        }
+
+    private:
+        template<class T>
+        void write(T const & x) const {
+            this->os_ << x << ' ';
+        }
+
+        template<class T>
+        void write(std::vector<T> const & cont) const {
+            this->os_ << cont.size() << ' ';
+            for (auto & x : cont) {
+                this->os_ << x << ' ';
+            }
+        }
+
+        template<class T, std::size_t N>
+        void write(std::array<T, N> const & arr) const {
+            for (auto & x : arr) {
+                this->os_ << x << ' ';
+            }
+        }
+    };
+
+    struct ReadApplyData {
+        std::istream & is_;
+        std::size_t data_sz_;
+
+        void operator()() const {
+            if (this->is_) {
+                std::istream::sentry s(this->is_);
+            }
+        }
+
+        template<class Strategy, class... Strategies>
+        void operator()(loader2::Data<Strategy> & data, loader2::Data<Strategies> & ... other) const {
+            typename loader2::Data<Strategy>::container_type cont;
+
+            if (this->is_) {
+                cont.resize(this->data_sz_);
+                for (auto & x : cont) {
+                    this->read(x);
+                }
+            }
+
+            data = loader2::Data<Strategy>(std::move(cont));
+
+            (*this)(other...);
+        }
+
+    private:
+        template<class T>
+        void read(T & x) const {
+            this->is_ >> x;
+        }
+
+        template<class T>
+        void read(std::vector<T> & cont) const {
+            std::size_t sz;
+            if (this->is_ >> sz) {
+                cont.resize(sz);
+                for (auto & x : cont) {
+                    this->is_ >> x;
+                }
+            }
+        }
+
+        template<class T, std::size_t N>
+        void read(std::array<T, N> & arr) const {
+            for (auto & x : arr) {
+                this->is_ >> x;
+            }
+        }
+    };
+}
+
+inline std::ostream & operator<<(std::ostream & os, PpOcrDatas const & datas) {
+    os << datas.size() << '\n';
+    loader2::apply_from_datas(datas, details_::WriteApplyData{os});
+    return os;
+}
+
+template<class... Strategies>
+std::istream & operator>>(std::istream & is, loader2::Datas<Strategies...> & datas) {
+    std::size_t sz;
+    is >> sz;
+    using loader2::Data;
+    struct Tuple : Data<Strategies>... {} t;
+    details_::ReadApplyData read{is, sz};
+    read(static_cast<Data<Strategies>&>(t)...);
+    datas = PpOcrDatas(static_cast<Data<Strategies>&&>(t)...);
+    return is;
+}
 
 }
 

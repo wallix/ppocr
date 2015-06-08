@@ -14,8 +14,22 @@
 
 using namespace ppocr;
 
+[[noreturn]] void throw_error(
+    const char * imagefilename,
+    const char * textfilename,
+    const char * fontname,
+    std::string s
+) {
+    s += "\nimagefilename: ";
+    s += imagefilename;
+    s += "\ntextfilename: ";
+    s += textfilename;
+    s += "\nfontname: ";
+    s += fontname;
+    throw std::runtime_error(std::move(s));
+}
+
 static void load_file(
-    loader2::Glyphs & glyps,
     const char * imagefilename,
     const char * textfilename,
     const char * fontname,
@@ -38,22 +52,22 @@ static void load_file(
         //std::cerr << "\nbox(" << cbox << ")\n";
 
         if (!(file >> s)) {
-            throw std::runtime_error("definition not found");
+            throw_error(imagefilename, textfilename, fontname, "Definition not found");
         }
 
         auto newimg = img.section(cbox.index(), cbox.bounds());
         //std::cerr << newimg << s << '\n';
 
-        glyps.push_back({
+        std::cout << loader2::Glyph{
             std::move(newimg),
             {{s, fontname, ~0u}}
-        });
+        };
 
         x = cbox.x() + cbox.w();
     }
 
     if (file >> s) {
-        throw std::runtime_error("box character not found");
+        throw_error(imagefilename, textfilename, fontname, "Box character not found");
     }
 }
 
@@ -77,11 +91,7 @@ int main(int ac, char **av)
         return 1;
     }
 
-    loader2::Glyphs glyps;
-
     for (++i_ac; i_ac < ac; i_ac += 3) {
-        load_file(glyps, av[i_ac], av[i_ac+1], av[i_ac+2], luminance);
+        load_file(av[i_ac], av[i_ac+1], av[i_ac+2], luminance);
     }
-
-    std::cout << glyps;
 }
