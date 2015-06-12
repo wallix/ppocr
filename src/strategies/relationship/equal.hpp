@@ -29,6 +29,7 @@ struct equal_relationship
 {
     using value_type = T;
     using result_type = bool;
+    static constexpr quick_check_interval = true;
 
     constexpr equal_relationship() noexcept {}
 
@@ -38,6 +39,9 @@ struct equal_relationship
     /// \return [0, 1]
     double dist(value_type const & a, value_type const & b) const
     { return a == b ? 1. : 0.; }
+
+    bool in_dist(value_type const & a, value_type const & b, value_type const &) const
+    { return a == b; }
 
     std::size_t count() const { return 2; }
 };
