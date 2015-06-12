@@ -45,6 +45,10 @@ struct array_compare_relationship
         return R(n * R{100} / a.size());
     }
 
+    /// \return [0, 1]
+    double dist(value_type const & a, value_type const & b) const
+    { return static_cast<double>(operator()(a, b)) / 100.; }
+
     std::size_t count() const { return 101; }
 };
 

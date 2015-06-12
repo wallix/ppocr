@@ -37,6 +37,10 @@ struct interval_relationship
     result_type operator()(value_type const & a, value_type const & b) const
     { return utils::compute_relationship(a, b, interval_); }
 
+    /// \return [0, 1]
+    double dist(value_type const & a, value_type const & b) const
+    { return static_cast<double>(operator()(a, b)) / 100.; }
+
     std::size_t count() const { return std::size_t(this->interval_) + 1; }
 
 private:

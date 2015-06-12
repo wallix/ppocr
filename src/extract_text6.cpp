@@ -271,6 +271,18 @@ struct compute_image_data_type
     std::string result1;
     std::string result2;
 
+    //struct image_hash : std::hash<size_t> {
+    //    image_hash() {}
+    //    size_t operator()(Image const & img) const
+    //    {
+    //        size_t h = 0;
+    //        std::accumulate(img.data(), img.data_end(), size_t{}, [](char x, size_t h) {
+    //            return (h + (x*2u + 0xc70f6907UL)) ^ 658935609426;
+    //        });
+    //        return h;
+    //    }
+    //};
+    //std::unordered_map<Image, std::pair<std::string, std::string>, image_hash> sorted_img;
     struct def_img_compare {
         def_img_compare() {}
         bool operator()(Image const & a, Image const & b) const

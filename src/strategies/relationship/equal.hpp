@@ -35,6 +35,10 @@ struct equal_relationship
     result_type operator()(value_type const & a, value_type const & b) const
     { return a == b; }
 
+    /// \return [0, 1]
+    double dist(value_type const & a, value_type const & b) const
+    { return a == b ? 1. : 0.; }
+
     std::size_t count() const { return 2; }
 };
 
