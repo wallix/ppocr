@@ -25,6 +25,7 @@
 #include <type_traits>
 
 #include "image/image.hpp"
+#include "sassert.hpp"
 
 namespace ppocr {
 
@@ -111,6 +112,12 @@ struct Data
     typename relationship_type::result_type
     relationship(value_type const & a, value_type const & b) const {
         return static_cast<relationship_type const &>(data_)(a, b);
+    }
+
+    double dist(value_type const & a, value_type const & b) const {
+        double const ret = static_cast<relationship_type const &>(data_).dist(a, b);
+        assert(0. <= ret && ret <= 1.);
+        return ret;
     }
 
     std::size_t count_posibilities() const {
