@@ -100,7 +100,7 @@ struct Data
 
     void load(Image const & img, Image const & img90) {
         this->data_.values.push_back(::ppocr::loader2::load(
-            static_cast<strategy_type const &>(this->data_),
+            get_strategy(),
             Strategy::policy, img, img90)
         );
     }
@@ -109,19 +109,27 @@ struct Data
         return data_.values[i];
     }
 
+    relationship_type const & get_relationship() const {
+        return static_cast<relationship_type const &>(data_);
+    }
+
+    strategy_type const & get_strategy() const {
+        return static_cast<strategy_type const &>(this->data_);
+    }
+
     typename relationship_type::result_type
     relationship(value_type const & a, value_type const & b) const {
-        return static_cast<relationship_type const &>(data_)(a, b);
+        return get_relationship()(a, b);
     }
 
     double dist(value_type const & a, value_type const & b) const {
-        double const ret = static_cast<relationship_type const &>(data_).dist(a, b);
+        double const ret = get_relationship().dist(a, b);
         assert(0. <= ret && ret <= 1.);
         return ret;
     }
 
     std::size_t count_posibilities() const {
-        return static_cast<relationship_type const &>(data_).count();
+        return get_relationship().count();
     }
 
     std::size_t size() const noexcept {
@@ -189,6 +197,12 @@ struct Datas : private Data<Strategies>...
         return details_::cmp_datas(i1, i2, details_::Eq(), details_::Noop(), get<Strategies>()...);
     }
 };
+
+
+template<class Strategy, class... Strategies>
+Data<Strategy> const & get_data(Datas<Strategies...> const & datas) {
+    return datas.template get<Strategy>();
+}
 
 template<class Fn, class... Strategies>
 void apply_from_datas(Datas<Strategies...> const & datas, Fn fn) {

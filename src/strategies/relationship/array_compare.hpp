@@ -49,6 +49,9 @@ struct array_compare_relationship
     double dist(value_type const & a, value_type const & b) const
     { return static_cast<double>(operator()(a, b)) / 100.; }
 
+    bool in_dist(value_type const & a, value_type const & b, unsigned d) const
+    { return static_cast<double>(operator()(a, b)) >= d; }
+
     std::size_t count() const { return 101; }
 };
 

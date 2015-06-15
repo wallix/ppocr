@@ -29,7 +29,6 @@ struct equal_relationship
 {
     using value_type = T;
     using result_type = bool;
-    static constexpr quick_check_interval = true;
 
     constexpr equal_relationship() noexcept {}
 

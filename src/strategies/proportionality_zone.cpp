@@ -52,4 +52,19 @@ std::size_t proportionality_zone::relationship_type::count() const
 { return 101; }
 
 
+double proportionality_zone::relationship_type::dist(
+    proportionality_zone::relationship_type::value_type const & a,
+    proportionality_zone::relationship_type::value_type const & b
+) const {
+    return static_cast<double>(operator()(a, b)) / 100.;
+}
+
+bool proportionality_zone::relationship_type::in_dist(
+    proportionality_zone::relationship_type::value_type const & a,
+    proportionality_zone::relationship_type::value_type const & b,
+    unsigned d
+) const {
+    return operator()(a, b) >= d;
+}
+
 } }
