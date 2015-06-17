@@ -50,6 +50,8 @@
 
 using namespace ppocr;
 
+constexpr unsigned const ocr_div = 10;
+
 using std::size_t;
 
 template<size_t... Ints>
@@ -292,7 +294,7 @@ struct compute_image_data_type
 
     template<class Strategy>
     int get_interval() const {
-        return static_cast<int>(this->datas.template get<Strategy>().count_posibilities() - 1);
+        return static_cast<int>(this->datas.template get<Strategy>().count_posibilities() - 1) / ocr_div;
     }
 
     template<class Strategy>
@@ -300,7 +302,7 @@ struct compute_image_data_type
         int interval = this->get_interval<Strategy>();
         datas.resize(interval + 1);
         size_t value = 0;
-        auto const d = interval/10u;
+        auto const d = interval/10u / ocr_div;
         for (std::vector<uint64_t> & data_mask : datas) {
             data_mask.resize((nb_u64[icat] + 63) / 64);
             //data_mask.resize(group_glyphs.size());
@@ -308,7 +310,7 @@ struct compute_image_data_type
             auto first = this->get<Strategy>().begin() + shift_u64[icat];
             auto last = first + nb_u64[icat];
             for (; first != last; ++first) {
-                auto const sig_value = *first;
+                auto const sig_value = *first / ocr_div;
                 if (value < sig_value ? (sig_value <= value + d) : (value <= sig_value + d)) {
                     data_mask[idef / 64] |= 1ull << (idef % 64);
                 }
@@ -330,8 +332,8 @@ struct compute_image_data_type
         int interval = this->get_interval<FirstStrategy>();
         cat.resize(interval + 1);
         for (int x : this->get<FirstStrategy>()) {
-            int min = std::max<int>(x - interval/10, 0);
-            int max = std::min<int>(x + interval/10, interval);
+            int min = std::max<int>(x / ocr_div - interval/10, 0);
+            int max = std::min<int>(x / ocr_div + interval/10, interval);
             for (; min <= max; ++min) {
                 ++cat[min];
             }
@@ -343,7 +345,7 @@ struct compute_image_data_type
         int interval = this->get_interval<FirstStrategy>();
         cat.resize(interval + 1);
         for (auto x : this->get<FirstStrategy>()) {
-            ++cat[x];
+            ++cat[x / ocr_div];
         }
         int d = interval/10 + 1;
         std::partial_sum(begin(cat), end(cat), begin(cat));
@@ -391,8 +393,8 @@ double compute_probability(
     for (size_t i = 0; i < datas_ref.size(); ++i) {
         auto const interval = intervals[i];
         auto d = interval/10u;
-        auto sig_value = datas_ref[i].get()[idata];
-        auto value = reinterpret_cast<unsigned const *>(&store)[i];
+        auto sig_value = datas_ref[i].get()[idata] / ocr_div;
+        auto value = reinterpret_cast<unsigned const *>(&store)[i] / ocr_div;
         prob = prob * (value < sig_value
             ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
             : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u)
@@ -523,8 +525,8 @@ void reduce_exclusive_universe(
 template<class Data>
 void update_probability(double & prob, size_t i, unsigned value, Data const & data) {
     auto const interval = data.count_posibilities() - 1;
-    auto d = interval/10u;
-    auto sig_value = data[i];
+    auto d = interval/10u / ocr_div;
+    auto sig_value = data[i] / ocr_div;
 //     std::cout << typeid(data).name() << ": " << sig_value << "|-|" << value << "\n";
     prob = prob * (value < sig_value
         ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
@@ -598,23 +600,23 @@ void compute_image(
         static_cast<data_for_strategy<Strategies>&>(store).load(img, img90)
     ), char())...});
 
-    auto const icat = static_cast<data_for_strategy<FirstStrategy>&>(store).x;
+    auto const icat = static_cast<data_for_strategy<FirstStrategy>&>(store).x / ocr_div;
     auto const nb_u64 = o.nb_u64[icat];
     auto & datas_defs = o.datas_defs[icat];
 
     o.datas_accepted = datas_defs.template masks<SecondStrategy>()[
-        static_cast<data_for_strategy<SecondStrategy>&>(store).x
+        static_cast<data_for_strategy<SecondStrategy>&>(store).x / ocr_div
     ];
     void(std::initializer_list<char>{(void(reduce_universe(
         o.datas_accepted,
         datas_defs.template masks<Strategies>(),
-        static_cast<data_for_strategy<Strategies>&>(store).x
+        static_cast<data_for_strategy<Strategies>&>(store).x / ocr_div
     )), char())...});
 
     unsigned const intervals[] = {
-        unsigned(o.template get_interval<FirstStrategy>()),
-        unsigned(o.template get_interval<SecondStrategy>()),
-        unsigned(o.template get_interval<Strategies>())...
+        unsigned(o.template get_interval<FirstStrategy>() / ocr_div),
+        unsigned(o.template get_interval<SecondStrategy>() / ocr_div),
+        unsigned(o.template get_interval<Strategies>() / ocr_div)...
     };
 
     o.probabilities.clear();
