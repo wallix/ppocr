@@ -66,6 +66,14 @@ namespace details_ {
         }
         return false;
     }
+
+    template<class Relationship, bool Is = Relationship::is_contiguous>
+    constexpr std::integral_constant<bool, Is>
+    is_contiguous(int) { return {}; }
+
+    template<class Relationship>
+    constexpr std::false_type
+    is_contiguous(unsigned) { return {}; }
 }
 
 template<class Strategy_>
@@ -83,6 +91,8 @@ struct Data
     using container_type = std::vector<value_type>;
     using iterator = typename container_type::const_iterator;
     using const_iterator = iterator;
+
+    using is_contiguous = decltype(details_::is_contiguous<relationship_type>(1));
 
     Data() = default;
 
