@@ -88,6 +88,13 @@ using PpOcrDatas = loader2::Datas<
 #else
 using PpOcrSimpleDatas = details_::pp_ocr_strategies<
 #endif
+    loader2::Strategy<strategies::dvgravity2,   loader2::PolicyLoader::img90>,
+    loader2::Strategy<strategies::dvdirection2, loader2::PolicyLoader::img90>,
+    loader2::Strategy<strategies::dzdensity,    loader2::PolicyLoader::img>,
+    loader2::Strategy<strategies::dzdensity,    loader2::PolicyLoader::img90>,
+    loader2::Strategy<strategies::dvdirection2, loader2::PolicyLoader::img>,
+    loader2::Strategy<strategies::dvgravity2,   loader2::PolicyLoader::img>,
+
     REGISTRY2(hdirection),
     REGISTRY2(hdirection2),
 
@@ -106,14 +113,10 @@ using PpOcrSimpleDatas = details_::pp_ocr_strategies<
     //REGISTRY(gravity2),
 
     REGISTRY2(dvdirection),
-    REGISTRY2(dvdirection2),
 
     REGISTRY2(dvgravity),
-    REGISTRY2(dvgravity2),
 
-    REGISTRY (density),
-
-    REGISTRY2(dzdensity)
+    REGISTRY (density)
 #ifdef IN_IDE_PARSER
 ,
 #else
