@@ -30,6 +30,8 @@ struct interval_relationship
     using value_type = T;
     using result_type = R;
 
+    constexpr static bool is_contiguous = true;
+
     constexpr interval_relationship(T const & interval) noexcept
     : interval_(interval)
     {}

@@ -30,6 +30,8 @@ struct equal_relationship
     using value_type = T;
     using result_type = bool;
 
+    constexpr static bool is_contiguous = true;
+
     constexpr equal_relationship() noexcept {}
 
     result_type operator()(value_type const & a, value_type const & b) const
