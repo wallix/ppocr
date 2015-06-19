@@ -76,6 +76,7 @@ struct Image
     { return idx.y() * this->width() + idx.x(); }
 
     explicit operator bool () const noexcept { return bool(this->data_); }
+    PtrImageData release() { return std::move(data_); }
 
     friend std::ostream & operator<<(std::ostream &, Image const &);
 
@@ -86,6 +87,9 @@ private:
     template<class PixelGetter>
     friend class HorizontalRange;
 };
+
+
+Image rotate90(Image const & from, PtrImageData data);
 
 
 bool operator == (Image const &, Image const &);

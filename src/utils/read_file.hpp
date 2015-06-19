@@ -27,19 +27,24 @@
 
 namespace ppocr { namespace utils {
 
-template<class T>
-void read_file(T & x, char const * filename) {
+template<class Fn>
+void check_read_file(char const * filename, Fn reader) {
     std::ifstream file(filename);
 
     if (!file) {
         throw std::runtime_error(std::string(filename) + " : open error: " + strerror(errno));
     }
 
-    file >> x;
+    reader(file);
 
     if (!file.eof()) {
         throw std::runtime_error(std::string(filename) + " : read error: " + strerror(errno));
     }
+}
+
+template<class T>
+void read_file(T & x, char const * filename) {
+    check_read_file(filename, [&](std::istream & file) { file >> x; });
 }
 
 template<class T>

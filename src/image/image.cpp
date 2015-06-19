@@ -34,18 +34,22 @@ Image Image::section(const Index& section_idx, const Bounds& section_bnd) const
     return Image(*this, section_idx, section_bnd);
 }
 
-Image Image::rotate90() const
+
+Image rotate90(Image const & from, PtrImageData data)
 {
-    Bounds bnd(height(), width());
-    PtrImageData data(new Pixel[bnd.area()]);
     P out = data.get();
-    for (size_t x = width(); x; ) {
+    for (size_t x = from.width(); x; ) {
         --x;
-        for (cP d = data_.get() + x, e = d + bounds_.area(); d != e; d += width()) {
+        for (cP d = from.data() + x, e = d + from.area(); d != e; d += from.width()) {
             *out++ = *d;
         }
     }
-    return {bnd, std::move(data)};
+    return {{from.height(), from.width()}, std::move(data)};
+}
+
+Image Image::rotate90() const
+{
+    return ::ppocr::rotate90(*this, PtrImageData(new Pixel[area()]));
 }
 
 bool operator==(const Image& a, const Image& b)
