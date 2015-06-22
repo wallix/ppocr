@@ -37,6 +37,16 @@ struct Replacements : std::vector<Replacement>
 
 std::istream & operator >> (std::istream & is, Replacements & replacements);
 
+
+inline void replace_words(std::string & result, Replacements const & replacements) {
+    for (Replacement const & rep : replacements) {
+        std::string::size_type pos = 0;
+        while ((pos = result.find(rep.pattern, pos)) != std::string::npos) {
+            result.replace(pos, rep.pattern.size(), rep.replace);
+        }
+    }
+}
+
 } }
 
 #endif
