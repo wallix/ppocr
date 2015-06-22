@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_INDEXES_ORDERED_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_INDEXES_ORDERED_HPP
 
-#include "ppocr/src/utils/range_iterator.hpp"
+#include "../utils/range_iterator.hpp"
 
 #include <memory>
 #include <algorithm>

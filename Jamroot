@@ -330,6 +330,24 @@ exe extract_text8 :
     image_from_file_src
 : ;
 
+exe ocr2_extract_text :
+    src/ocr2_extract_text.cpp
+    src/ocr2/glyphs.cpp
+    src/ocr2/word_lines.cpp
+    src/ocr2/data_indexes_by_words.cpp
+    src/ocr2/filter_by_lines.cpp
+    src/ocr2/filter_by_font.cpp
+    src/ocr2/disambiguous_with_dict.cpp
+    image_compare
+    glyphs_loader
+    dictionary
+    loader2_image_io
+    strategies_src
+    image_src
+    box_character_src
+    image_from_file_src
+: ;
+
 #
 # Unit Tests
 #

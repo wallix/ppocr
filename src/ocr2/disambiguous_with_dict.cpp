@@ -25,6 +25,7 @@
 #include "../spell/dictionary.hpp"
 
 #include <cassert>
+#include <iostream>
 
 
 namespace {
@@ -107,36 +108,64 @@ unsigned ppocr::ocr2::disambiguous_with_dict(
             std::reference_wrapper<ppocr::ocr2::view_ref_list> ref_list;
             Glyphs const & glyphs;
 
-            using range_string_iterator_base = ppocr::ocr2::view_ref_list::const_iterator;
-            struct range_string_iterator : range_string_iterator_base
+            struct range_string_iterator
             {
+                using iterator = view_ref_list::const_iterator;
+                iterator cur;
+                iterator end;
                 Glyphs const & glyphs;
 
-                range_string_iterator(range_string_iterator_base it, Glyphs const & glyphs)
-                : range_string_iterator_base(it)
+                range_string_iterator(iterator first, iterator last, Glyphs const & glyphs)
+                : cur(first)
+                , end(last)
                 , glyphs(glyphs)
                 {}
 
                 using value_type = Glyphs::string;
+
                 value_type const & operator*() const {
-                    return this->glyphs.get_word(range_string_iterator_base::operator*());
+                    return this->glyphs.get_word(*this->cur);
+                }
+
+                range_string_iterator & operator++() {
+                    unsigned const i = this->cur->get().word;
+                    while (++this->cur != this->end) {
+                        if (i != this->cur->get().word) {
+                            break;
+                        }
+                    }
+                    return *this;
+                }
+
+                bool operator==(range_string_iterator const & other) const {
+                    return this->cur == other.cur;
+                }
+
+                bool operator !=(range_string_iterator const & other) const {
+                    return this->cur != other.cur;
                 }
             };
 
             range_string_iterator begin() const {
-                return {ref_list.get().begin(), this->glyphs};
+                return {ref_list.get().begin(), ref_list.get().end(), this->glyphs};
             }
             range_string_iterator end() const {
-                return {ref_list.get().end(), this->glyphs};
+                return {ref_list.get().end(), ref_list.get().end(), this->glyphs};
             }
         };
 
         value_type operator*() const {
             return {ambiguous_iterator_base::operator*(), this->glyphs};
         }
-        ambiguous_view_ref_list_iterator operator+(std::ptrdiff_t i) const {
-            return {ambiguous_iterator_base::operator+(i), this->glyphs};
+
+        ambiguous_view_ref_list_iterator & operator++() {
+            auto & base = static_cast<ambiguous_iterator_base &>(*this);
+            ++base;
+            return *this;
         }
+
+        ambiguous_view_ref_list_iterator operator+(std::ptrdiff_t i) const = delete;
+        ambiguous_view_ref_list_iterator & operator++(int) = delete;
     };
 
     auto first = ambiguous.begin();

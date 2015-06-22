@@ -23,8 +23,8 @@
 
 #include "glyphs.hpp"
 
-#include "ppocr/src/image/image.hpp"
-#include "ppocr/src/utils/image_compare.hpp"
+#include "../image/image.hpp"
+#include "../utils/image_compare.hpp"
 
 #include <map>
 #include <vector>

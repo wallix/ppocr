@@ -23,6 +23,8 @@
 #include "dictionary.hpp"
 #include "utils/utf.hpp"
 
+#include <algorithm>
+
 
 namespace ppocr { namespace spell {
 
@@ -58,7 +60,9 @@ private:
         auto const c = *it;
         auto pos = rng.lower_bound(c);
         if (pos != rng.end() && pos->get() == c) {
-            if (first + 1 == last) {
+            auto next_first = first;
+            ++next_first;
+            if (next_first == last) {
                 if (pos->is_terminal()) {
                     set_c(output, c);
                     return true;
@@ -71,7 +75,7 @@ private:
                         return true;
                     }
                 }
-                else if (disambiguous_impl(pos->childrens(), first+1, last, output)) {
+                else if (disambiguous_impl(pos->childrens(), next_first, last, output)) {
                     set_c(output, c);
                     return true;
                 }

@@ -22,7 +22,7 @@
 #define REDEMPTION_PPOCR_SRC_OCR2_DATA_INDEXES_ORDERED_HPP
 
 #include "indexes_ordered.hpp"
-#include "ppocr/src/loader2/datas_loader.hpp"
+#include "../loader2/datas_loader.hpp"
 
 namespace ppocr { namespace ocr2 {
 

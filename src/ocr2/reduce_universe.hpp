@@ -22,8 +22,8 @@
 #define REDEMPTION_PPOCR_SRC_OCR2_REDUCE_UNIVERSE_HPP
 
 #include "probabilities.hpp"
-#include "ppocr/src/loader2/datas_loader.hpp"
-#include "ppocr/src/ocr2/data_indexes_by_words.hpp"
+#include "../loader2/datas_loader.hpp"
+#include "../ocr2/data_indexes_by_words.hpp"
 
 #include <algorithm>
 

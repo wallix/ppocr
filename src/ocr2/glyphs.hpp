@@ -22,14 +22,11 @@
 #define REDEMPTION_CAPTURE_RDP_PPOCR_GLYPHS_HPP
 
 #include <map>
-#include <map>
 #include <string>
 #include <memory>
 #include <vector>
 #include <istream>
 #include <algorithm>
-
-#include "make_unique.hpp"
 
 namespace ppocr { namespace ocr2 {
 
@@ -99,70 +96,9 @@ private:
     friend std::istream & operator>>(std::istream & is, Glyphs & glyphs);
 };
 
-inline std::istream & operator>>(std::istream & is, Glyphs & glyphs) {
-    std::map<std::string, unsigned> font_map;
-    std::map<std::string, unsigned> word_map;
+std::ostream & operator<<(std::ostream & os, Glyphs::string const & str);
 
-    std::string font;
-    std::string word;
-    while (is.ignore(1000, '\n')) {
-        unsigned n;
-        if (!(is >> n)) {
-            break;
-        }
-        Views views;
-        views.resize(n);
-
-        unsigned i = 0;
-        while (i < n && (is >> word >> font).ignore(100, '\n')) {
-            auto it_word = word_map.find(word);
-            if (it_word == word_map.end()) {
-                it_word = word_map.emplace(std::move(word), word_map.size()).first;
-            }
-            views[i].word = it_word->second;
-
-            auto it_font = font_map.find(font);
-            if (it_font == font_map.end()) {
-                it_font = font_map.emplace(std::move(font), font_map.size()).first;
-            }
-            views[i].font = it_font->second;
-
-            ++i;
-        }
-
-        glyphs.push_back(std::move(views));
-    }
-
-    std::unique_ptr<unsigned[]> buf_word;
-    unsigned buf_word_sz = 0;
-    {
-        std::vector<unsigned> reindex(word_map.size());
-        for (auto & p : word_map) {
-            reindex[p.second] = buf_word_sz;
-            buf_word_sz += (p.first.size() + sizeof(unsigned) - 1) / sizeof(unsigned) + 1;
-        }
-        buf_word = std::make_unique<unsigned[]>(buf_word_sz);
-        for (auto & views : glyphs) {
-            for (View & v : views) {
-                v.word = reindex[v.word];
-            }
-        }
-    }
-    {
-        auto buf = buf_word.get();
-        for (auto & p : word_map) {
-            *buf = p.first.size();
-            ++buf;
-            std::copy(p.first.begin(), p.first.end(), reinterpret_cast<char*>(buf));
-            buf += (p.first.size() + sizeof(unsigned) - 1) / sizeof(unsigned);
-        }
-    }
-
-    glyphs.buf_word = std::move(buf_word);
-    glyphs.buf_word_sz = buf_word_sz;
-
-    return is;
-}
+std::istream & operator>>(std::istream & is, Glyphs & glyphs);
 
 
 struct EqViewWord {

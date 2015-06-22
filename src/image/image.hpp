@@ -22,23 +22,12 @@
 #define REDEMPTION_IMAGE_HPP
 
 #include "coordinate.hpp"
+#include "pixel.hpp"
 
 #include <memory>
 
 
 namespace ppocr {
-
-using Pixel = char;
-
-inline bool is_pix_letter(Pixel pix) noexcept
-{ return pix == 'x'; }
-
-struct is_pix_letter_fn {
-    constexpr is_pix_letter_fn() noexcept {}
-
-    bool operator()(Pixel pix) const noexcept
-    { return is_pix_letter(pix); }
-};
 
 template<class PixelGetter>
 struct HorizontalRange;

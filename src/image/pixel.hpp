@@ -18,32 +18,23 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "word_lines.hpp"
+#ifndef REDEMPTION_PPOCR_SRC_IMAGE_PIXEL_HPP
+#define REDEMPTION_PPOCR_SRC_IMAGE_PIXEL_HPP
 
-#include "../utils/read_file.hpp"
+namespace ppocr {
 
-#include <istream>
+using Pixel = char;
 
-std::istream& ppocr::ocr2::operator>>(std::istream& is, WordLines & wlines) {
-    unsigned ascentline;
-    unsigned capline;
-    unsigned meanline;
-    unsigned baseline;
+inline bool is_pix_letter(Pixel pix) noexcept
+{ return pix == 'x'; }
 
-    if (is >> ascentline >> capline >> meanline >> baseline) {
-        wlines.ascentline = ascentline;
-        wlines.capline = capline;
-        wlines.meanline = meanline;
-        wlines.baseline = baseline;
-    }
-    return is;
+struct is_pix_letter_fn {
+    constexpr is_pix_letter_fn() noexcept {}
+
+    bool operator()(Pixel pix) const noexcept
+    { return is_pix_letter(pix); }
+};
+
 }
 
-std::istream& ppocr::ocr2::operator>>(std::istream& is, WWordsLines& wwords_lines)
-{
-    WWordLines wwl;
-    while (is >> wwl.s >> wwl.wlines) {
-        wwords_lines.push_back(wwl);
-    }
-    return is;
-}
+#endif
