@@ -49,7 +49,7 @@ void reduce_complexe_universe(
 ) {
     UNPACK(reduce_universe_and_update_probability(
         probabilities,
-        datas.get<Strategies>(),
+        datas.template get<Strategies>(),
         data_strategy_loader<Strategies>().load(img, img90),
         0.5
     ));
@@ -71,8 +71,8 @@ bool has_value(
     Datas const & datas,
     unsigned i, Store const & store
 ) {
-    if (datas.get<Strategy>().get_relationship().in_dist(
-        datas.get<Strategy>()[i],
+    if (datas.template get<Strategy>().get_relationship().in_dist(
+        datas.template get<Strategy>()[i],
         static_cast<data_strategy_loader<Strategy> const&>(store).x,
         static_cast<data_exclusive_universe<Strategy> const&>(store).limit
     )) {
@@ -99,7 +99,7 @@ void reduce_exclusive_universe(
     UNPACK((
         static_cast<data_strategy_loader<Strategies>&>(store).load(img, img90),
         (static_cast<data_exclusive_universe<Strategies>&>(store).limit
-         = datas.get<Strategies>().count_posibilities()/2)
+         = datas.template get<Strategies>().count_posibilities()/2)
     ));
 
     reduce_universe_by_word(probabilities, data_indexes_by_words, [&](unsigned i) {
@@ -116,7 +116,7 @@ void initialize_universe(
     unsigned value
 ) {
     probabilities.clear();
-    auto & data = datas.get<Strategy>();
+    auto & data = datas.template get<Strategy>();
     auto d = (data.count_posibilities()-1)/10u;
     for (auto idx : first_strategy_ortered.get_range(datas, value, d)) {
         probabilities.emplace_back(idx);
