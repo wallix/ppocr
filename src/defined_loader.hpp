@@ -50,8 +50,6 @@
 
 #include "strategies/hbar.hpp"
 
-#include "loader2/datas_loader.hpp"
-
 #include <ostream>
 #include <istream>
 
@@ -79,8 +77,12 @@ namespace details_ {
     struct pp_ocr_to_datas;
 
     template<class... Strategies>
+    struct DefaultDatas : loader2::Datas<Strategies...>
+    { using loader2::Datas<Strategies...>::Datas; };
+
+    template<class... Strategies>
     struct pp_ocr_to_datas<pp_ocr_strategies<Strategies...>>
-    { using type = loader2::Datas<Strategies...>; };
+    { using type = DefaultDatas<Strategies...>; };
 }
 
 #ifdef IN_IDE_PARSER
@@ -240,22 +242,25 @@ namespace details_ {
     };
 }
 
-inline std::ostream & operator<<(std::ostream & os, PpOcrDatas const & datas) {
-    os << datas.size() << '\n';
-    loader2::apply_from_datas(datas, details_::WriteApplyData{os});
-    return os;
-}
+namespace details_ {
+    template<class... Strategies>
+    std::ostream & operator<<(std::ostream & os, DefaultDatas<Strategies...> const & datas) {
+        os << datas.size() << '\n';
+        loader2::apply_from_datas(datas, details_::WriteApplyData{os});
+        return os;
+    }
 
-template<class... Strategies>
-std::istream & operator>>(std::istream & is, loader2::Datas<Strategies...> & datas) {
-    std::size_t sz;
-    is >> sz;
-    using loader2::Data;
-    struct Tuple : Data<Strategies>... {} t;
-    details_::ReadApplyData read{is, sz};
-    read(static_cast<Data<Strategies>&>(t)...);
-    datas = PpOcrDatas(static_cast<Data<Strategies>&&>(t)...);
-    return is;
+    template<class... Strategies>
+    std::istream & operator>>(std::istream & is, DefaultDatas<Strategies...> & datas) {
+        std::size_t sz;
+        is >> sz;
+        using loader2::Data;
+        struct Tuple : Data<Strategies>... {} t;
+        details_::ReadApplyData read{is, sz};
+        read(static_cast<Data<Strategies>&>(t)...);
+        datas = PpOcrDatas(static_cast<Data<Strategies>&&>(t)...);
+        return is;
+    }
 }
 
 }
