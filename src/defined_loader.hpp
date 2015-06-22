@@ -66,7 +66,7 @@ namespace ppocr {
 namespace details_ {
     template<class... Strategies>
     struct pp_ocr_strategies
-    {};
+    { static constexpr std::size_t size = sizeof...(Strategies); };
 
     template<class Strategies1, class Strategies2>
     struct pp_ocr_merge_strategies;
