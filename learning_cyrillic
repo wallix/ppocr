@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ $# -lt 1 ] || [ ! -x "$1" ] ; then
+  echo $0 write_glyphs_bin >&2
+  exit 1
+fi
+
+write_glyphs="$(readlink -f "$1")"
+
+cd "$(dirname "$0")"/resources/fonts/cyrillic
+
+for d in * ; do
+  for f in "$d/"*.pbm ; do
+    "$write_glyphs" -l 100 "$f" "${f:0:-3}txt" "$d" || return $?
+  done
+done

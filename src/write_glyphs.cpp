@@ -8,9 +8,11 @@
 #include <fstream>
 #include <vector>
 
+#include <stdexcept>
+
+#include <cstdlib>
 #include <cstring>
 #include <cerrno>
-#include <stdexcept>
 
 using namespace ppocr;
 

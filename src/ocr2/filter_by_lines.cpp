@@ -25,6 +25,53 @@
 
 #include <cassert>
 
+namespace {
+    using ppocr::ocr2::View;
+    using ppocr::ocr2::view_ref_list;
+
+    view_ref_list::iterator next_word(view_ref_list & vec) {
+        auto first = vec.begin();
+        auto last = vec.end();
+        if (first != last) {
+            auto word = first->get().word;
+            while (++first != last && first->get().word == word) {
+            }
+        }
+        return first;
+    }
+
+    template<class Predicate, class Counter>
+    Counter filter_line(view_ref_list & vec, Predicate pred, Counter count) {
+        auto first = next_word(vec);
+        auto last = vec.end();
+
+        if (first != last) {
+            auto out = vec.begin();
+            auto last = vec.end();
+            if (!pred(*(first-1))) {
+                do {
+                    auto word = first->get().word;
+                    first = std::find_if(first+1, last, [&](View const & view) { return view.word != word; });
+                    ++count;
+                } while (first != last && !pred(*first));
+                out = first;
+            }
+            while (first != last) {
+                auto word = first->get().word;
+                auto rlast = std::find_if(first+1, last, [&](View const & view) { return view.word != word; });
+                if (!pred(*first)) {
+                    out = std::copy(std::make_move_iterator(first), std::make_move_iterator(rlast), out);
+                    ++count;
+                }
+                first = rlast;
+            }
+
+            vec.erase(out, vec.end());
+        }
+
+        return count;
+    }
+}
 
 void ppocr::ocr2::filter_by_lines(
     ambiguous_t & ambiguous,
@@ -63,31 +110,23 @@ void ppocr::ocr2::filter_by_lines(
     auto it = boxes.cbegin();
     assert(boxes.size() == ambiguous.size());
     for (ppocr::ocr2::view_ref_list & vec : ambiguous) {
-        if (vec.size() >= 2) {
-            vec.erase(std::remove_if(
-                vec.begin(),
-                vec.end(),
-                [&](View const & view) -> bool {
-                    if (auto p = words_infos.get(view.word)) {
-                        switch (p->lines.baseline) {
-                            case WordLines::Upper:
-                                return it->bottom() + 1 >= baseline;
-                            case WordLines::Below:
-                                return (it->bottom() < baseline ? baseline - it->bottom() : it->bottom() - baseline) > 1u;
-                            case WordLines::Above:
-                                return it->bottom() <= baseline + 1;
-                            case WordLines::Upper | WordLines::Below:
-                                return it->bottom() + 1 > baseline;
-                            case WordLines::Below | WordLines::Above:
-                                return it->bottom() < baseline + 1;
-                        }
-                    }
-                    return false;
+        if (filter_line(vec, [&](View const & view) -> bool {
+            if (auto p = words_infos.get(view.word)) {
+                switch (p->lines.baseline) {
+                    case WordLines::Upper:
+                        return it->bottom() + 1 >= baseline;
+                    case WordLines::Below:
+                        return (it->bottom() < baseline ? baseline - it->bottom() : it->bottom() - baseline) > 1u;
+                    case WordLines::Above:
+                        return it->bottom() <= baseline + 1;
+                    case WordLines::Upper | WordLines::Below:
+                        return it->bottom() + 1 > baseline;
+                    case WordLines::Below | WordLines::Above:
+                        return it->bottom() < baseline + 1;
                 }
-            ), vec.end());
-        }
-
-        if (vec.size() == 1) {
+            }
+            return false;
+        }, 0u) == 1u) {
             if (auto p = words_infos.get(vec[0].get().word)) {
                 auto const & lines = p->lines;
                 if (lines.baseline == WordLines::Below && lines.meanline == WordLines::Below) {
@@ -107,29 +146,24 @@ void ppocr::ocr2::filter_by_lines(
 
         it = boxes.cbegin();
         for (view_ref_list & vec : ambiguous) {
-            if (vec.size() >= 2) {
-                vec.erase(std::remove_if(
-                    vec.begin(),
-                    vec.end(),
-                    [&](View const & view) -> bool {
-                        if (auto p = words_infos.get(view.word)) {
-                            switch (p->lines.meanline) {
-                                case WordLines::Upper:
-                                    return it->top() + 1 >= meanline;
-                                case WordLines::Below:
-                                    return (it->top() < meanline ? meanline - it->top() : it->top() - meanline) > 1u;
-                                case WordLines::Above:
-                                    return it->top() <= meanline + 1;
-                                case WordLines::Upper | WordLines::Below:
-                                    return it->top() + 1 > meanline;
-                                case WordLines::Below | WordLines::Above:
-                                    return it->top() < meanline + 1;
-                            }
-                        }
-                        return false;
+            struct empty_counter { empty_counter & operator++() { return *this; } };
+            filter_line(vec, [&](View const & view) -> bool {
+                if (auto p = words_infos.get(view.word)) {
+                    switch (p->lines.meanline) {
+                        case WordLines::Upper:
+                            return it->top() + 1 >= meanline;
+                        case WordLines::Below:
+                            return (it->top() < meanline ? meanline - it->top() : it->top() - meanline) > 1u;
+                        case WordLines::Above:
+                            return it->top() <= meanline + 1;
+                        case WordLines::Upper | WordLines::Below:
+                            return it->top() + 1 > meanline;
+                        case WordLines::Below | WordLines::Above:
+                            return it->top() < meanline + 1;
                     }
-                ), vec.end());
-            }
+                }
+                return false;
+            }, empty_counter{});
             ++it;
         }
     }

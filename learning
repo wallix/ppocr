@@ -1,25 +1,17 @@
-#!/bin/bash
+#!/bin/sh
 
-if [ $# -lt 1 ] || [ ! -x "$1" ] ; then
-  echo $0 write_glyphs_bin >&2
+if [ $# -lt 3 ] || [ ! -x "$1" ] || [ ! -x "$2" ] || [ ! -x "$3" ]; then
+  echo $0 write_glyphs_bin normalizer_glyphs_bin write_datas >&2
   exit 1
 fi
 
-write_glyphs="$(pwd)/$1"
-# shift &
+d="$(dirname $0)"
 
-cd "$(dirname "$0")"/resources/fonts/generated
-
-for d in * ; do
-  for f in "$d"/*.pnm ; do
-    "$write_glyphs" -l 100 "$f" ~/ocr/latin_letters "$d" || return $?
-  done
-done
-
-cd ..
-
-for d in cyrillic_tahoma_8_bold noname russian segoeUI_11 segoeUI_8_bold tahoma_8_bold trebuchetMS_10_bold ; do
-  for f in "$d/"*.pbm ; do 
-    "$write_glyphs" -l 100 "$f" "${f:0:-3}txt" "$d" || return $?
-  done 
-done 
+"$d"/learning_latin "$1" > "$d"/resources/glyphs/glyphs-latin.txt &&\
+"$d"/learning_cyrillic "$1" > "$d"/resources/glyphs/glyphs-cyrillic.txt &&\
+"$2" "$d"/resources/glyphs/glyphs-latin.txt > "$d"/resources/glyphs/normalized-glyphs-latin.txt &&\
+"$2" "$d"/resources/glyphs/glyphs-cyrillic.txt > "$d"/resources/glyphs/normalized-glyphs-cyrillic.txt &&\
+"$2" "$d"/resources/glyphs/glyphs-latin.txt "$d"/resources/glyphs/glyphs-cyrillic.txt > "$d"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt &&\
+"$3" "$d"/resources/glyphs/normalized-glyphs-latin.txt > "$d"/resources/datas/latin.txt &&\
+"$3" "$d"/resources/glyphs/normalized-glyphs-cyrillic.txt > "$d"/resources/datas/cyrillic.txt &&\
+"$3" "$d"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt > "$d"/resources/datas/latin-cyrillic.txt
