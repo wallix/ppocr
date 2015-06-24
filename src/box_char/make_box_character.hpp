@@ -21,14 +21,15 @@
 #define PPOCR_MAKE_BOX_CHARACTER_HPP
 
 #include "box.hpp"
-
+#include "../image/pixel.hpp"
 
 namespace ppocr {
 
 class Image;
+class Bounds;
 
 namespace utils {
-    bool horizontal_empty(Pixel const * d, size_t w);
+    bool horizontal_empty(Pixel const * d, std::size_t w);
     bool vertical_empty(Pixel const * d, Bounds const & bnd);
 }
 

@@ -22,23 +22,12 @@
 #define REDEMPTION_IMAGE_HPP
 
 #include "coordinate.hpp"
+#include "pixel.hpp"
 
 #include <memory>
 
 
 namespace ppocr {
-
-using Pixel = char;
-
-inline bool is_pix_letter(Pixel pix) noexcept
-{ return pix == 'x'; }
-
-struct is_pix_letter_fn {
-    constexpr is_pix_letter_fn() noexcept {}
-
-    bool operator()(Pixel pix) const noexcept
-    { return is_pix_letter(pix); }
-};
 
 template<class PixelGetter>
 struct HorizontalRange;
@@ -76,6 +65,7 @@ struct Image
     { return idx.y() * this->width() + idx.x(); }
 
     explicit operator bool () const noexcept { return bool(this->data_); }
+    PtrImageData release() { return std::move(data_); }
 
     friend std::ostream & operator<<(std::ostream &, Image const &);
 
@@ -86,6 +76,9 @@ private:
     template<class PixelGetter>
     friend class HorizontalRange;
 };
+
+
+Image rotate90(Image const & from, PtrImageData data);
 
 
 bool operator == (Image const &, Image const &);
