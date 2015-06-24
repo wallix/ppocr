@@ -93,7 +93,7 @@ private:
     Probability * current;
 };
 
-void swap(Probabilities & a, Probabilities & b) noexcept
+inline void swap(Probabilities & a, Probabilities & b) noexcept
 { a.swap(b); }
 
 struct GtProb {
