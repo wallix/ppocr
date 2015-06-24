@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(TestLoader2)
     using strat1 = loader2::Strategy<strategies::hgravity, loader2::PolicyLoader::img>;
     using strat2 = loader2::Strategy<strategies::hgravity, loader2::PolicyLoader::img90>;
     using strat3 = loader2::Strategy<strategies::hdirection, loader2::PolicyLoader::img>;
-    using Loader = loader2::DatasLoader<strat1, strat2, strat3>;
+    using Loader = loader2::Datas<strat1, strat2, strat3>;
 
     Loader loader;
 

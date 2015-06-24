@@ -1,9 +1,3 @@
-import os ;
-
-# below feature rule come from http://www.boost.org/doc/tools/build/doc/html/bbv2/extending/features.html
-
-path-constant TOP : . ;
-
 variant strict : : ;
 
 variant asan : debug : <cxxflags>-fsanitize=address <linkflags>-lasan <define>CXX_ENABLE_ASAN ;
@@ -109,27 +103,24 @@ project ppocr
     <toolset>gcc:<cxxflags>-Wdouble-promotion
     <toolset>gcc:<cxxflags>-Wmaybe-uninitialized
 
-#     <define>_FILE_OFFSET_BITS=64
-#     <define>_LARGEFILE64_SOURCE
-#
-#     <define>__STDC_FORMAT_MACROS
-
     : default-build release
 ;
+
+
+## Lib {
 
 #lib libboost_unit_test : : <name>boost_unit_test_framework-mt <link>shared ;
 lib libboost_unit_test : : <name>boost_unit_test_framework <link>shared ;
 
-#lib dl : : <name>dl <link>shared ;
-#lib pthread : : <name>pthread <link>shared ;
+## }
+
+## Alias {
 
 obj coordinate      : src/image/coordinate.cpp ;
 obj box             : src/box_char/box.cpp ;
 obj image           : src/image/image.cpp ;
 obj image_from_file : src/image/image_from_file.cpp ;
 obj image_from_string : src/image/image_from_string.cpp ;
-obj definition      : src/factory/definition.cpp ;
-obj read_def_file_and_normalize : src/utils/read_definitions_file_and_normalize.cpp ;
 obj dictionary      : src/spell/dictionary.cpp ;
 obj glyphs_loader   : src/loader2/glyphs_loader.cpp ;
 obj image_compare   : src/utils/image_compare.cpp ;
@@ -160,25 +151,9 @@ alias strategies_src :
     src/strategies/utils/basic_proportionality.cpp
 ;
 
-alias filter_src :
-    src/filters/line.cpp
-;
-
 alias image_src :
     src/image/coordinate.cpp
     src/image/image.cpp
-;
-
-alias factory_src :
-    image_src
-    src/factory/data_loader.cpp
-    src/factory/definition.cpp
-;
-
-alias registry_src :
-    factory_src
-    strategies_src
-    src/factory/registry.cpp
 ;
 
 alias image_from_file_src :
@@ -191,75 +166,9 @@ alias box_character_src :
     src/box_char/make_box_character.cpp
 ;
 
-alias extract_data_src :
-    image_src
-    registry_src
-    box_character_src
-    image_from_file_src
-;
+## }
 
-#exe test_image : tests/test_image.cpp src/image/image.cpp src/image/image_from_file.cpp libboost_unit_test : ;
-
-exe extract_text2 :
-    src/extract_text2.cpp
-    image_compare
-    extract_data_src
-    filter_src
-: ;
-
-exe extract_text3 :
-    src/extract_text3.cpp
-    image_compare
-    extract_data_src
-: ;
-
-exe extract_text4 :
-    src/extract_text4.cpp
-    image_compare
-    extract_data_src
-    dictionary
-: ;
-
-exe extract_text5 :
-    src/extract_text5.cpp
-    image_compare
-    extract_data_src
-: ;
-
-exe learning2 :
-    src/learning2.cpp
-    extract_data_src
-: ;
-
-exe show_stats :
-    src/show_stats.cpp
-    registry_src
-: ;
-
-exe graphic_datas :
-    src/graphic_datas.cpp
-    registry_src
-: ;
-
-exe stat_definitions :
-    src/stat_definitions.cpp
-    registry_src
-    read_def_file_and_normalize
-: ;
-
-exe tree :
-    src/tree.cpp
-    registry_src
-    read_def_file_and_normalize
-: ;
-
-exe normalize_learning :
-    src/normalize_learning.cpp
-    src/utils/unique_sort_definition.cpp
-    image_compare
-    registry_src
-    image_src
-: ;
+## Exe {
 
 exe make_trie_dictionary :
     src/make_trie_dictionary.cpp
@@ -348,9 +257,10 @@ exe ocr2_extract_text :
     image_from_file_src
 : ;
 
-#
-# Unit Tests
-#
+## }
+
+
+## Unit Tests {
 
 import testing ;
 
@@ -363,13 +273,6 @@ unit-test test_image :
     tests/test_image.cpp
     src/image/image.cpp
     src/image/image_from_file.cpp
-    libboost_unit_test : ;
-
-unit-test test_line :
-    image image_from_string definition coordinate box
-    src/factory/data_loader.cpp
-    tests/test_line.cpp
-    src/filters/line.cpp
     libboost_unit_test : ;
 
 unit-test test_make_box_character :
@@ -495,6 +398,7 @@ unit-test test_datas_loader :
 
 unit-test test_glyphs_loader :
     tests/loader2/test_glyphs_loader.cpp
+    loader2_image_io
     glyphs_loader
     coordinate
     image_compare
@@ -506,5 +410,4 @@ unit-test test_reindex :
     tests/utils/reindex.cpp
     libboost_unit_test : ;
 
-#unit-test test_new_ocr : tests/test_test_new_ocr.cpp cryptofile libboost_unit_test png acodec aformat avutil swscale openssl crypto snappy pthread dl z ocr : ;
-
+## }
