@@ -53,7 +53,7 @@ namespace detail_ {
 int main(int ac, char **av)
 {
     if (ac < 4) {
-        std::cerr << av[0] << "glyphs datas images [dict.trie]\n";
+        std::cerr << av[0] << " glyphs datas images [dict.trie]\n";
         return 1;
     }
 #ifdef NDEBUG

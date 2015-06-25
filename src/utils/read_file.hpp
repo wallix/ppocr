@@ -38,7 +38,8 @@ void check_read_file(char const * filename, Fn reader) {
     reader(file);
 
     if (!file.eof()) {
-        throw std::runtime_error(std::string(filename) + " : read error: " + strerror(errno));
+        throw std::runtime_error(std::string(filename) + " : read error: "
+        + (errno ? strerror(errno) : "not eof"));
     }
 }
 

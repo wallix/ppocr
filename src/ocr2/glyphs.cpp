@@ -20,6 +20,8 @@
 
 #include "glyphs.hpp"
 
+#include <limits>
+
 namespace ppocr { namespace ocr2 {
 
 std::ostream & operator<<(std::ostream & os, Glyphs::string const & str) {
@@ -32,7 +34,9 @@ std::istream & operator>>(std::istream & is, Glyphs & glyphs) {
 
     std::string font;
     std::string word;
-    while (is.ignore(1000, '\n')) {
+    constexpr auto limit_max = std::numeric_limits<std::streamsize>::max();
+
+    while (is.ignore(limit_max, '\n')) {
         unsigned n;
         if (!(is >> n)) {
             break;
@@ -41,7 +45,7 @@ std::istream & operator>>(std::istream & is, Glyphs & glyphs) {
         views.resize(n);
 
         unsigned i = 0;
-        while (i < n && (is >> word >> font).ignore(100, '\n')) {
+        while (i < n && (is >> word >> font).ignore(limit_max, '\n')) {
             auto it_word = word_map.find(word);
             if (it_word == word_map.end()) {
                 it_word = word_map.emplace(std::move(word), word_map.size()).first;
