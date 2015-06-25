@@ -185,6 +185,13 @@ exe write_glyphs :
     image_from_file_src
 : ;
 
+exe show_glyphs :
+    src/show_glyphs.cpp
+    image_src
+    box_character_src
+    image_from_file_src
+: ;
+
 exe normalize_glyphs :
     src/normalize_glyphs.cpp
     loader2_image_io

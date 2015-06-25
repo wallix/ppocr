@@ -1,17 +1,38 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ $# -lt 3 ] || [ ! -x "$1" ] || [ ! -x "$2" ] || [ ! -x "$3" ]; then
   echo $0 write_glyphs_bin normalizer_glyphs_bin write_datas >&2
   exit 1
 fi
 
-d="$(dirname $0)"
+write_glyphs="$(readlink -f "$1")"
+base="$(readlink -f "$(dirname $0)")"
 
-"$d"/learning_latin "$1" > "$d"/resources/glyphs/glyphs-latin.txt &&\
-"$d"/learning_cyrillic "$1" > "$d"/resources/glyphs/glyphs-cyrillic.txt &&\
-"$2" "$d"/resources/glyphs/glyphs-latin.txt > "$d"/resources/glyphs/normalized-glyphs-latin.txt &&\
-"$2" "$d"/resources/glyphs/glyphs-cyrillic.txt > "$d"/resources/glyphs/normalized-glyphs-cyrillic.txt &&\
-"$2" "$d"/resources/glyphs/glyphs-latin.txt "$d"/resources/glyphs/glyphs-cyrillic.txt > "$d"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt &&\
-"$3" "$d"/resources/glyphs/normalized-glyphs-latin.txt > "$d"/resources/datas/latin.txt &&\
-"$3" "$d"/resources/glyphs/normalized-glyphs-cyrillic.txt > "$d"/resources/datas/cyrillic.txt &&\
-"$3" "$d"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt > "$d"/resources/datas/latin-cyrillic.txt
+learning() {
+  cd "$base"/resources/fonts/"$1"/generated
+
+  for d in * ; do
+    for f in "$d"/*.pnm ; do
+      "$write_glyphs" -l 100 "$f" ../letters "$d" || return $?
+    done
+  done
+
+  cd ../mano
+
+  for d in * ; do
+    for f in "$d/"*.pbm ; do
+      "$write_glyphs" -l 100 "$f" "${f:0:-3}txt" "$d" || return $?
+    done
+  done
+  cd "$base"
+}
+
+learning latin "$1" > "$base"/resources/glyphs/glyphs-latin.txt &&\
+learning cyrillic "$1" > "$base"/resources/glyphs/glyphs-cyrillic.txt &&\
+"$2" "$base"/resources/glyphs/glyphs-latin.txt > "$base"/resources/glyphs/normalized-glyphs-latin.txt &&\
+"$2" "$base"/resources/glyphs/glyphs-cyrillic.txt > "$base"/resources/glyphs/normalized-glyphs-cyrillic.txt &&\
+"$2" "$base"/resources/glyphs/glyphs-latin.txt "$base"/resources/glyphs/glyphs-cyrillic.txt > "$base"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt &&\
+"$3" "$base"/resources/glyphs/normalized-glyphs-latin.txt > "$base"/resources/datas/latin.txt &&\
+"$3" "$base"/resources/glyphs/normalized-glyphs-cyrillic.txt > "$base"/resources/datas/cyrillic.txt &&\
+"$3" "$base"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt > "$base"/resources/datas/latin-cyrillic.txt &&\
+rm -- "$base"/resources/glyphs/glyphs-latin.txt "$base"/resources/glyphs/glyphs-cyrillic.txt

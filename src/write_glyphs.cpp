@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <vector>
 
 #include <stdexcept>
 
@@ -53,12 +52,12 @@ static void load_file(
     while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
         //std::cerr << "\nbox(" << cbox << ")\n";
 
+        auto newimg = img.section(cbox.index(), cbox.bounds());
+
         if (!(file >> s)) {
+            std::cerr << "[" << cbox.index() << "]px\n" << newimg << std::flush;
             throw_error(imagefilename, textfilename, fontname, "Definition not found");
         }
-
-        auto newimg = img.section(cbox.index(), cbox.bounds());
-        //std::cerr << newimg << s << '\n';
 
         std::cout << loader2::Glyph{
             std::move(newimg),

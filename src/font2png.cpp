@@ -22,36 +22,41 @@
 #include <QLabel>
 //#include <QDebug>
 
-#include <cstdio>
+#include <iostream>
+#include <cstring>
+#include <cerrno>
 
 int main(int argc, char **argv)
 {
-    if (argc < 3) {
+    if (argc < 4) {
+        std::cout << argv[0] << " text-utf8 out-basefile font_files [...]\n";
         return 1;
     }
     QApplication app(argc, argv);
 
-    QString text = QString::fromUtf8(" 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l  m n o p q r s t u v w x y z A B C D E F G H I J K L  M N O P Q R S T U V W X Y Z & é \" ' ( - è _ ç à ) = ~ # { [ | ` \\ ^ @ ] } $ £ ø * µ ù % ! § : / ; . , ? < > É È Ç À Ø Ù û ");
+    QString text = ' ' + QString::fromUtf8(argv[1]) + ' ';
 
     QLabel label(text);
     label.setStyleSheet("background: #000; color: #fff");
 
-    auto mkimg = [&](QFont font, QString name) {
+    auto mkimg = [&](QFont const & font, QString const & name) {
         label.setFont(font);
         QFontMetrics fm(font);
         label.setGeometry(0, 0, fm.width(text), fm.height() + 10);
         QImage img(label.size(), QImage::Format_RGB32);
         QPainter painter(&img);
         label.render(&painter);
-        img.save(name);
+        if (!img.save(name)) {
+            std::cout << "write " << name.toStdString() << " " << strerror(errno) << "\n";
+        }
     };
 
     QString font_name;
-    QString outfile = argv[1];
+    QString outfile = argv[2];
     int const lenbasefile = outfile.size();
 
     for (int i = 2; i < argc; ++i) {
-        std::puts(argv[i]);
+        std::cout << argv[i] << "\n";
         font_name = argv[i];
         for (int sz = 8; sz < 13; ++sz) {
             QFont font(font_name, sz);
