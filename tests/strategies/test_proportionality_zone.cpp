@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(TestProportionalityZone)
     proportion = to_proportion({5, 7},
         "-----"
         "-----"
-        "xxxxxx"
+        "xxxxx"
         "-----"
         "-----"
         "-----"

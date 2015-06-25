@@ -1,0 +1,102 @@
+add_definitions(
+    -std=c++11
+#     -Weffc++
+#     -Wswitch-enum
+#     -Wswitch-default
+    -pedantic
+#    -Wconversion
+    -Wvla
+    -Wstrict-aliasing=2
+#    -Wold-style-cast
+#    -Wlong-long
+    -O3
+#     <variant>release:-march=native
+#     <variant>release:<linkflags>-flto
+
+    -Wuninitialized
+    -Wnon-virtual-dtor
+    -Wall
+    -Wextra
+    -Wno-unused-parameter
+    -Wno-long-long
+    -Wtype-limits
+    -Wundef
+    -Wcast-align
+    -Wchar-subscripts
+#     -Wformat
+    -Wformat=2
+    -Wformat-security
+#     -Wmissing-format-attribute
+    -Wsequence-point
+    -Wreturn-type
+    -Wfloat-equal
+#     -Wshadow
+    -Wpointer-arith
+    -Wsign-compare
+#     -Wmissing-declarations
+    -Wpacked
+    -Wredundant-decls
+#     -Winline
+    -Winit-self
+    -Wcast-qual
+    -Woverloaded-virtual
+    -Wunused-variable
+#     -Wunused-parameter
+    -Wmissing-include-dirs
+    -Wunused
+    -Wendif-labels
+    -Wwrite-strings
+#     -Wpadded
+    -Wstrict-overflow=1
+#     -Wstrict-overflow=5
+    -Wc++11-compat
+    -Wnarrowing
+#    -Wsign-conversion
+    -Wfloat-conversion
+#     -Wlogical-not-parentheses # gcc5
+    -Wvolatile-register-var
+    -Wdisabled-optimization
+    -Woverlength-strings
+    -Warray-bounds
+
+#   -Wfatal-errors
+)
+
+#if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+#  add_definitions(
+#    -Wno-mismatched-tags
+#  )
+#elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+#  add_definitions(
+#    -Wtrampolines
+##     -Warray-bounds=2 # gcc5
+##     -Wbool-compare # gcc5
+#    -Wunused-but-set-parameter
+#    -Wunused-but-set-variable
+##     -Wparenthese # gcc5
+##     -Wsequence-points # gcc5
+##     -Wsuggest-attribute=pure
+##     -Wsuggest-attribute=const
+#    -Wsuggest-attribute=noreturn
+##     -Wsuggest-final-types # gcc5
+##     -Wsuggest-final-methods # gcc5
+##     -Wsuggest-override # gcc5
+#    -Wconditionally-supported
+#    -Wzero-as-null-pointer-constant
+#    -Wuseless-cast
+#    -Wlogical-op
+##     -Wno-aggressive-loop-optimizations
+#    -Wnormalized=nfc #disable ?
+##     -fsized-deallocation # gcc5
+##     -flto-odr-type-merging # gcc5
+##     -Wno-odr # gcc5 #  Requires -flto-odr-type-merging to be enabled
+#    -Wvector-operation-performance
+#    -Wopenmp-simd
+#    -Wdouble-promotion
+#    -Wmaybe-uninitialized
+#  )
+##elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+##  # using Intel C++
+##elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+##  # using Visual Studio C++
+#endif()
