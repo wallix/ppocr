@@ -112,13 +112,13 @@ template<class Strategy, class FirstStrategyOrdered, class Datas>
 void initialize_universe(
     Probabilities & probabilities,
     Datas const & datas,
-    DataIndexesOrdered<FirstStrategyOrdered> const & first_strategy_ortered,
+    DataIndexesOrdered<FirstStrategyOrdered> const & first_strategy_ordered,
     unsigned value
 ) {
     probabilities.clear();
     auto & data = datas.template get<Strategy>();
     auto d = (data.count_posibilities()-1)/10u;
-    for (auto idx : first_strategy_ortered.get_range(datas, value, d)) {
+    for (auto idx : first_strategy_ordered.get_range(datas, value, d)) {
         probabilities.emplace_back(idx);
     }
 }
@@ -148,7 +148,7 @@ void compute_simple_universe(
     Temp<FirstStrategy, Strategies...>,
     Probabilities & probabilities,
     Datas const & datas,
-    DataIndexesOrdered<FirstStrategyOrdered> const & first_strategy_ortered,
+    DataIndexesOrdered<FirstStrategyOrdered> const & first_strategy_ordered,
     Image const & img,
     Image const & img90
 ) {
@@ -162,7 +162,7 @@ void compute_simple_universe(
     initialize_universe<FirstStrategy>(
         probabilities,
         datas,
-        first_strategy_ortered,
+        first_strategy_ordered,
         static_cast<data_strategy_loader<FirstStrategy>&>(store).load(img, img90)
     );
 
@@ -198,7 +198,7 @@ view_ref_list compute_image(
     Probabilities & probabilities,
     Probabilities & tmp_probabilities,
     loader2::Datas<DatasStrategies...> const & datas,
-    DataIndexesOrdered<FirstStrategyOrdered> const & first_strategy_ortered,
+    DataIndexesOrdered<FirstStrategyOrdered> const & first_strategy_ordered,
     DataIndexesByWords const & data_indexes_by_words,
     Glyphs const & glyphs,
     std::vector<unsigned> const & id_views,
@@ -206,7 +206,7 @@ view_ref_list compute_image(
     Image const & img90,
     double limit_prob_for_insert = 0.5
 ) {
-    compute_simple_universe(SimpleAlgos{}, probabilities, datas, first_strategy_ortered, img, img90);
+    compute_simple_universe(SimpleAlgos{}, probabilities, datas, first_strategy_ordered, img, img90);
 
     view_ref_list cache_element;
 

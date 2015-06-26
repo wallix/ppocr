@@ -21,22 +21,14 @@
 #define BOOST_TEST_MODULE TestBestBaseline
 #include <boost/test/auto_unit_test.hpp>
 
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
-
-#define LOGNULL
-//#define LOGPRINT
-
 #include "filters/best_baseline.hpp"
 #include <sstream>
-
-#define IMAGE_PATH "./tests/images/"
 
 using namespace ppocr;
 
 BOOST_AUTO_TEST_CASE(TestBestBaseline)
 {
-   unsigned baselines[] {15, 15, 18, 15, 7, 15, 7};
+   unsigned baselines[] {7, 15, 15, 18, 15, 7, 15, 7};
 
    using std::begin;
    using std::end;

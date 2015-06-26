@@ -417,4 +417,17 @@ unit-test test_reindex :
     tests/utils/reindex.cpp
     libboost_unit_test : ;
 
+unit-test test_compute_image :
+    tests/ocr2/test_compute_image.cpp
+    src/strategies/hdirection.cpp
+    src/ocr2/data_indexes_by_words.cpp
+    coordinate
+    image
+    image_from_string
+    libboost_unit_test : ;
+
+unit-test test_best_baseline :
+    tests/filters/test_best_baseline.cpp
+    libboost_unit_test : ;
+
 ## }
