@@ -203,7 +203,8 @@ view_ref_list compute_image(
     Glyphs const & glyphs,
     std::vector<unsigned> const & id_views,
     Image const & img,
-    Image const & img90
+    Image const & img90,
+    double limit_prob_for_insert = 0.5
 ) {
     compute_simple_universe(SimpleAlgos{}, probabilities, datas, first_strategy_ortered, img, img90);
 
@@ -216,29 +217,24 @@ view_ref_list compute_image(
         ocr2::sort_by_prop(tmp_probabilities);
 
         if (tmp_probabilities.empty()) {
-            // nada
+            return cache_element;
         }
         else if (tmp_probabilities[0].prob >= 1./* && tmp_probabilities.size() == 1*/) {
             ocr2::insert_views(cache_element, tmp_probabilities, glyphs, 1.);
+            return cache_element;
         }
         else {
             reduce_complexe_universe(ComplexAlgos(), probabilities, datas, img, img90);
             reduce_exclusive_universe(ExclusifAlgos(), probabilities, datas, img, img90, data_indexes_by_words);
 
             ocr2::sort_by_views(probabilities, id_views);
-            ocr2::unique_by_views(probabilities, id_views);
-            ocr2::sort_by_prop(probabilities);
-            if (!probabilities.empty()) {
-                ocr2::insert_views(cache_element, probabilities, glyphs, probabilities.front().prob);
-            }
         }
     }
-    else {
-        ocr2::unique_by_views(probabilities, id_views);
-        ocr2::sort_by_prop(probabilities);
-        if (!probabilities.empty()) {
-            ocr2::insert_views(cache_element, probabilities, glyphs, probabilities.front().prob);
-        }
+
+    ocr2::unique_by_views(probabilities, id_views);
+    ocr2::sort_by_prop(probabilities);
+    if (!probabilities.empty()) {
+        ocr2::insert_views(cache_element, probabilities, glyphs, probabilities.front().prob * limit_prob_for_insert);
     }
 
     return cache_element;

@@ -147,7 +147,8 @@ int main(int ac, char **av)
                 glyphs,
                 id_views,
                 img_word,
-                img_ctx.img90()
+                img_ctx.img90(),
+                0.5
             );
             auto it = images_cache.emplace(
                 img_word.clone(),

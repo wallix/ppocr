@@ -61,17 +61,17 @@ namespace ppocr {
     loader2::Strategy<strategies::name, loader2::PolicyLoader::img>, \
     loader2::Strategy<strategies::name, loader2::PolicyLoader::img90>
 
-namespace details_ {
-    template<class... Strategies>
-    struct pp_ocr_strategies
-    { static constexpr std::size_t size = sizeof...(Strategies); };
+template<class... Strategies>
+struct mpl_strategies_list_t
+{ static constexpr std::size_t size = sizeof...(Strategies); };
 
+namespace details_ {
     template<class Strategies1, class Strategies2>
     struct pp_ocr_merge_strategies;
 
     template<class... Strategies1, class... Strategies2>
-    struct pp_ocr_merge_strategies<pp_ocr_strategies<Strategies1...>, pp_ocr_strategies<Strategies2...>>
-    { using type = pp_ocr_strategies<Strategies1..., Strategies2...>; };
+    struct pp_ocr_merge_strategies<mpl_strategies_list_t<Strategies1...>, mpl_strategies_list_t<Strategies2...>>
+    { using type = mpl_strategies_list_t<Strategies1..., Strategies2...>; };
 
     template<class Strategies>
     struct pp_ocr_to_datas;
@@ -81,14 +81,14 @@ namespace details_ {
     { using loader2::Datas<Strategies...>::Datas; };
 
     template<class... Strategies>
-    struct pp_ocr_to_datas<pp_ocr_strategies<Strategies...>>
+    struct pp_ocr_to_datas<mpl_strategies_list_t<Strategies...>>
     { using type = DefaultDatas<Strategies...>; };
 }
 
 #ifdef IN_IDE_PARSER
 using PpOcrDatas = loader2::Datas<
 #else
-using PpOcrSimpleDatas = details_::pp_ocr_strategies<
+using PpOcrSimpleDatas = mpl_strategies_list_t<
 #endif
     loader2::Strategy<strategies::dvgravity2,   loader2::PolicyLoader::img90>,
     loader2::Strategy<strategies::dvdirection2, loader2::PolicyLoader::img90>,
@@ -124,7 +124,7 @@ using PpOcrSimpleDatas = details_::pp_ocr_strategies<
 #else
 >;
 
-using PpOcrComplexDatas = details_::pp_ocr_strategies<
+using PpOcrComplexDatas = mpl_strategies_list_t<
 #endif
     REGISTRY2(hbar),
 
@@ -134,7 +134,7 @@ using PpOcrComplexDatas = details_::pp_ocr_strategies<
 #else
 >;
 
-using PpOcrExclusiveDatas = details_::pp_ocr_strategies<
+using PpOcrExclusiveDatas = mpl_strategies_list_t<
 #endif
     REGISTRY (zone),
     REGISTRY (proportionality_zone)
