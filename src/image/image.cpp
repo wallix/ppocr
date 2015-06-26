@@ -10,46 +10,49 @@ namespace {
     using P = Pixel *;
 }
 
-Image::Image(const Bounds& bounds, PtrImageData data)
+Image::Image(Bounds const& bounds, PtrImageData data)
 : data_(std::move(data))
 , bounds_(bounds)
 {}
 
-Image::Image(Image const & img, const Index & section_idx, const Bounds & section_bnd)
-: data_(new Pixel[section_bnd.area()])
-, bounds_(section_bnd)
+void section(Image const & from, Pixel * data, Index const & idx, Bounds const & bnd)
 {
-    cP d = img.data(section_idx);
-    P out = data_.get();
-    for (size_t y = 0; y != height(); ++y) {
-        out = std::copy(d, d+width(), out);
-        d += img.width();
+    cP d = from.data(idx);
+    for (size_t y = 0; y != bnd.h(); ++y) {
+        data = std::copy(d, d+bnd.w(), data);
+        d += from.width();
     }
 }
 
-Image Image::section(const Index& section_idx, const Bounds& section_bnd) const
+Image Image::section(Index const& section_idx, Bounds const& section_bnd) const
 {
     assert(bounds_.contains(section_idx));
     assert(section_bnd.w() + section_idx.x() <= width() && section_bnd.h() + section_idx.y() <= height());
-    return Image(*this, section_idx, section_bnd);
+    PtrImageData data(new Pixel[section_bnd.area()]);
+    ::ppocr::section(*this, data.get(), section_idx, section_bnd);
+    return {{section_bnd.w(), section_bnd.h()}, std::move(data)};
 }
 
-
-Image rotate90(Image const & from, PtrImageData data)
+void rotate90(Image const & from, Pixel * data)
 {
-    P out = data.get();
     for (size_t x = from.width(); x; ) {
         --x;
         for (cP d = from.data() + x, e = d + from.area(); d != e; d += from.width()) {
-            *out++ = *d;
+            *data++ = *d;
         }
     }
-    return {{from.height(), from.width()}, std::move(data)};
 }
 
 Image Image::rotate90() const
 {
-    return ::ppocr::rotate90(*this, PtrImageData(new Pixel[area()]));
+    PtrImageData data(new Pixel[this->area()]);
+    ::ppocr::rotate90(*this, data.get());
+    return {{this->height(), this->width()}, std::move(data)};
+}
+
+Image Image::clone() const
+{
+    return this->section({}, this->bounds());
 }
 
 bool operator==(const Image& a, const Image& b)

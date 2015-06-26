@@ -29,9 +29,9 @@
 #include "ocr2/filter_by_lines.hpp"
 #include "ocr2/filter_by_font.hpp"
 #include "ocr2/probabilities.hpp"
-//#include "ocr2/image_context.hpp"
+#include "ocr2/image_context.hpp"
 #include "ocr2/compute_image.hpp"
-//#include "ocr2/words_infos.hpp"
+#include "ocr2/words_infos.hpp"
 #include "ocr2/ambiguous.hpp"
 #include "ocr2/glyphs.hpp"
 #include "ocr2/cache.hpp"
@@ -53,7 +53,7 @@ namespace detail_ {
 int main(int ac, char **av)
 {
     if (ac < 4) {
-        std::cerr << av[0] << " glyphs datas images [dict.trie]\n";
+        std::cerr << av[0] << " glyphs datas images [words.info] [dict.trie]\n";
         return 1;
     }
 #ifdef NDEBUG
@@ -61,11 +61,14 @@ int main(int ac, char **av)
 #endif
     std::boolalpha(std::cout);
 
-    spell::Dictionary dict;
-    if (ac > 4) {
-        utils::read_file(dict, av[4]);
-        std::cout << " ## dict ? " << !dict.empty() << "\n";
-    }
+    auto const dict = [&]{
+        spell::Dictionary dict;
+        if (ac > 5) {
+            utils::read_file(dict, av[5]);
+            std::cout << " ## dict ? " << !dict.empty() << "\n";
+        }
+        return dict;
+    }();
 
     auto const datas = utils::load_from_file<PpOcrDatas>(av[2]);
     std::cout << " ## datas.size(): " << datas.size() << "\n";
@@ -77,12 +80,17 @@ int main(int ac, char **av)
         throw std::bad_array_new_length();
     }
 
+    ocr2::WordsInfos const words_infos(
+        glyphs,
+        ac > 4 ? utils::load_from_file<ocr2::WWordsLines>(av[4]) : ocr2::WWordsLines()
+    );
+
     ocr2::DataIndexesByWords const data_indexes_by_words(glyphs);
 
-    std::vector<unsigned> const id_views = ocr2::get_views_indexes_ordered(glyphs);
+    auto const id_views = ocr2::get_views_indexes_ordered(glyphs);
 
     using FirstLoaderStrategy = typename ::detail_::first_type<PpOcrDatas>::type;
-    ocr2::DataIndexesOrdered<FirstLoaderStrategy> const first_strategy_ortered(datas);
+    ocr2::DataIndexesOrdered<FirstLoaderStrategy> const first_strategy_ordered(datas);
 
     std::vector<unsigned> spaces;
     std::vector<Box> boxes;
@@ -90,18 +98,16 @@ int main(int ac, char **av)
     ocr2::Probabilities probabilities(glyphs.size());
     ocr2::Probabilities tmp_probabilities(glyphs.size());
 
-    //ocr2::ImageContext img_ctx;
+    ocr2::ImageContext img_ctx;
 
     ocr2::image_cache_type_t images_cache;
 
     ocr2::ambiguous_t ambiguous;
 
-    //ocr2::WordsInfos const words_infos(glyphs, utils::load_from_file<ocr2::WWordsLines>("/ppocr/words_lines.txt"));
+    std::cout << " ## go" << std::endl;
 
-    std::cout << " ## go\n";
-
-    Image img = image_from_file(av[3]);
-    Bounds const bounds(img.width(), img.height());
+    Image const img = image_from_file(av[3]);
+    Bounds const bounds = img.bounds();
     size_t x = 0;
 
     using resolution_clock = std::chrono::high_resolution_clock;
@@ -113,7 +119,9 @@ int main(int ac, char **av)
         //bounds_x = cbox.x() + cbox.w();
         //std::cerr << "\nbox(" << cbox << ")\n";
 
-        Image img_word = img.section(cbox.index(), cbox.bounds());
+        Image const & img_word = img_ctx.img(cbox.bounds(), [&](Pixel * pixels) {
+            section(img, pixels, cbox.index(), cbox.bounds());
+        });
         //std::cout << img_word;
 
         if (x + 4 < cbox.x()) {
@@ -134,15 +142,15 @@ int main(int ac, char **av)
                 probabilities,
                 tmp_probabilities,
                 datas,
-                first_strategy_ortered,
+                first_strategy_ordered,
                 data_indexes_by_words,
                 glyphs,
                 id_views,
                 img_word,
-                img_word.rotate90()
+                img_ctx.img90()
             );
             auto it = images_cache.emplace(
-                std::move(img_word),
+                img_word.clone(),
                 std::move(cache_element)
             ).first;
             ambiguous.emplace_back(it->second);
@@ -161,7 +169,7 @@ int main(int ac, char **av)
     auto t2 = resolution_clock::now();
     std::cerr << std::chrono::duration<double>(t2-t1).count() << "s\n";
 
-    //ocr2::filter_by_lines(ambiguous, words_infos, boxes);
+    ocr2::filter_by_lines(ambiguous, words_infos, boxes);
 
     ocr2::filter_by_font(ambiguous);
 
@@ -182,7 +190,7 @@ int main(int ac, char **av)
       << " ## result: " << result
       << "\nunrecognized_count: " << unrecognized_count
       << "\ncount: " << ambiguous.size()
-      << "\nunrecognized_rate: " << (unrecognized_count * 100 / ambiguous.size())
+      << "\nunrecognized_rate: " << double(unrecognized_count * 100) / (ambiguous.empty()? ambiguous.size() :1)
       << std::endl
     ;
 }

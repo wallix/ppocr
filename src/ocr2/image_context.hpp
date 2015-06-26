@@ -21,47 +21,50 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_IMAGE_CONTEXT_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_IMAGE_CONTEXT_HPP
 
-#include "ppocr/src/image/image.hpp"
+#include "../image/image.hpp"
 
 namespace ppocr { namespace ocr2 {
 
 struct ImageContext
 {
     template<class Maker>
-    ppocr::Image const & img(unsigned w, unsigned h, Maker maker) {
-        auto data = ptr(w*h, this->img_, this->img_sz_);
-        maker(data.get());
-        this->img_ = ppocr::Image({w, h}, std::move(data));
+    ppocr::Image const & img(Bounds const & bnd, Maker maker) {
+        this->reserve(bnd);
+        maker(this->data_.get());
         return this->img_;
     }
 
     ppocr::Image const & img90() {
-        this->img90_ = ppocr::rotate90(
-            this->img_,
-            ptr(this->img_.area(), this->img90_, this->img90_sz_)
+        this->img90_.release().release();
+        this->img90_ = Image(
+            {this->img_.height(), this->img_.width()},
+            PtrImageData(this->data_.get() + this->img_.area())
         );
+        ppocr::rotate90(this->img_, this->data_.get() + this->img_.area());
         return this->img90_;
     }
 
+    ~ImageContext() {
+        this->img_.release().release();
+        this->img90_.release().release();
+    }
+
 private:
+    PtrImageData data_;
+    std::size_t capacity_sz_ = 0;
+
     ppocr::Image img_;
     ppocr::Image img90_;
-    std::size_t img_sz_ = 0;
-    std::size_t img90_sz_ = 0;
 
-    static ppocr::PtrImageData ptr(std::size_t area, ppocr::Image & img, std::size_t & sz) {
-        auto data = img.release();
-        if (area > sz) {
-            if (auto p = new(std::nothrow) ppocr::Pixel[area]) {
-                data.reset(p);
-                sz = area;
-            }
-            else {
-                img = ppocr::Image(img.bounds(), std::move(data));
-                throw std::bad_alloc();
-            }
+
+    void reserve(Bounds const & bnd) {
+        auto const new_sz = bnd.area() * 2;
+        this->img_.release().release();
+        if (new_sz > this->capacity_sz_) {
+            this->data_.reset(new ppocr::Pixel[new_sz]);
+            this->capacity_sz_ = new_sz;
         }
-        return data;
+        this->img_ = Image(bnd, PtrImageData(this->data_.get()));
     }
 };
 

@@ -37,8 +37,8 @@ using PtrImageData = std::unique_ptr<Pixel[]>;
 struct Image
 {
     Image() = default;
+
     Image(Bounds const & bounds, PtrImageData data);
-    Image(Image const & img, const Index & section_idx, const Bounds & section_bnd);
 
     size_t width() const noexcept { return bounds_.w(); }
     size_t height() const noexcept { return bounds_.h(); }
@@ -46,9 +46,11 @@ struct Image
     Bounds const & bounds() const noexcept { return bounds_; }
     size_t area() const noexcept { return bounds_.area(); }
 
-    Image section(const Index& section_idx, const Bounds& section_bnd) const;
+    Image section(Index const & section_idx, Bounds const & section_bnd) const;
 
     Image rotate90() const;
+
+    Image clone() const;
 
     Pixel operator[](Index const & idx) const noexcept
     { return data()[to_size_t(idx)]; }
@@ -78,8 +80,8 @@ private:
 };
 
 
-Image rotate90(Image const & from, PtrImageData data);
-
+void rotate90(Image const & from, Pixel * data);
+void section(Image const & from, Pixel * data, Index const & idx, Bounds const & bnd);
 
 bool operator == (Image const &, Image const &);
 inline bool operator != (Image const & a, Image const & b) { return !(a == b); }
