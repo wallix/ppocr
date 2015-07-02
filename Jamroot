@@ -430,4 +430,49 @@ unit-test test_best_baseline :
     tests/filters/test_best_baseline.cpp
     libboost_unit_test : ;
 
+
+actions run-ocr2-test {
+    rm -f $(<)
+    $(>) | grep ' ## result: пpимeчaниe - Bloc-notes' && touch $(<)
+}
+
+make test_ocr2_extract_text :
+    ocr2_extract_text
+    ./resources/glyphs/normalized-glyphs-latin-cyrillic.txt
+    ./resources/datas/latin-cyrillic.txt
+    /tmp/negate-35.pnm
+    ./resources/words_lines-latin-cyrillic.txt
+    : run-ocr2-test : ;
+
+# run ocr2_extract_text :
+#     ./resources/glyphs/normalized-glyphs-latin-cyrillic.txt
+#     ./resources/datas/latin-cyrillic.txt
+#     /tmp/negate-35.pnm
+#     ./resources/words_lines-latin-cyrillic.txt
+# : : : test_ocr2_extract_text : run-ocr2-test ;
+
+
+# make-test test_ocr2_extract_text :
+#     ocr2_extract_text
+#     :
+#     run-ocr2-test
+#     ./resources/glyphs/normalized-glyphs-latin-cyrillic.txt
+#     ./resources/datas/latin-cyrillic.txt
+#     /tmp/negate-35.pnm
+#     ./resources/words_lines-latin-cyrillic.txt : ;
+#
+# rule run-test ( test-name : requirements * )
+# {
+#     import testing ;
+#     import python ;
+#     testing.make-test run-ocr2-test : $(test-name) : $(requirements) : $(test-name) ;
+# }
+#
+# run-test test_ocr2_extract_text : <dependency>ocr2_extract_text ;
+
+
+# run test_ocr2_extract_text :
+#
+#     : ;
+
 ## }

@@ -35,7 +35,7 @@ unsigned ppocr::ocr2::filter_by_font(ppocr::ocr2::ambiguous_t & ambiguous)
         auto font_it = std::max_element(fonts.begin(), fonts.end(), [](cP & a, cP & b) {
             return a.second < b.second;
         });
-        if (font_it->second >= ambiguous.size()/2) {
+        if (fonts.size() == 1 || font_it->second >= ambiguous.size()/2) {
             for (view_ref_list & vec : ambiguous) {
                 if (vec.size() >= 2) {
                     auto pos = std::find_if(
