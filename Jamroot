@@ -440,7 +440,7 @@ make test_ocr2_extract_text :
     ocr2_extract_text
     ./resources/glyphs/normalized-glyphs-latin-cyrillic.txt
     ./resources/datas/latin-cyrillic.txt
-    /tmp/negate-35.pnm
+    tests/cyrillic.negate.pnm
     ./resources/words_lines-latin-cyrillic.txt
     : run-ocr2-test : ;
 
