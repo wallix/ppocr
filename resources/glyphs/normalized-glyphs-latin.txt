@@ -5380,11 +5380,12 @@ i tahoma_8_bold 4294967295
 1
 ; DejaVuSansCondensed-9 4294967295
 2 8 xxxx--------xxxx
-4
+5
 : DejaVuSansMono-11 4294967295
 : DroidSans-10 4294967295
 : Oxygen-Sans-10 4294967295
 : Oxygen-Sans-11 4294967295
+: segoeUI_11 4294967295
 2 8 xxxx-------x-xx-
 1
 ; DejaVuSerif-9 4294967295
@@ -33724,8 +33725,9 @@ s DejaVuSansMono-10 4294967295
 1
 e segoeUI_11 4294967295
 6 8 -xxxx-xx---xx----xxxxxxxx-----x-----xx---x-xxxxx
-1
+2
 e Oxygen-Sans-11 4294967295
+e segoeUI_11 4294967295
 6 8 -xxxx-xx--x-x----xxxxxxxx-----x-----xx-----xxxx-
 1
 e Oxygen-Sans-10 4294967295
@@ -41606,6 +41608,9 @@ $ gargi-9 4294967295
 6 11 --x---xxxxxxx-----x-----x-----xxxxxxx-----x-----x-----x-----xxxxxx
 1
 È FreeSans-9 4294967295
+6 11 --xx-----x---------xxxx-xx---xx----xxxxxxxx-----x-----xx---x-xxxxx
+1
+è segoeUI_11 4294967295
 6 11 --xx-----x---------xxxxx-x---x-----x--xxxx-x---xxx---x-x--xx-xxxxx
 1
 à segoeUI_11 4294967295
@@ -42557,6 +42562,9 @@ g DejaVuSansCondensed-10 4294967295
 1
 2 Oxygen-Sans-10 4294967295
 6 11 -xxxx-x---xx-----x-----x----xx----x---xx---xx---xx----x-----xxxxxx
+1
+2 segoeUI_11 4294967295
+6 11 -xxxx-x---xx-----x-----x----xx---xx---xx---xx---xx----x-----xxxxxx
 1
 2 segoeUI_11 4294967295
 6 11 -xxxx-x---xx-----x----xx---xx---xx----x-----x-----------x-----x---
@@ -43709,8 +43717,9 @@ b DejaVuSansMono-10 4294967295
 1
 b DroidSans-10 4294967295
 6 11 x-----x-----x-----xxxxx-xx--xxxx---xx----xx----xx----xx----xx----x
-1
+2
 h DroidSans-10 4294967295
+h segoeUI_11 4294967295
 6 11 x-----xx-----x-----xx-----x-----xx-----x-----x------x-----x------x
 1
 \ DroidSans-11 4294967295
@@ -43799,6 +43808,9 @@ l DejaVuSansMono-9 4294967295
 1
 3 Oxygen-Sans-11 4294967295
 6 11 xxxx--x---x-----x-----x----xx--xxx-----xx-----xx----xx----x-xxxx--
+1
+3 segoeUI_11 4294967295
+6 11 xxxx--x---x-----xx----x-----x--xxx------x------x-----xx---x-xxxx--
 1
 3 segoeUI_11 4294967295
 6 11 xxxxx-x-----x-----x-----xxxx------x------x-----x-----xx---x-xxxx--
@@ -45392,9 +45404,18 @@ f utkal-12 4294967295
 6 13 x------x-----x-----x------x-----x-----xx-----x-----x------x-----x-----x------x
 1
 / segoeUI_11 4294967295
+6 13 x-----xx-----x-----x-----xx-----x-----x------x-----x-----xx-----x-----x-----xx
+1
+\\ segoeUI_11 4294967295
 6 13 x----xx----xxx--xxxx--xx-x--x--x--x--xxxx---xx----xx----xx----x-----x---xx----
 1
 y gargi-11 4294967295
+6 13 xx-----x-----x------x-----x-----xx-----x-----x-----xx-----x-----x------x-----x
+1
+\\ segoeUI_11 4294967295
+6 13 xx-----x-----x-----xx-----x-----x------x-----x-----xx-----x-----x-----xx-----x
+1
+\\ segoeUI_11 4294967295
 6 13 xx--xxxx--xx------xxxxx-xx----xx----xx----xxxx--xx----xx----xx----xx----xxxxx-
 1
 Ë trebuchetMS_10_bold 4294967295
@@ -50972,6 +50993,9 @@ o segoeUI_11 4294967295
 7 8 -xxxxx-xx---x-x----xxxxxxxxxx------x------xx------xxxxx-
 1
 e DejaVuSansCondensed-11 4294967295
+7 8 -xxxxx-xx---xxx-----xx-----xx-----xx-----xxx---xx-xxxxx-
+1
+o segoeUI_11 4294967295
 7 8 -xxxxx-xx---xxxx---xxxx---xxxx---xxxx---xxxx---xx-xxxxx-
 1
 O tahoma_8_bold 4294967295
@@ -63158,6 +63182,9 @@ k DejaVuSerif-11 4294967295
 2
 L DejaVuSansCondensed-11 4294967295
 L Oxygen-Sans-11 4294967295
+7 11 xx-----xx-----xx-----xx--xx-xx-xx--xx-x---xxx----xxxx---xx-x---xx--x--xx--xxx
+1
+k segoeUI_11 4294967295
 7 11 xx-----xx-----xx-----xxxxxx-xx---x-xx---x-xx---xxxx---xxxx---xxxx---xxxx---xx
 1
 h DejaVuSansCondensed-11 4294967295
@@ -63168,6 +63195,9 @@ b DejaVuSansCondensed-11 4294967295
 1
 h segoeUI_11 4294967295
 7 11 xx-----xx-----xx-----xxxxxx-xx---xxxx----xxx----xxx----xxx----xxx---xxxxxxxx-
+1
+b segoeUI_11 4294967295
+7 11 xx-----xx-----xx-----xxxxxx-xxx--xxxx----xxx----xxx----xxx----xxx---xxxxxxxx-
 1
 b segoeUI_11 4294967295
 7 11 xx-----xx-----xx-----xxxxxx-xxx--xxxx----xxx----xxx----xxx----xxxx--xxxxxxxx-
@@ -63194,6 +63224,9 @@ N DejaVuSansMono-11 4294967295
 7 11 xx----xxx----xxxx---xx-x---xx-xx--xx--x--xx--xx-xx---x-xx---xxxx----xxx----xx
 1
 N DejaVuSansMono-11 4294967295
+7 11 xx----xxx---xx-x---x--xx--x---x-x----x-x----xxx-----x------x-----xx---xxx----
+1
+y segoeUI_11 4294967295
 7 11 xx---xx-x---x--x---x--xx-xx---x-x----x-x----xx------x------x-----x-----xx----
 1
 y FreeSans-10 4294967295
@@ -63816,6 +63849,9 @@ B gargi-10 4294967295
 7 11 xxxxxx-x----xxx----xxx----xxx----x-xxxxxx-x------x------x------x------x------
 1
 P Oxygen-Sans-10 4294967295
+7 11 xxxxxx-xx---x-xx---xxxx---xxxx---x-xxxxx--xx---xxxx----xxx----xxx---xxxxxxxx-
+1
+B segoeUI_11 4294967295
 7 11 xxxxxx-xx---x-xx---xxxx---xxxx---xxxx---xxxx---x-xxxxxx-xx-----xx-----xx-----
 1
 p DejaVuSansCondensed-11 4294967295
