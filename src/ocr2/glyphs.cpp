@@ -85,6 +85,7 @@ std::istream & operator>>(std::istream & is, Glyphs & glyphs) {
             *buf = p.first.size();
             ++buf;
             std::copy(p.first.begin(), p.first.end(), reinterpret_cast<char*>(buf));
+            reinterpret_cast<char*>(buf)[p.first.size()] = 0;
             buf += (p.first.size() + sizeof(unsigned) - 1) / sizeof(unsigned);
         }
     }
