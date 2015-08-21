@@ -5,6 +5,7 @@ if [ $# -lt 3 ] || [ ! -x "$1" ] || [ ! -x "$2" ] || [ ! -x "$3" ]; then
   exit 1
 fi
 
+dir_launch="$(pwd)"
 write_glyphs="$(readlink -f "$1")"
 base="$(readlink -f "$(dirname $0)")"
 
@@ -24,7 +25,8 @@ learning() {
       "$write_glyphs" -l 100 "$f" "${f:0:-3}txt" "$d" || return $?
     done
   done
-  cd "$base"
+
+  cd "$dir_launch"
 }
 
 learning latin "$1" > "$base"/resources/glyphs/glyphs-latin.txt &&\
