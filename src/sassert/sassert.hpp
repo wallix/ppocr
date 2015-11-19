@@ -305,9 +305,9 @@ MOP(>=)
 struct null_pointer { void ** p = nullptr; };
 }
 
-//BOOST_PP_CAT
-#define PP_CAT_I(e) #e
-#define PP_CAT(e) PP_CAT_I(e)
+//BOOST_PP_STRINGIZE
+#define SASSERT_PP_STRINGIZE_I(e) #e
+#define SASSERT_PP_STRINGIZE(e) SASSERT_PP_STRINGIZE_I(e)
 
 #ifndef NO_BOOST
 #  define SASSERT_FUNCTION BOOST_CURRENT_FUNCTION
@@ -323,9 +323,9 @@ struct null_pointer { void ** p = nullptr; };
 
 #define sassert_fail_(expr)                                                         \
     std::cerr << SASSERT_COLOR_FILE __FILE__ SASSERT_COLOR_RESET                    \
-    ":" SASSERT_COLOR_LINE PP_CAT(__LINE__) SASSERT_COLOR_RESET                     \
+    ":" SASSERT_COLOR_LINE SASSERT_PP_STRINGIZE(__LINE__) SASSERT_COLOR_RESET       \
     ":\n" SASSERT_COLOR_FUNCTION << SASSERT_FUNCTION << SASSERT_COLOR_RESET         \
-    ":\nAssertion `" SASSERT_COLOR_EXPR PP_CAT(expr) SASSERT_COLOR_RESET "` failed" \
+    ":\nAssertion `" SASSERT_COLOR_EXPR SASSERT_PP_STRINGIZE(expr) SASSERT_COLOR_RESET "` failed" \
      "\n           ";                                                               \
     (Super_Assert::SAssert<>() * expr).print();                                     \
     std::cerr << std::endl;                                                         \

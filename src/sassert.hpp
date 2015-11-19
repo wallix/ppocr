@@ -23,11 +23,13 @@
 
 #include <cassert>
 
-#undef assert
+// #undef assert
 
-#define SASSERT_COLOR
-#include "sassert/sassert.hpp"
+// #define SASSERT_COLOR
+// #include "sassert/sassert.hpp"
 
-#define assert sassert
+// #define assert sassert
+
+#define sassert assert
 
 #endif
