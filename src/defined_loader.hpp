@@ -196,7 +196,7 @@ namespace details_ {
 
         void operator()() const {
             if (this->is_) {
-                std::istream::sentry s(this->is_);
+                std::istream::sentry(this->is_);
             }
         }
 

@@ -42,21 +42,15 @@ namespace mln {
         struct data_type
         {
             static const unsigned bdr_ = 1;
-            T*  buffer_;
-            std::size_t real_size;
-            unsigned row_;
-            unsigned col_;
+            T*  buffer_ = nullptr;
+            std::size_t real_size = 0;
+            unsigned row_ = 0;
+            unsigned col_ = 0;
 
-            data_type()
-            : buffer_(0)
-            , real_size(0)
-            , row_(0)
-            , col_(0)
-            {}
+            data_type() = default;
 
             data_type(unsigned nrows, unsigned ncols)
-            : buffer_(0)
-            , row_(nrows + this->bdr_ * 2)
+            : row_(nrows + this->bdr_ * 2)
             , col_(ncols + this->bdr_ * 2)
             {
                 this->allocate_();
