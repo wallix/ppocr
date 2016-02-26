@@ -45,7 +45,7 @@ inline bool operator < (View const & a, View const & b) {
     if (int const cmp1 = a.font.compare(b.font)) {
         return cmp1 < 0;
     }
-    return b.info_line < b.info_line;
+    return a.info_line < b.info_line;
 }
 
 // strong type
