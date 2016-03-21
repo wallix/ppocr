@@ -20,7 +20,7 @@ Générés avec 'learning' et les fichiers dans 'resources/fonts'.
 
 'learning' prend en paramètre 3 executables construit via 'bjam'.
 
-$ './learning ./bin/${compiler}/${target}/write_glyphs ./bin/${compiler}/${target}/normalize_glyphs ./bin/${compiler}$
+$ './learning ./bin/${compiler}/${target}/write_glyphs ./bin/${compiler}/${target}/normalize_glyphs ./bin/${compiler}${target}/write_datas
 
 Note: une erreur ('error: bad pnm type; expected P3 or P6, get P4!') est systématiquement affichée.
 Celle-ci provient des sources de Milena (include/mln) qui affiche une erreur quand le fichier ne peut être lu.
