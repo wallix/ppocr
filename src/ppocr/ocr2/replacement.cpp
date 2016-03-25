@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/replacement.hpp"
+#include "ppocr/ocr2/replacement.hpp"
 
 #include <istream>
 
