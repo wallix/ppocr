@@ -4,7 +4,7 @@ variant asan : debug : <cxxflags>-fsanitize=address <linkflags>-lasan <define>CX
 
 project ppocr
     : requirements
-    <include>src
+    <include>ppocr
     <include>include
 
     <cxxflags>-std=c++11
@@ -116,54 +116,54 @@ lib libboost_unit_test : : <name>boost_unit_test_framework <link>shared ;
 
 ## Alias {
 
-obj coordinate      : src/image/coordinate.cpp ;
-obj box             : src/box_char/box.cpp ;
-obj image           : src/image/image.cpp ;
-obj image_from_file : src/image/image_from_file.cpp ;
-obj image_from_string : src/image/image_from_string.cpp ;
-obj dictionary      : src/spell/dictionary.cpp ;
-obj glyphs_loader   : src/loader2/glyphs_loader.cpp ;
-obj image_compare   : src/utils/image_compare.cpp ;
-obj loader2_image_io : src/loader2/image_io.cpp ;
+obj coordinate      : ppocr/image/coordinate.cpp ;
+obj box             : ppocr/box_char/box.cpp ;
+obj image           : ppocr/image/image.cpp ;
+obj image_from_file : ppocr/image/image_from_file.cpp ;
+obj image_from_string : ppocr/image/image_from_string.cpp ;
+obj dictionary      : ppocr/spell/dictionary.cpp ;
+obj glyphs_loader   : ppocr/loader2/glyphs_loader.cpp ;
+obj image_compare   : ppocr/utils/image_compare.cpp ;
+obj loader2_image_io : ppocr/loader2/image_io.cpp ;
 
 alias strategies_src :
-    src/strategies/agravity.cpp
-    src/strategies/alternation.cpp
-    src/strategies/compass.cpp
-    src/strategies/dcompass.cpp
-    src/strategies/density.cpp
-    src/strategies/direction.cpp
-    src/strategies/dvdirection2.cpp
-    src/strategies/dvdirection.cpp
-    src/strategies/dvgravity2.cpp
-    src/strategies/dvgravity.cpp
-    src/strategies/dzdensity.cpp
-    src/strategies/gravity2.cpp
-    src/strategies/gravity.cpp
-    src/strategies/hbar.cpp
-    src/strategies/hdirection2.cpp
-    src/strategies/hdirection.cpp
-    src/strategies/hgravity2.cpp
-    src/strategies/hgravity.cpp
-    src/strategies/zone.cpp
-    src/strategies/proportionality.cpp
-    src/strategies/proportionality_zone.cpp
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/agravity.cpp
+    ppocr/strategies/alternation.cpp
+    ppocr/strategies/compass.cpp
+    ppocr/strategies/dcompass.cpp
+    ppocr/strategies/density.cpp
+    ppocr/strategies/direction.cpp
+    ppocr/strategies/dvdirection2.cpp
+    ppocr/strategies/dvdirection.cpp
+    ppocr/strategies/dvgravity2.cpp
+    ppocr/strategies/dvgravity.cpp
+    ppocr/strategies/dzdensity.cpp
+    ppocr/strategies/gravity2.cpp
+    ppocr/strategies/gravity.cpp
+    ppocr/strategies/hbar.cpp
+    ppocr/strategies/hdirection2.cpp
+    ppocr/strategies/hdirection.cpp
+    ppocr/strategies/hgravity2.cpp
+    ppocr/strategies/hgravity.cpp
+    ppocr/strategies/zone.cpp
+    ppocr/strategies/proportionality.cpp
+    ppocr/strategies/proportionality_zone.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
 ;
 
 alias image_src :
-    src/image/coordinate.cpp
-    src/image/image.cpp
+    ppocr/image/coordinate.cpp
+    ppocr/image/image.cpp
 ;
 
 alias image_from_file_src :
     image_src
-    src/image/image_from_file.cpp
+    ppocr/image/image_from_file.cpp
 ;
 
 alias box_character_src :
-    src/box_char/box.cpp
-    src/box_char/make_box_character.cpp
+    ppocr/box_char/box.cpp
+    ppocr/box_char/make_box_character.cpp
 ;
 
 ## }
@@ -171,13 +171,13 @@ alias box_character_src :
 ## Exe {
 
 exe make_trie_dictionary :
-    src/make_trie_dictionary.cpp
+    ppocr/make_trie_dictionary.cpp
     dictionary
 : ;
 
 
 exe write_glyphs :
-    src/write_glyphs.cpp
+    ppocr/write_glyphs.cpp
     loader2_image_io
     glyphs_loader
     image_src
@@ -186,14 +186,14 @@ exe write_glyphs :
 : ;
 
 exe show_glyphs :
-    src/show_glyphs.cpp
+    ppocr/show_glyphs.cpp
     image_src
     box_character_src
     image_from_file_src
 : ;
 
 exe normalize_glyphs :
-    src/normalize_glyphs.cpp
+    ppocr/normalize_glyphs.cpp
     loader2_image_io
     glyphs_loader
     image_src
@@ -203,7 +203,7 @@ exe normalize_glyphs :
 : ;
 
 exe write_datas :
-    src/write_datas.cpp
+    ppocr/write_datas.cpp
     loader2_image_io
     strategies_src
     image_src
@@ -212,7 +212,7 @@ exe write_datas :
 : ;
 
 exe write_datas2 :
-    src/write_datas2.cpp
+    ppocr/write_datas2.cpp
     loader2_image_io
     glyphs_loader
     strategies_src
@@ -223,7 +223,7 @@ exe write_datas2 :
 : ;
 
 exe extract_text6 :
-    src/extract_text6.cpp
+    ppocr/extract_text6.cpp
     image_compare
     glyphs_loader
     dictionary
@@ -235,7 +235,7 @@ exe extract_text6 :
 : ;
 
 exe extract_text8 :
-    src/extract_text8.cpp
+    ppocr/extract_text8.cpp
     image_compare
     glyphs_loader
     dictionary
@@ -247,13 +247,13 @@ exe extract_text8 :
 : ;
 
 exe ocr2_extract_text :
-    src/ocr2_extract_text.cpp
-    src/ocr2/glyphs.cpp
-    src/ocr2/word_lines.cpp
-    src/ocr2/data_indexes_by_words.cpp
-    src/ocr2/filter_by_lines.cpp
-    src/ocr2/filter_by_font.cpp
-    src/ocr2/disambiguous_with_dict.cpp
+    ppocr/ocr2_extract_text.cpp
+    ppocr/ocr2/glyphs.cpp
+    ppocr/ocr2/word_lines.cpp
+    ppocr/ocr2/data_indexes_by_words.cpp
+    ppocr/ocr2/filter_by_lines.cpp
+    ppocr/ocr2/filter_by_font.cpp
+    ppocr/ocr2/disambiguous_with_dict.cpp
     image_compare
     glyphs_loader
     dictionary
@@ -272,112 +272,112 @@ exe ocr2_extract_text :
 import testing ;
 
 alias image_from_string_src :
-    src/image/image.cpp
-    src/image/image_from_string.cpp
+    ppocr/image/image.cpp
+    ppocr/image/image_from_string.cpp
 ;
 
 unit-test test_image :
     tests/test_image.cpp
-    src/image/image.cpp
-    src/image/image_from_file.cpp
+    ppocr/image/image.cpp
+    ppocr/image/image_from_file.cpp
     libboost_unit_test : ;
 
 unit-test test_make_box_character :
     tests/test_make_box_character.cpp
-    src/box_char/make_box_character.cpp
-    src/image/image.cpp src/image/image_from_file.cpp
+    ppocr/box_char/make_box_character.cpp
+    ppocr/image/image.cpp ppocr/image/image_from_file.cpp
     libboost_unit_test : ;
 
 unit-test test_gravity :
     tests/strategies/test_gravity.cpp
-    src/strategies/gravity.cpp
+    ppocr/strategies/gravity.cpp
     image_from_string_src
     libboost_unit_test : ;
 
 unit-test test_gravity2 :
     tests/strategies/test_gravity2.cpp
-    src/strategies/gravity2.cpp
+    ppocr/strategies/gravity2.cpp
     image_from_string_src
     libboost_unit_test : ;
 
 unit-test test_proportionality :
     tests/strategies/test_proportionality.cpp
-    src/strategies/proportionality.cpp
+    ppocr/strategies/proportionality.cpp
     image_from_string_src
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_proportionality_zone :
     tests/strategies/test_proportionality_zone.cpp
-    src/strategies/proportionality_zone.cpp
+    ppocr/strategies/proportionality_zone.cpp
     image_from_string_src
     libboost_unit_test : ;
 
 
 unit-test test_agravity :
     tests/strategies/test_agravity.cpp
-    src/strategies/agravity.cpp
+    ppocr/strategies/agravity.cpp
     image_from_string_src
     libboost_unit_test : ;
 
 unit-test test_alternation :
     tests/strategies/test_alternation.cpp
-    src/strategies/alternation.cpp
+    ppocr/strategies/alternation.cpp
     image_from_string_src
     libboost_unit_test : ;
 
 unit-test test_dcompass :
     tests/strategies/test_dcompass.cpp
-    src/strategies/dcompass.cpp
+    ppocr/strategies/dcompass.cpp
     image_from_string_src
     libboost_unit_test : ;
 
 unit-test test_direction :
     tests/strategies/test_direction.cpp
-    src/strategies/direction.cpp
+    ppocr/strategies/direction.cpp
     image_from_string_src
     libboost_unit_test : ;
 
 unit-test test_hbar :
     tests/strategies/test_hbar.cpp
-    src/strategies/hbar.cpp
+    ppocr/strategies/hbar.cpp
     image_from_string_src
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_hdirection :
     tests/strategies/test_hdirection.cpp
-    src/strategies/hdirection.cpp
+    ppocr/strategies/hdirection.cpp
     image_from_string_src
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_hdirection2 :
     tests/strategies/test_hdirection2.cpp
-    src/strategies/hdirection2.cpp
+    ppocr/strategies/hdirection2.cpp
     image_from_string_src
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_hgravity :
     tests/strategies/test_hgravity.cpp
-    src/strategies/hgravity.cpp
+    ppocr/strategies/hgravity.cpp
     image_from_string_src
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_hgravity2 :
     tests/strategies/test_hgravity2.cpp
-    src/strategies/hgravity2.cpp
+    ppocr/strategies/hgravity2.cpp
     image_from_string_src
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_zone :
     tests/strategies/test_zone.cpp
-    src/strategies/zone.cpp
+    ppocr/strategies/zone.cpp
     image_from_string_src
-    src/strategies/utils/basic_proportionality.cpp
+    ppocr/strategies/utils/basic_proportionality.cpp
     libboost_unit_test : ;
 
 unit-test test_trie :
@@ -397,8 +397,8 @@ unit-test test_dictionary :
 
 unit-test test_datas_loader :
     tests/loader2/test_datas_loader.cpp
-    src/strategies/hgravity.cpp
-    src/strategies/hdirection.cpp
+    ppocr/strategies/hgravity.cpp
+    ppocr/strategies/hdirection.cpp
     image
     image_from_string
     libboost_unit_test : ;
@@ -419,8 +419,8 @@ unit-test test_reindex :
 
 unit-test test_compute_image :
     tests/ocr2/test_compute_image.cpp
-    src/strategies/hdirection.cpp
-    src/ocr2/data_indexes_by_words.cpp
+    ppocr/strategies/hdirection.cpp
+    ppocr/ocr2/data_indexes_by_words.cpp
     coordinate
     image
     image_from_string
