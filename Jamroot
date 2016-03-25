@@ -5,6 +5,7 @@ variant asan : debug : <cxxflags>-fsanitize=address <linkflags>-lasan <define>CX
 project ppocr
     : requirements
     <include>src
+    <include>src/includes
 
     <cxxflags>-std=c++11
 #     <cxxflags>-Weffc++
