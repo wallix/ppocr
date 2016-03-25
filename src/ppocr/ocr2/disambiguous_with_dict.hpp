@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_OCR2_DISAMBIGUOUS_WITH_DICT_HPP
+#ifndef PPOCR_SRC_OCR2_DISAMBIGUOUS_WITH_DICT_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_DISAMBIGUOUS_WITH_DICT_HPP
 
 #include "ppocr/ocr2/ambiguous.hpp"

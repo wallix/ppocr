@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_OCR2_DATA_INDEXES_BY_WORDS_HPP
+#ifndef PPOCR_SRC_OCR2_DATA_INDEXES_BY_WORDS_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_DATA_INDEXES_BY_WORDS_HPP
 
 #include "ppocr/ocr2/glyphs.hpp"

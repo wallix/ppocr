@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_OCR2_REDUCE_UNIVERSE_HPP
+#ifndef PPOCR_SRC_OCR2_REDUCE_UNIVERSE_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_REDUCE_UNIVERSE_HPP
 
 #include "probabilities.hpp"

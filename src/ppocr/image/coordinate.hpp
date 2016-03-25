@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_COORDINATE_HPP
+#ifndef PPOCR_COORDINATE_HPP
 #define REDEMPTION_COORDINATE_HPP
 
 #include <cstddef>

@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_OCR2_DATA_INDEXES_ORDERED_HPP
+#ifndef PPOCR_SRC_OCR2_DATA_INDEXES_ORDERED_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_DATA_INDEXES_ORDERED_HPP
 
 #include "ppocr/ocr2/indexes_ordered.hpp"

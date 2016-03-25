@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_SRC_UTILS_MAKE_UNIQUE_HPP
+#ifndef PPOCR_SRC_UTILS_MAKE_UNIQUE_HPP
 #define REDEMPTION_SRC_UTILS_MAKE_UNIQUE_HPP
 
 #include <memory>

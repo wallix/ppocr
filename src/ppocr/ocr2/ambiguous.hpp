@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_OCR2_AMBIGUOUS_HPP
+#ifndef PPOCR_SRC_OCR2_AMBIGUOUS_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_AMBIGUOUS_HPP
 
 #include "ppocr/ocr2/cache.hpp"

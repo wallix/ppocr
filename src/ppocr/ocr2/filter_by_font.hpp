@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_OCR2_FILTER_BY_FONT_HPP
+#ifndef PPOCR_SRC_OCR2_FILTER_BY_FONT_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_FILTER_BY_FONT_HPP
 
 #include "ppocr/ocr2/ambiguous.hpp"

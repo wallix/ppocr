@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_IMAGE_HPP
+#ifndef PPOCR_IMAGE_HPP
 #define REDEMPTION_IMAGE_HPP
 
 #include "ppocr/image/coordinate.hpp"

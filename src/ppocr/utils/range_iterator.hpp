@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_UTILS_RANGE_ITERATOR_HPP
+#ifndef PPOCR_SRC_UTILS_RANGE_ITERATOR_HPP
 #define REDEMPTION_PPOCR_SRC_UTILS_RANGE_ITERATOR_HPP
 
 #include <utility>

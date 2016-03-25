@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_IMAGE_PIXEL_HPP
+#ifndef PPOCR_SRC_IMAGE_PIXEL_HPP
 #define REDEMPTION_PPOCR_SRC_IMAGE_PIXEL_HPP
 
 namespace ppocr {

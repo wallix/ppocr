@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_CAPTURE_RDP_PPOCR_GLYPHS_HPP
+#ifndef PPOCR_CAPTURE_RDP_PPOCR_GLYPHS_HPP
 #define REDEMPTION_CAPTURE_RDP_PPOCR_GLYPHS_HPP
 
 #include <map>

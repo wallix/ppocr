@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_PPOCR_SRC_OCR2_DATA_STRATEGY_LOADER_HPP
+#ifndef PPOCR_SRC_OCR2_DATA_STRATEGY_LOADER_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_DATA_STRATEGY_LOADER_HPP
 
 #include "ppocr/image/image.hpp"
