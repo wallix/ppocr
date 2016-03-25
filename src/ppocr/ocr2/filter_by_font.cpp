@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/filter_by_font.hpp"
+#include "ppocr/ocr2/filter_by_font.hpp"
 
 #include <map>
 

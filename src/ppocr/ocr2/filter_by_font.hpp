@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_FILTER_BY_FONT_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_FILTER_BY_FONT_HPP
 
-#include "ambiguous.hpp"
+#include "ppocr/ocr2/ambiguous.hpp"
 
 namespace ppocr { namespace ocr2 {
 

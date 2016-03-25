@@ -20,8 +20,8 @@
 #ifndef PPOCR_SRC_SPELL_WORD_DISAMBIGUOUSER_HPP
 #define PPOCR_SRC_SPELL_WORD_DISAMBIGUOUSER_HPP
 
-#include "dictionary.hpp"
-#include "utils/utf.hpp"
+#include "ppocr/spell/dictionary.hpp"
+#include "ppocr/utils/utf.hpp"
 
 #include <algorithm>
 

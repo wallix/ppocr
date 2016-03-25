@@ -21,15 +21,15 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_COMPUTE_IMAGE_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_COMPUTE_IMAGE_HPP
 
-#include "reduce_universe.hpp"
-#include "data_strategy_loader.hpp"
-#include "data_indexes_ordered.hpp"
-#include "sort_probabilities.hpp"
-#include "insert_views.hpp"
-#include "cache.hpp"
+#include "ppocr/ocr2/reduce_universe.hpp"
+#include "ppocr/ocr2/data_strategy_loader.hpp"
+#include "ppocr/ocr2/data_indexes_ordered.hpp"
+#include "ppocr/ocr2/sort_probabilities.hpp"
+#include "ppocr/ocr2/insert_views.hpp"
+#include "ppocr/ocr2/cache.hpp"
 
-#include "../image/image.hpp"
-#include "../loader2/datas_loader.hpp"
+#include "ppocr/image/image.hpp"
+#include "ppocr/loader2/datas_loader.hpp"
 
 namespace ppocr { namespace ocr2 {
 

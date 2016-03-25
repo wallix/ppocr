@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_IMAGE_HPP
 #define REDEMPTION_IMAGE_HPP
 
-#include "coordinate.hpp"
+#include "ppocr/image/coordinate.hpp"
 #include "pixel.hpp"
 
 #include <memory>

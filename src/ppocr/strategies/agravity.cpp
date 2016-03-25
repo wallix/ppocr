@@ -1,4 +1,4 @@
-#include "ppocr/agravity.hpp"
+#include "ppocr/strategies/agravity.hpp"
 #include "ppocr/image/image.hpp"
 
 #include "ppocr/math/almost_equal.hpp"

@@ -18,11 +18,11 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/disambiguous_with_dict.hpp"
-#include "ppocr/glyphs.hpp"
+#include "ppocr/ocr2/disambiguous_with_dict.hpp"
+#include "ppocr/ocr2/glyphs.hpp"
 
-#include "ppocr/../spell/word_disambiguouser.hpp"
-#include "ppocr/../spell/dictionary.hpp"
+#include "ppocr/spell/word_disambiguouser.hpp"
+#include "ppocr/spell/dictionary.hpp"
 
 #include <cassert>
 #include <iostream>

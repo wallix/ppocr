@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/dvdirection.hpp"
+#include "ppocr/strategies/dvdirection.hpp"
 
 #include "ppocr/strategies/utils/diagonal_vertical_direction.hpp"
 

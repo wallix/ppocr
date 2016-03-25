@@ -21,10 +21,10 @@
 #ifndef REDEMPTION_CAPTURE_RDP_PPOCR_CACHE_HPP
 #define REDEMPTION_CAPTURE_RDP_PPOCR_CACHE_HPP
 
-#include "glyphs.hpp"
+#include "ppocr/ocr2/glyphs.hpp"
 
-#include "../image/image.hpp"
-#include "../utils/image_compare.hpp"
+#include "ppocr/image/image.hpp"
+#include "ppocr/utils/image_compare.hpp"
 
 #include <map>
 #include <vector>

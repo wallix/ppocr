@@ -1,4 +1,4 @@
-#include "ppocr/gravity.hpp"
+#include "ppocr/strategies/gravity.hpp"
 #include "ppocr/image/image.hpp"
 
 #include "ppocr/strategies/utils/relationship.hpp"

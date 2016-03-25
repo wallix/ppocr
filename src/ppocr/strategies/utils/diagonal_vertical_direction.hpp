@@ -21,7 +21,7 @@
 #define PPOCR_SRC_STRATEGIES_UTILS_DIAGONAL_VERTICAL_DIRECTION_HPP
 
 #include "ppocr/image/image.hpp"
-#include "top_bottom.hpp"
+#include "ppocr/strategies/utils/top_bottom.hpp"
 
 #include <cassert>
 

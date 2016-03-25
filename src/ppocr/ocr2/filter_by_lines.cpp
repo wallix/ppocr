@@ -18,10 +18,10 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/filter_by_lines.hpp"
-#include "ppocr/words_infos.hpp"
+#include "ppocr/ocr2/filter_by_lines.hpp"
+#include "ppocr/ocr2/words_infos.hpp"
 
-#include "ppocr/../filters/best_baseline.hpp"
+#include "ppocr/filters/best_baseline.hpp"
 
 #include <cassert>
 

@@ -21,8 +21,8 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_WORDS_INFOS_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_WORDS_INFOS_HPP
 
-#include "word_lines.hpp"
-#include "glyphs.hpp"
+#include "ppocr/ocr2/word_lines.hpp"
+#include "ppocr/ocr2/glyphs.hpp"
 
 #include <vector>
 

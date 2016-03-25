@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/dictionary.hpp"
+#include "ppocr//spell/dictionary.hpp"
 #include "ppocr/utils/utf.hpp"
 
 #include <fstream>

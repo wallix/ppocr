@@ -18,7 +18,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/glyphs.hpp"
+#include "ppocr/ocr2/glyphs.hpp"
 
 #include <limits>
 

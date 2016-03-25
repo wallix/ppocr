@@ -21,7 +21,7 @@
 #define PPOCR_STRATEGIES_UTILS_HORIZONTAL_GRAVITY_HPP
 
 #include "ppocr/image/image.hpp"
-#include "top_bottom.hpp"
+#include "ppocr/strategies/utils/top_bottom.hpp"
 
 
 namespace ppocr { namespace strategies { namespace utils {

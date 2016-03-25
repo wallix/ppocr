@@ -20,7 +20,7 @@
 #ifndef PPOCR_IMAGE_HPP
 #define PPOCR_IMAGE_HPP
 
-#include "ppocr/coordinate.hpp"
+#include "ppocr/image/coordinate.hpp"
 
 #include <ostream>
 #include <istream>

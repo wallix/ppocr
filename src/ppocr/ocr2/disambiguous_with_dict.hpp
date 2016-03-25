@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_DISAMBIGUOUS_WITH_DICT_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_DISAMBIGUOUS_WITH_DICT_HPP
 
-#include "ambiguous.hpp"
+#include "ppocr/ocr2/ambiguous.hpp"
 
 namespace ppocr { namespace spell { class Dictionary; } }
 

@@ -20,8 +20,8 @@
 #ifndef PPOCR_MAKE_BOX_CHARACTER_HPP
 #define PPOCR_MAKE_BOX_CHARACTER_HPP
 
-#include "box.hpp"
-#include "../image/pixel.hpp"
+#include "ppocr/box_char/box.hpp"
+#include "ppocr/image/pixel.hpp"
 
 namespace ppocr {
 

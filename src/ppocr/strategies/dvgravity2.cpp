@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/dvgravity2.hpp"
+#include "ppocr/strategies/dvgravity2.hpp"
 
 #include "ppocr/strategies/utils/diagonal_vertical_gravity.hpp"
 

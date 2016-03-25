@@ -1,4 +1,4 @@
-#include "ppocr/direction.hpp"
+#include "ppocr/strategies/direction.hpp"
 #include "ppocr/image/image.hpp"
 
 #include "ppocr/strategies/utils/relationship.hpp"

@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_IMAGE_CONTEXT_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_IMAGE_CONTEXT_HPP
 
-#include "../image/image.hpp"
+#include "ppocr/image/image.hpp"
 
 namespace ppocr { namespace ocr2 {
 

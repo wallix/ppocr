@@ -1,4 +1,4 @@
-#include "ppocr/hdirection2.hpp"
+#include "ppocr//strategies/hdirection2.hpp"
 
 #include "ppocr/strategies/utils/horizontal_direction.hpp"
 

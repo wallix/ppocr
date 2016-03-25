@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_AMBIGUOUS_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_AMBIGUOUS_HPP
 
-#include "cache.hpp"
+#include "ppocr/ocr2/cache.hpp"
 
 namespace ppocr { namespace ocr2 {
 

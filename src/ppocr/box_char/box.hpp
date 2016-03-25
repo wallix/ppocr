@@ -20,7 +20,7 @@
 #ifndef PPOCR_BOX_HPP
 #define PPOCR_BOX_HPP
 
-#include "image/coordinate.hpp"
+#include "ppocr/image/coordinate.hpp"
 
 #include <iosfwd>
 

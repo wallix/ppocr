@@ -20,8 +20,8 @@
 #ifndef PPOCR_IMAGE_FROM_STRING_HPP
 #define PPOCR_IMAGE_FROM_STRING_HPP
 
-#include "coordinate.hpp"
-#include "image.hpp"
+#include "ppocr/image/coordinate.hpp"
+#include "ppocr/image/image.hpp"
 
 namespace ppocr {
 

@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/proportionality.hpp"
+#include "ppocr/strategies/proportionality.hpp"
 #include "ppocr/image/image.hpp"
 
 

@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/hdirection.hpp"
+#include "ppocr//strategies/hdirection.hpp"
 
 #include "ppocr/strategies/utils/horizontal_direction.hpp"
 

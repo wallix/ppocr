@@ -1,5 +1,5 @@
 #include "ppocr/unique_sort_definition.hpp"
-#include "ppocr/image_compare.hpp"
+#include "ppocr/utils/image_compare.hpp"
 
 #include <algorithm>
 #include <tuple>

@@ -20,7 +20,7 @@
 #ifndef PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
 #define PPOCR_SRC_STRATEGIES_RELATIONSHIP_INTERVAL_RELATIONSHIP_HPP
 
-#include "../utils/relationship.hpp"
+#include "ppocr/strategies/utils/relationship.hpp"
 
 namespace ppocr { namespace strategies {
 

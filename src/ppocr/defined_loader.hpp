@@ -21,34 +21,34 @@
 #ifndef PPOCR_SRC_DEFINED_LOADER_HPP
 #define PPOCR_SRC_DEFINED_LOADER_HPP
 
-#include "loader2/datas_loader.hpp"
+#include "ppocr/loader2/datas_loader.hpp"
 
-#include "strategies/alternation.hpp"
-// #include "strategies/direction.hpp"
-#include "strategies/hdirection.hpp"
-#include "strategies/hdirection2.hpp"
-// #include "strategies/agravity.hpp"
-// #include "strategies/gravity.hpp"
-// #include "strategies/compass.hpp"
-// #include "strategies/dcompass.hpp"
-#include "strategies/proportionality.hpp"
-// #include "strategies/gravity2.hpp"
-#include "strategies/hgravity.hpp"
-#include "strategies/hgravity2.hpp"
+#include "ppocr/strategies/alternation.hpp"
+// #include "ppocr/strategies/direction.hpp"
+#include "ppocr/strategies/hdirection.hpp"
+#include "ppocr/strategies/hdirection2.hpp"
+// #include "ppocr/strategies/agravity.hpp"
+// #include "ppocr/strategies/gravity.hpp"
+// #include "ppocr/strategies/compass.hpp"
+// #include "ppocr/strategies/dcompass.hpp"
+#include "ppocr/strategies/proportionality.hpp"
+// #include "ppocr/strategies/gravity2.hpp"
+#include "ppocr/strategies/hgravity.hpp"
+#include "ppocr/strategies/hgravity2.hpp"
 
-#include "strategies/dvdirection.hpp"
-#include "strategies/dvdirection2.hpp"
-#include "strategies/dvgravity.hpp"
-#include "strategies/dvgravity2.hpp"
+#include "ppocr/strategies/dvdirection.hpp"
+#include "ppocr/strategies/dvdirection2.hpp"
+#include "ppocr/strategies/dvgravity.hpp"
+#include "ppocr/strategies/dvgravity2.hpp"
 
-#include "strategies/dzdensity.hpp"
+#include "ppocr/strategies/dzdensity.hpp"
 
-#include "strategies/density.hpp"
+#include "ppocr/strategies/density.hpp"
 
-#include "strategies/zone.hpp"
-#include "strategies/proportionality_zone.hpp"
+#include "ppocr/strategies/zone.hpp"
+#include "ppocr/strategies/proportionality_zone.hpp"
 
-#include "strategies/hbar.hpp"
+#include "ppocr/strategies/hbar.hpp"
 
 #include <ostream>
 #include <istream>

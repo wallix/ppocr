@@ -21,7 +21,7 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_VIEWS_INDEX_ORDERED_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_VIEWS_INDEX_ORDERED_HPP
 
-#include "glyphs.hpp"
+#include "ppocr/ocr2/glyphs.hpp"
 
 #include <vector>
 #include <functional>

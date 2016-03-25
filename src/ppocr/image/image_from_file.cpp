@@ -2,11 +2,11 @@
 #include <cstring>
 #include <cerrno>
 
-#include "ppocr/image_from_file.hpp"
+#include "ppocr/image/image_from_file.hpp"
 
-#include "ppocr/mln/image/image2d.hh"
-#include "ppocr/mln/io/ppm/load.hh"
-#include "ppocr/mln/io/pbm/load.hh"
+#include "mln/image/image2d.hh"
+#include "mln/io/ppm/load.hh"
+#include "mln/io/pbm/load.hh"
 
 #include <mln/trait_value_.hh>
 

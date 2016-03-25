@@ -21,9 +21,9 @@
 #ifndef REDEMPTION_PPOCR_SRC_OCR2_FILTER_BY_LINES_HPP
 #define REDEMPTION_PPOCR_SRC_OCR2_FILTER_BY_LINES_HPP
 
-#include "ambiguous.hpp"
-#include "words_infos.hpp"
-#include "../box_char/box.hpp"
+#include "ppocr/ocr2/ambiguous.hpp"
+#include "ppocr/ocr2/words_infos.hpp"
+#include "ppocr/box_char/box.hpp"
 
 namespace ppocr { namespace ocr2 {
 

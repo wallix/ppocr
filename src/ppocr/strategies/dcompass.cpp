@@ -1,4 +1,4 @@
-#include "ppocr/dcompass.hpp"
+#include "ppocr/strategies/dcompass.hpp"
 #include "ppocr/image/image.hpp"
 
 #include "ppocr/strategies/utils/relationship.hpp"

@@ -24,7 +24,7 @@
 #include <istream>
 #include <type_traits>
 
-#include "cardinal_direction.hpp"
+#include "ppocr/strategies/utils/cardinal_direction.hpp"
 
 
 namespace ppocr { namespace strategies { namespace utils {

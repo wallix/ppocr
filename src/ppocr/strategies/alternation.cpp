@@ -1,4 +1,4 @@
-#include "ppocr/alternation.hpp"
+#include "ppocr/strategies/alternation.hpp"
 #include "ppocr/image/image.hpp"
 
 #include <ostream>

@@ -20,7 +20,7 @@
 #ifndef PPOCR_SRC_STRATEGIES_HBAR_HPP
 #define PPOCR_SRC_STRATEGIES_HBAR_HPP
 
-#include "relationship/equal.hpp"
+#include "ppocr/strategies/relationship/equal.hpp"
 
 namespace ppocr {
 

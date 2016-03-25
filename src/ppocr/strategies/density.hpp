@@ -20,7 +20,7 @@
 #ifndef PPOCR_SRC_STRATEGIES_DENSITY_HPP
 #define PPOCR_SRC_STRATEGIES_DENSITY_HPP
 
-#include "relationship/interval.hpp"
+#include "ppocr/strategies/relationship/interval.hpp"
 
 namespace ppocr {
 

@@ -17,8 +17,8 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/glyphs_loader.hpp"
-#include "ppocr/image_io.hpp"
+#include "ppocr/loader2/glyphs_loader.hpp"
+#include "ppocr/loader2/image_io.hpp"
 
 #include <ostream>
 #include <istream>

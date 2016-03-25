@@ -20,7 +20,7 @@
 #ifndef PPOCR_SRC_STRATEGIES_DVDIRECTION_HPP
 #define PPOCR_SRC_STRATEGIES_DVDIRECTION_HPP
 
-#include "relationship/interval.hpp"
+#include "ppocr/strategies/relationship/interval.hpp"
 
 namespace ppocr {
 

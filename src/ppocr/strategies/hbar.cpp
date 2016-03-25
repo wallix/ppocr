@@ -1,4 +1,4 @@
-#include "ppocr/hbar.hpp"
+#include "ppocr/strategies/hbar.hpp"
 #include "ppocr/image/image.hpp"
 
 #include <algorithm>

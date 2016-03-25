@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/dzdensity.hpp"
+#include "ppocr/strategies/dzdensity.hpp"
 
 #include "ppocr/image/image.hpp"
 

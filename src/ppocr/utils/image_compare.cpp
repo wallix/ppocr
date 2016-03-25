@@ -1,4 +1,4 @@
-#include "ppocr/image_compare.hpp"
+#include "ppocr/utils/image_compare.hpp"
 #include "ppocr/image/image.hpp"
 
 #include <algorithm>

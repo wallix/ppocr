@@ -22,8 +22,8 @@
 #define REDEMPTION_PPOCR_SRC_OCR2_INSERT_VIEWS_HPP
 
 #include "probabilities.hpp"
-#include "glyphs.hpp"
-#include "cache.hpp"
+#include "ppocr/ocr2/glyphs.hpp"
+#include "ppocr/ocr2/cache.hpp"
 
 namespace ppocr { namespace ocr2 {
 

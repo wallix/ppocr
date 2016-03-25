@@ -17,7 +17,7 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/hgravity.hpp"
+#include "ppocr//strategies/hgravity.hpp"
 
 #include "ppocr/strategies/utils/horizontal_gravity.hpp"
 

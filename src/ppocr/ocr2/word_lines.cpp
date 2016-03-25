@@ -18,9 +18,9 @@
 *   Author(s): Jonathan Poelen
 */
 
-#include "ppocr/word_lines.hpp"
+#include "ppocr/ocr2/word_lines.hpp"
 
-#include "ppocr/../utils/read_file.hpp"
+#include "ppocr/utils/read_file.hpp"
 
 #include <istream>
 

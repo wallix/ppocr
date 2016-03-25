@@ -23,7 +23,7 @@
 #include <array>
 #include <iosfwd>
 
-#include "relationship/array_compare.hpp"
+#include "ppocr/strategies/relationship/array_compare.hpp"
 
 namespace ppocr {
 

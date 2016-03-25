@@ -20,7 +20,7 @@
 #ifndef PPOCR_STRATEGIES_PROPORTIONALITY_HPP
 #define PPOCR_STRATEGIES_PROPORTIONALITY_HPP
 
-#include "relationship/interval.hpp"
+#include "ppocr/strategies/relationship/interval.hpp"
 
 namespace ppocr {
 

@@ -1,4 +1,4 @@
-#include "ppocr/data_indexes_by_words.hpp"
+#include "ppocr/ocr2/data_indexes_by_words.hpp"
 
 #include <utility>
 #include <map>

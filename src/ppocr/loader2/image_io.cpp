@@ -1,4 +1,4 @@
-#include "ppocr/image_io.hpp"
+#include "ppocr/loader2/image_io.hpp"
 #include "ppocr/image/image.hpp"
 
 #include <ostream>

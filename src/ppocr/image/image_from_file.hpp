@@ -20,7 +20,7 @@
 #ifndef PPOCR_SRC_IMAGE_IMAGE_FROM_FILE_HPP
 #define PPOCR_SRC_IMAGE_IMAGE_FROM_FILE_HPP
 
-#include "image.hpp"
+#include "ppocr/image/image.hpp"
 
 namespace ppocr {
 

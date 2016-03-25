@@ -22,7 +22,7 @@
 
 #include <iosfwd>
 
-#include "utils/cardinal_direction.hpp"
+#include "ppocr/strategies/utils/cardinal_direction.hpp"
 
 namespace ppocr {
 
