@@ -27,10 +27,10 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/dzdensity.hpp"
-#include "image/image_from_string.hpp"
-#include "strategies/utils/diagonal_zone_density.hpp"
-#include "image/image.hpp"
+#include "ppocr/strategies/dzdensity.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/strategies/utils/diagonal_zone_density.hpp"
+#include "ppocr/image/image.hpp"
 
 #define IMAGE_PATH "./images/"
 

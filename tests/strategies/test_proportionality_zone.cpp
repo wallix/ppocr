@@ -27,9 +27,9 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/proportionality_zone.hpp"
-#include "image/image_from_string.hpp"
-#include "image/image.hpp"
+#include "ppocr/strategies/proportionality_zone.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/image/image.hpp"
 
 using namespace ppocr;
 

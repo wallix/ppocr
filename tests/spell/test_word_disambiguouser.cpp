@@ -21,7 +21,7 @@
 #define BOOST_TEST_MODULE TestWordDisambiguouser
 #include <boost/test/auto_unit_test.hpp>
 
-#include "spell/word_disambiguouser.hpp"
+#include "ppocr/spell/word_disambiguouser.hpp"
 
 #include <vector>
 

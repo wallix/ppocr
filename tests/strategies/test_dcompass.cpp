@@ -27,10 +27,10 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/dcompass.hpp"
-#include "image/image_from_string.hpp"
-#include "strategies/utils/cardinal_direction_io.hpp"
-#include "image/image.hpp"
+#include "ppocr/strategies/dcompass.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/strategies/utils/cardinal_direction_io.hpp"
+#include "ppocr/image/image.hpp"
 
 #define IMAGE_PATH "./images/"
 

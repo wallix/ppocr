@@ -21,7 +21,7 @@
 #define BOOST_TEST_MODULE TestReindex
 #include <boost/test/auto_unit_test.hpp>
 
-#include "utils/reindex.hpp"
+#include "ppocr/utils/reindex.hpp"
 
 using ppocr::utils::reindex;
 

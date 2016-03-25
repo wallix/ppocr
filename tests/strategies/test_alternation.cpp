@@ -24,9 +24,9 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/alternation.hpp"
-#include "image/image_from_string.hpp"
-#include "image/image.hpp"
+#include "ppocr/strategies/alternation.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/image/image.hpp"
 
 #include <sstream>
 

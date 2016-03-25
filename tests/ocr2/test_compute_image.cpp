@@ -21,13 +21,13 @@
 #define BOOST_TEST_MODULE TestBestBaseline
 #include <boost/test/auto_unit_test.hpp>
 
-#include "image/image_from_string.hpp"
-#include "defined_loader.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/defined_loader.hpp"
 
-#include "ocr2/views_index_ordered.hpp"
-#include "ocr2/probabilities.hpp"
-#include "ocr2/compute_image.hpp"
-#include "ocr2/glyphs.hpp"
+#include "ppocr/ocr2/views_index_ordered.hpp"
+#include "ppocr/ocr2/probabilities.hpp"
+#include "ppocr/ocr2/compute_image.hpp"
+#include "ppocr/ocr2/glyphs.hpp"
 
 using namespace ppocr;
 

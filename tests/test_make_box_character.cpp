@@ -27,8 +27,8 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "image/image_from_file.hpp"
-#include "box_char/make_box_character.hpp"
+#include "ppocr/image/image_from_file.hpp"
+#include "ppocr/box_char/make_box_character.hpp"
 #include <type_traits>
 #include <string>
 

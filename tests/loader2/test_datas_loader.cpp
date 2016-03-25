@@ -27,12 +27,12 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "image/image.hpp"
-#include "image/image_from_string.hpp"
-#include "loader2/datas_loader.hpp"
+#include "ppocr/image/image.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/loader2/datas_loader.hpp"
 
-#include "strategies/hgravity.hpp"
-#include "strategies/hdirection.hpp"
+#include "ppocr/strategies/hgravity.hpp"
+#include "ppocr/strategies/hdirection.hpp"
 
 using namespace ppocr;
 

@@ -27,9 +27,9 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "image/image.hpp"
-#include "image/image_from_string.hpp"
-#include "loader2/glyphs_loader.hpp"
+#include "ppocr/image/image.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/loader2/glyphs_loader.hpp"
 
 using namespace ppocr;
 

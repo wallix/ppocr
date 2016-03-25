@@ -27,9 +27,9 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "strategies/hdirection.hpp"
-#include "image/image_from_string.hpp"
-#include "image/image.hpp"
+#include "ppocr/strategies/hdirection.hpp"
+#include "ppocr/image/image_from_string.hpp"
+#include "ppocr/image/image.hpp"
 
 #define IMAGE_PATH "./images/"
 

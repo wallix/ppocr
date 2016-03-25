@@ -27,8 +27,8 @@
 #define LOGNULL
 //#define LOGPRINT
 
-#include "image/image.hpp"
-#include "image/image_from_file.hpp"
+#include "ppocr/image/image.hpp"
+#include "ppocr/image/image_from_file.hpp"
 #include <sstream>
 
 #define IMAGE_PATH "./tests/images/"
