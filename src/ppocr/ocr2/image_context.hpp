@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_SRC_OCR2_IMAGE_CONTEXT_HPP
-#define REDEMPTION_PPOCR_SRC_OCR2_IMAGE_CONTEXT_HPP
+#define PPOCR_SRC_OCR2_IMAGE_CONTEXT_HPP
 
 #include "ppocr/image/image.hpp"
 

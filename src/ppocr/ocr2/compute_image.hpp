@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_SRC_OCR2_COMPUTE_IMAGE_HPP
-#define REDEMPTION_PPOCR_SRC_OCR2_COMPUTE_IMAGE_HPP
+#define PPOCR_SRC_OCR2_COMPUTE_IMAGE_HPP
 
 #include "ppocr/ocr2/reduce_universe.hpp"
 #include "ppocr/ocr2/data_strategy_loader.hpp"

@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_IMAGE_HPP
-#define REDEMPTION_IMAGE_HPP
+#define PPOCR_IMAGE_HPP
 
 #include "ppocr/image/coordinate.hpp"
 #include "pixel.hpp"

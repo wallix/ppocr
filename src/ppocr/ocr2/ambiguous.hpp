@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_SRC_OCR2_AMBIGUOUS_HPP
-#define REDEMPTION_PPOCR_SRC_OCR2_AMBIGUOUS_HPP
+#define PPOCR_SRC_OCR2_AMBIGUOUS_HPP
 
 #include "ppocr/ocr2/cache.hpp"
 

@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_SRC_OCR2_REDUCE_UNIVERSE_HPP
-#define REDEMPTION_PPOCR_SRC_OCR2_REDUCE_UNIVERSE_HPP
+#define PPOCR_SRC_OCR2_REDUCE_UNIVERSE_HPP
 
 #include "probabilities.hpp"
 #include "ppocr/loader2/datas_loader.hpp"

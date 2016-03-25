@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_COORDINATE_HPP
-#define REDEMPTION_COORDINATE_HPP
+#define PPOCR_COORDINATE_HPP
 
 #include <cstddef>
 #include <iosfwd>

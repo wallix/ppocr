@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_SRC_OCR2_INSERT_VIEWS_HPP
-#define REDEMPTION_PPOCR_SRC_OCR2_INSERT_VIEWS_HPP
+#define PPOCR_SRC_OCR2_INSERT_VIEWS_HPP
 
 #include "probabilities.hpp"
 #include "ppocr/ocr2/glyphs.hpp"

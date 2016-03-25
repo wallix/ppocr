@@ -19,7 +19,7 @@
 */
 
 #ifndef PPOCR_CAPTURE_RDP_PPOCR_CACHE_HPP
-#define REDEMPTION_CAPTURE_RDP_PPOCR_CACHE_HPP
+#define PPOCR_CAPTURE_RDP_PPOCR_CACHE_HPP
 
 #include "ppocr/ocr2/glyphs.hpp"
 
