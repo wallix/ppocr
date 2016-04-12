@@ -56,11 +56,7 @@ int main(int ac, char **av)
         first2->views = Views(std::move(first->views));
         Views & views = first2->views;
         while (++first < pos) {
-            views.insert(
-                views.end(),
-                std::make_move_iterator(first->views.begin()),
-                std::make_move_iterator(first->views.end())
-            );
+            views.insert(views.end(), first->views.begin(), first->views.end());
         }
         std::sort(views.begin(), views.end());
         views.erase(std::unique(views.begin(), views.end()), views.end());

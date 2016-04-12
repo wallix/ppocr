@@ -211,18 +211,19 @@ struct flat_trie
         using iterator_base = decltype(x.begin());
         struct deref_it : iterator_base {
             deref_it(iterator_base base) : iterator_base(base) {}
-            trie<T> const * operator * () const { return &iterator_base::operator*().childrens(); };
+            trie<T> const & operator * () const { return iterator_base::operator*().childrens(); };
         };
-        std::vector<trie<T> const *> ptries1(deref_it(x.begin()), deref_it(x.end()));
-        std::vector<trie<T> const *> ptries2;
+        using trie_ref = std::reference_wrapper<trie<T> const>;
+        std::vector<trie_ref> ptries1(deref_it(x.begin()), deref_it(x.end()));
+        std::vector<trie_ref> ptries2;
         std::size_t pos = 0;
         while (!ptries1.empty()) {
-            for (auto * ptrie : ptries1) {
+            for (trie<T> const & t : ptries1) {
                 std::size_t sz = elems_.size();
                 elems_[pos].pos_ = sz-pos;
-                if (!ptrie->empty()) {
-                    elems_.insert(elems_.end(), ptrie->begin(), ptrie->end());
-                    ptries2.insert(ptries2.end(), deref_it(ptrie->begin()), deref_it(ptrie->end()));
+                if (!t.empty()) {
+                    elems_.insert(elems_.end(), t.begin(), t.end());
+                    ptries2.insert(ptries2.end(), deref_it(t.begin()), deref_it(t.end()));
                 }
                 ++pos;
             }

@@ -33,11 +33,7 @@ void reduce(Glyphs & cont, Cmp cmp, Eq eq, GetViews get_views) {
         *first2 = value_type(std::move(*first));
         Views & views = get_views(*first2);
         while (++first < pos) {
-            views.insert(
-                views.end(),
-                std::make_move_iterator(get_views(*first).begin()),
-                std::make_move_iterator(get_views(*first).end())
-            );
+            views.insert(views.end(), get_views(*first).begin(), get_views(*first).end());
         }
         std::sort(views.begin(), views.end());
         views.erase(std::unique(views.begin(), views.end()), views.end());

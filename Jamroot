@@ -68,6 +68,7 @@ project ppocr
     <cxxflags>-Woverlength-strings
     <cxxflags>-Warray-bounds
 
+    <variant>debug:<define>_GLIBCXX_DEBUG
 
 #     <toolset>clang:<cxxflags>-Weverything
 #     <toolset>clang:<cxxflags>-Wno-c++98-compat
