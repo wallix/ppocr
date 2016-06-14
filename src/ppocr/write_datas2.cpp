@@ -78,7 +78,7 @@ std::ostream & operator<<(std::ostream & os, std::array<T, N> const & arr) {
 template<class... Ts>
 void print(loader2::Datas<Ts...> const & datas) {
     for (size_t i = 0; i < datas.size(); ++i) {
-        std::initializer_list<char>{(void(
+        (void)std::initializer_list<char>{(void(
             std::cout << get_value(datas.template get<Ts>(), i) << " "
         ), char())...};
         std::cout << "\n";

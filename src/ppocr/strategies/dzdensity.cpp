@@ -71,6 +71,6 @@ dzdensity::relationship_type dzdensity::relationship() const
 { return {100}; }
 
 unsigned dzdensity::best_difference() const
-{ return {5}; }
+{ return 5; }
 
 } }
