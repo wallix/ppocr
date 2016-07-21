@@ -45,7 +45,7 @@ struct LtProbByViews {
     }
 };
 
-void unique_copy_by_views(
+inline void unique_copy_by_views(
     ppocr::ocr2::Probabilities & out,
     ppocr::ocr2::Probabilities const & probabilities,
     std::vector<unsigned> const & id_views
@@ -58,7 +58,7 @@ void unique_copy_by_views(
     ) - out.begin());
 }
 
-void unique_by_views(ppocr::ocr2::Probabilities & probabilities, std::vector<unsigned> const & id_views
+inline void unique_by_views(ppocr::ocr2::Probabilities & probabilities, std::vector<unsigned> const & id_views
 ) {
     probabilities.resize(
         std::unique(probabilities.begin(), probabilities.end(), EqProbByViews{id_views})
@@ -66,11 +66,11 @@ void unique_by_views(ppocr::ocr2::Probabilities & probabilities, std::vector<uns
     );
 }
 
-void sort_by_views(ppocr::ocr2::Probabilities & probabilities, std::vector<unsigned> const & id_views) {
+inline void sort_by_views(ppocr::ocr2::Probabilities & probabilities, std::vector<unsigned> const & id_views) {
     std::sort(probabilities.begin(), probabilities.end(), LtProbByViews{id_views});
 }
 
-void sort_by_prop(ppocr::ocr2::Probabilities & probabilities) {
+inline void sort_by_prop(ppocr::ocr2::Probabilities & probabilities) {
     std::sort(probabilities.begin(), probabilities.end(), ppocr::ocr2::GtProb{});
 }
 

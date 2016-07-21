@@ -19,30 +19,25 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestHorizontalGravity2
-#include <boost/test/auto_unit_test.hpp>
-
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
-
-#define LOGNULL
-//#define LOGPRINT
+#include "boost_unit_tests.hpp"
 
 #include "ppocr/strategies/hgravity2.hpp"
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/image/image.hpp"
 
-#define IMAGE_PATH "./images/"
 
 using namespace ppocr;
 
 using D = strategies::hgravity2::value_type;
 
-strategies::hgravity2 hgravity2;
+namespace {
+    strategies::hgravity2 hgravity2;
 
-static D to_hgravity2_value(Bounds bnd, const char * data_text)
-{
-    Image img = image_from_string(bnd, data_text);
-    return hgravity2.load(img, img/*.rotate90()*/);
+    D to_hgravity2_value(Bounds bnd, const char * data_text)
+    {
+        Image img = image_from_string(bnd, data_text);
+        return hgravity2.load(img, img/*.rotate90()*/);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestHGravity2)

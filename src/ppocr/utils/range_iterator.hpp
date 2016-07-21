@@ -49,27 +49,27 @@ namespace detail_ {
         : p_(p)
         {}
 
-        pointer_iterator & operator++() noexcept { ++p_; return *this; };
-        pointer_iterator operator++(int) noexcept { return {p_++}; };
+        pointer_iterator & operator++() noexcept { ++p_; return *this; }
+        pointer_iterator operator++(int) noexcept { return {p_++}; }
 
-        T & operator*() noexcept { return *p_; };
-        T const & operator*() const noexcept { return *p_; };
+        T & operator*() noexcept { return *p_; }
+        T const & operator*() const noexcept { return *p_; }
 
-        T & operator[](std::size_t i) noexcept { return p_[i]; };
-        T const & operator[](std::size_t i) const noexcept { return p_[i]; };
+        T & operator[](std::size_t i) noexcept { return p_[i]; }
+        T const & operator[](std::size_t i) const noexcept { return p_[i]; }
 
-        pointer_iterator operator+(std::ptrdiff_t n) const noexcept { return {p_+n}; };
-        pointer_iterator & operator+=(std::ptrdiff_t n) noexcept { p_ += n; return *this; };
-        pointer_iterator & operator-=(std::ptrdiff_t n) noexcept { p_ -= n; return *this; };
+        pointer_iterator operator+(std::ptrdiff_t n) const noexcept { return {p_+n}; }
+        pointer_iterator & operator+=(std::ptrdiff_t n) noexcept { p_ += n; return *this; }
+        pointer_iterator & operator-=(std::ptrdiff_t n) noexcept { p_ -= n; return *this; }
 
-        std::ptrdiff_t operator-(pointer_iterator const & other) const noexcept { return p_ - other.p_; };
+        std::ptrdiff_t operator-(pointer_iterator const & other) const noexcept { return p_ - other.p_; }
 
-        bool operator == (pointer_iterator const & other) const noexcept { return p_ == other.p_; };
-        bool operator != (pointer_iterator const & other) const noexcept { return p_ != other.p_; };
-        bool operator < (pointer_iterator const & other) const noexcept { return p_ < other.p_; };
-        bool operator > (pointer_iterator const & other) const noexcept { return p_ > other.p_; };
-        bool operator <= (pointer_iterator const & other) const noexcept { return p_ <= other.p_; };
-        bool operator >= (pointer_iterator const & other) const noexcept { return p_ >= other.p_; };
+        bool operator == (pointer_iterator const & other) const noexcept { return p_ == other.p_; }
+        bool operator != (pointer_iterator const & other) const noexcept { return p_ != other.p_; }
+        bool operator < (pointer_iterator const & other) const noexcept { return p_ < other.p_; }
+        bool operator > (pointer_iterator const & other) const noexcept { return p_ > other.p_; }
+        bool operator <= (pointer_iterator const & other) const noexcept { return p_ <= other.p_; }
+        bool operator >= (pointer_iterator const & other) const noexcept { return p_ >= other.p_; }
 
     private:
         T * p_;

@@ -23,8 +23,8 @@
 // exception does not however invalidate any other reasons why the
 // executable file might be covered by the GNU General Public License.
 
-#ifndef MLN_TRAIT_VALUE__HH
-# define MLN_TRAIT_VALUE__HH
+#ifndef MLN_TRAIT_VALUE_HH
+# define MLN_TRAIT_VALUE_HH
 
 /// \file
 ///
@@ -52,4 +52,4 @@ namespace mln
 } // end of namespace mln
 
 
-#endif // ! MLN_TRAIT_VALUE__HH
+#endif // ! MLN_TRAIT_VALUE_HH

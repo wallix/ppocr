@@ -19,30 +19,25 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestHorizontalDirection
-#include <boost/test/auto_unit_test.hpp>
-
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
-
-#define LOGNULL
-//#define LOGPRINT
+#include "boost_unit_tests.hpp"
 
 #include "ppocr/strategies/hdirection.hpp"
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/image/image.hpp"
 
-#define IMAGE_PATH "./images/"
 
 using namespace ppocr;
 
 using D = ppocr::strategies::hdirection::value_type;
 
-strategies::hdirection hdirection;
+namespace {
+    strategies::hdirection hdirection;
 
-static D to_hdirection_value(Bounds bnd, const char * data_text)
-{
-    Image img = image_from_string(bnd, data_text);
-    return hdirection.load(img, img/*.rotate90()*/);
+    D to_hdirection_value(Bounds bnd, const char * data_text)
+    {
+        Image img = image_from_string(bnd, data_text);
+        return hdirection.load(img, img/*.rotate90()*/);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestHDirection)

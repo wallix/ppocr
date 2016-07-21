@@ -19,10 +19,7 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestAuthentifierNew
-#include <boost/test/auto_unit_test.hpp>
-
-#define LOGNULL
-//#define LOGPRINT
+#include "boost_unit_tests.hpp"
 
 #include "ppocr/strategies/alternation.hpp"
 #include "ppocr/image/image_from_string.hpp"

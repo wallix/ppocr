@@ -151,8 +151,6 @@ struct flat_trie
 
         static_assert(~size_type{} >= ~typename std::make_unsigned<T>::type(), "unimplemented");
 
-        node_type(node_type const &) = default;
-
         node_type(typename trie<T>::node_type const & node)
         : count_(node.size())
         , is_terminal_(node.is_terminal())
@@ -211,7 +209,7 @@ struct flat_trie
         using iterator_base = decltype(x.begin());
         struct deref_it : iterator_base {
             deref_it(iterator_base base) : iterator_base(base) {}
-            trie<T> const & operator * () const { return iterator_base::operator*().childrens(); };
+            trie<T> const & operator * () const { return iterator_base::operator*().childrens(); }
         };
         using trie_ref = std::reference_wrapper<trie<T> const>;
         std::vector<trie_ref> ptries1(deref_it(x.begin()), deref_it(x.end()));
@@ -245,7 +243,7 @@ struct flat_trie
 
     node_type const & operator[](std::size_t const & i) const { return this->elems_[i]; }
 
-    std::vector<node_type> const & all() const { return this->elems_; };
+    std::vector<node_type> const & all() const { return this->elems_; }
 
 private:
     std::vector<node_type> elems_;

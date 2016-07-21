@@ -19,29 +19,24 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestAuthentifierNew
-#include <boost/test/auto_unit_test.hpp>
-
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
-
-#define LOGNULL
-//#define LOGPRINT
+#include "boost_unit_tests.hpp"
 
 #include "ppocr/strategies/direction.hpp"
 #include "ppocr/strategies/utils/cardinal_direction_io.hpp"
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/image/image.hpp"
 
-#define IMAGE_PATH "./images/"
 
 using namespace ppocr;
 
 using D = strategies::direction::cardinal_direction;
 
-static D to_directtion_id(Bounds bnd, const char * data_text)
-{
-    Image img = image_from_string(bnd, data_text);
-    return strategies::direction(img, img.rotate90()).id();
+namespace {
+    D to_directtion_id(Bounds bnd, const char * data_text)
+    {
+        Image img = image_from_string(bnd, data_text);
+        return strategies::direction(img, img.rotate90()).id();
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestDirection)

@@ -17,14 +17,10 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef PPOCR_IMAGE_HPP
-#define PPOCR_IMAGE_HPP
-
 #include "ppocr/image/coordinate.hpp"
 
 #include <ostream>
 #include <istream>
-
 
 namespace ppocr {
 
@@ -53,5 +49,3 @@ std::istream & operator>>(std::istream & is, Bounds & bnd) {
 }
 
 }
-
-#endif

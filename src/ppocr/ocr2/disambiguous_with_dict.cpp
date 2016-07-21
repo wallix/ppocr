@@ -142,7 +142,7 @@ unsigned ppocr::ocr2::disambiguous_with_dict(
                 }
 
                 bool operator !=(range_string_iterator const & other) const {
-                    return this->cur != other.cur;
+                    return !(*this == other);
                 }
             };
 

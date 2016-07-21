@@ -19,7 +19,7 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestTrie
-#include <boost/test/auto_unit_test.hpp>
+#include "boost_unit_tests.hpp"
 
 #include "ppocr//container/trie.hpp"
 
@@ -32,15 +32,17 @@ using namespace ppocr;
 using char_trie = container::trie<char>;
 using flat_char_trie = container::flat_trie<char_trie::value_type>;
 
-void str_tree(char_trie const & trie, std::string & s, unsigned depth = 0u) {
-    for (auto & node : trie) {
-        s.append(depth, ' ');
-        s += node.get();
-        if (node.is_terminal()) {
-            s += " @";
+namespace {
+    void str_tree(char_trie const & trie, std::string & s, unsigned depth = 0u) {
+        for (auto & node : trie) {
+            s.append(depth, ' ');
+            s += node.get();
+            if (node.is_terminal()) {
+                s += " @";
+            }
+            s += '\n';
+            str_tree(node.childrens(), s, depth+1);
         }
-        s += '\n';
-        str_tree(node.childrens(), s, depth+1);
     }
 }
 

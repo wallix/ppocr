@@ -19,13 +19,9 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestLoader2
-#include <boost/test/auto_unit_test.hpp>
+#include "boost_unit_tests.hpp"
 
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
 
-#define LOGNULL
-//#define LOGPRINT
 
 #include "ppocr/image/image.hpp"
 #include "ppocr/image/image_from_string.hpp"

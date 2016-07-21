@@ -128,8 +128,6 @@ int main(int ac, char **av)
         index_type n;
         integer_iterator & operator++() { ++n; return *this; }
         index_type operator*() { return n; }
-        bool operator==(integer_iterator const & other) const { return this->n == other.n; }
-        bool operator!=(integer_iterator const & other) const { return !(*this == other); }
         difference_type operator-(integer_iterator const & other) const { return this->n - other.n; }
     };
     std::vector<index_type> indexes(

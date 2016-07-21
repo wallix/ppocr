@@ -50,6 +50,8 @@
 
 using namespace ppocr;
 
+namespace {
+
 constexpr unsigned const ocr_div = 10;
 
 using std::size_t;
@@ -156,7 +158,6 @@ struct Probabilities
     void clear() { current = data; }
 
     Probability & front() const { return *data; }
-    Probability & back() const { return *(current-1); }
     Probability & operator[](size_t i) const { return data[i]; }
 
     void resize(size_t n) {
@@ -739,6 +740,8 @@ DataByWord make_data_by_word(loader2::Glyphs const & glyphs) {
     return data_by_word;
 }
 
+}
+
 int main(int ac, char **av)
 {
     if (ac < 4) {
@@ -785,8 +788,6 @@ int main(int ac, char **av)
             index_type n;
             integer_iterator & operator++() { ++n; return *this; }
             index_type operator*() { return n; }
-            bool operator==(integer_iterator const & other) const { return this->n == other.n; }
-            bool operator!=(integer_iterator const & other) const { return !(*this == other); }
             difference_type operator-(integer_iterator const & other) const { return this->n - other.n; }
         };
         std::vector<index_type> indexes(

@@ -19,28 +19,23 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestHorizontalBar
-#include <boost/test/auto_unit_test.hpp>
-
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
-
-#define LOGNULL
-//#define LOGPRINT
+#include "boost_unit_tests.hpp"
 
 #include "ppocr/strategies/hbar.hpp"
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/image/image.hpp"
 
-#define IMAGE_PATH "./images/"
 
 using namespace ppocr;
 
-strategies::hbar hbar;
+namespace {
+    strategies::hbar hbar;
 
-static strategies::hbar::value_type to_hbar_value(Bounds bnd, const char * data_text)
-{
-    Image img = image_from_string(bnd, data_text);
-    return hbar.load(img, img);
+    strategies::hbar::value_type to_hbar_value(Bounds bnd, const char * data_text)
+    {
+        Image img = image_from_string(bnd, data_text);
+        return hbar.load(img, img);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestHBar)

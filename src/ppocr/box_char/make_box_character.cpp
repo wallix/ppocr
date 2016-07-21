@@ -18,10 +18,8 @@
 *   Author(s): Jonathan Poelen
 */
 
-#ifndef REDEMPTION_MAKE_BOX_CHARACTER_CPP
-#define REDEMPTION_MAKE_BOX_CHARACTER_CPP
-
 #include "ppocr/box_char/box.hpp"
+#include "ppocr/box_char/make_box_character.hpp"
 #include "ppocr/image/image.hpp"
 
 namespace ppocr {
@@ -107,5 +105,3 @@ Box make_box_character(Image const & image, Index const & idx, Bounds const & bn
 }
 
 }
-
-#endif

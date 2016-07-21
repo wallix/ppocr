@@ -53,6 +53,8 @@ using namespace ppocr;
 
 using std::size_t;
 
+namespace {
+
 template<size_t... Ints>
 struct integer_sequence
 { static constexpr std::size_t size = sizeof...(Ints); };
@@ -139,7 +141,6 @@ struct Probabilities
     void clear() { current = data; }
 
     Probability & front() const { return *data; }
-    Probability & back() const { return *(current-1); }
     Probability & operator[](size_t i) const { return data[i]; }
 
     void resize(size_t n) {
@@ -613,6 +614,8 @@ bool datas_eq(loader2::Datas<Strategies...> & datas, unsigned i1, unsigned i2) {
     return datas_eq(i1, i2, datas.template get<Strategies>()...);
 }
 
+}
+
 int main(int ac, char **av)
 {
     if (ac < 4) {
@@ -661,8 +664,6 @@ int main(int ac, char **av)
             index_type n;
             integer_iterator & operator++() { ++n; return *this; }
             index_type operator*() { return n; }
-            bool operator==(integer_iterator const & other) const { return this->n == other.n; }
-            bool operator!=(integer_iterator const & other) const { return !(*this == other); }
             difference_type operator-(integer_iterator const & other) const { return this->n - other.n; }
         };
         std::vector<index_type> indexes(
@@ -729,8 +730,6 @@ int main(int ac, char **av)
     }
     std::cout << " ## datas.size(): " << datas.size() << "\n";
     std::cout << " ## glyphs.size(): " << glyphs.size() << "\n";
-
-    return 0;
 
     std::cout << " ## sort by word\n";
 

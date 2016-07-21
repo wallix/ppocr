@@ -19,7 +19,7 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestBestBaseline
-#include <boost/test/auto_unit_test.hpp>
+#include "boost_unit_tests.hpp"
 
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/defined_loader.hpp"

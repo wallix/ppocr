@@ -19,29 +19,24 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestLoop
-#include <boost/test/auto_unit_test.hpp>
-
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
-
-#define LOGNULL
-//#define LOGPRINT
+#include "boost_unit_tests.hpp"
 
 #include "ppocr/strategies/zone.hpp"
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/image/image.hpp"
 
-#define IMAGE_PATH "./images/"
 
 using namespace ppocr;
 
-strategies::zone zone_;
-using A = strategies::zone::value_type;
+namespace {
+    strategies::zone zone_;
+    using A = strategies::zone::value_type;
 
-static A mk_zone(Bounds bnd, const char * data_text)
-{
-    Image img = image_from_string(bnd, data_text);
-    return zone_.load(img, img/*.rotate90()*/);
+    A mk_zone(Bounds bnd, const char * data_text)
+    {
+        Image img = image_from_string(bnd, data_text);
+        return zone_.load(img, img/*.rotate90()*/);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestLoop)

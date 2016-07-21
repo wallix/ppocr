@@ -92,7 +92,7 @@ namespace mln
       const coord max_col = ima.ncols();
       typename image2d<I>::site p = point2d(0, min_col);
 
-      char c;
+      char c = 0;
       int i;
       for (p.row() = min_row; p.row() < max_row; ++p.row())
       {

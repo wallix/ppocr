@@ -15,6 +15,8 @@
 
 using namespace ppocr;
 
+namespace {
+
 [[noreturn]] void throw_error(
     const char * imagefilename,
     const char * textfilename,
@@ -70,6 +72,8 @@ static void load_file(
     if (file >> s) {
         throw_error(imagefilename, textfilename, fontname, "Box character not found");
     }
+}
+
 }
 
 

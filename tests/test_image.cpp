@@ -19,19 +19,14 @@
 #define BOOST_AUTO_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE TestAuthentifierNew
-#include <boost/test/auto_unit_test.hpp>
+#include "boost_unit_tests.hpp"
 
-#undef SHARE_PATH
-#define SHARE_PATH FIXTURES_PATH
 
-#define LOGNULL
-//#define LOGPRINT
 
 #include "ppocr/image/image.hpp"
 #include "ppocr/image/image_from_file.hpp"
 #include <sstream>
 
-#define IMAGE_PATH "./tests/images/"
 
 using namespace ppocr;
 
