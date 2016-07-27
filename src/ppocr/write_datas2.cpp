@@ -2,6 +2,7 @@
 #include "ppocr/utils/image_compare.hpp"
 #include "ppocr/utils/read_file.hpp"
 #include "ppocr/utils/reindex.hpp"
+#include "ppocr/utils/integer_iterator.hpp"
 #include "ppocr/defined_loader.hpp"
 
 #include <iostream>
@@ -117,19 +118,7 @@ int main(int ac, char **av)
     }
 
     using index_type = unsigned;
-    struct integer_iterator
-    {
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = index_type;
-        using difference_type = std::ptrdiff_t;
-        using pointer = void;
-        using reference = value_type;
-
-        index_type n;
-        integer_iterator & operator++() { ++n; return *this; }
-        index_type operator*() { return n; }
-        difference_type operator-(integer_iterator const & other) const { return this->n - other.n; }
-    };
+    using integer_iterator = ppocr::integer_iterator<index_type>;
     std::vector<index_type> indexes(
         integer_iterator{index_type{0}},
         integer_iterator{static_cast<index_type>(datas.size())}
