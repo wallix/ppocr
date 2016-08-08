@@ -378,7 +378,7 @@ void reduce_exclusive_universe(
     probabilities_t & in,
     probabilities_t & out,
     PpOcrDatas const & datas,
-    loader2::Glyphs const & glyphs,
+    loader2::Glyphs const & /*glyphs*/,
     Image const & img, Image const & img90,
     DataByWord const & data_by_word
 ) {
@@ -446,7 +446,7 @@ void reduce_universe(
 template<class FirstStrategy, class... Strategies, class DataByWord>
 void compute_image(
     compute_image_data_type<FirstStrategy, Strategies...> & o,
-    spell::Dictionary const & dict, Image & img, DataByWord const & data_by_word
+    spell::Dictionary const & /*dict*/, Image & img, DataByWord const & data_by_word
 ) {
     struct
     : data_for_strategy<FirstStrategy>
@@ -597,7 +597,7 @@ DataByWord make_data_by_word(loader2::Glyphs const & glyphs) {
     return data_by_word;
 }
 
-bool datas_eq(unsigned i1, unsigned i2) {
+bool datas_eq(unsigned /*i1*/, unsigned /*i2*/) {
     return true;
 }
 

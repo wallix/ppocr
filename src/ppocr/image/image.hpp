@@ -138,7 +138,6 @@ struct HorizontalRange
     iterator begin() const { return {*this, data_}; }
     iterator end() const { return {*this, data_ + w_}; }
     size_t size() const { return w_; }
-    bool operator[](size_t x) const { return pixel_get_(data_ + w_); }
 
 private:
     PixelGetter pixel_get_;

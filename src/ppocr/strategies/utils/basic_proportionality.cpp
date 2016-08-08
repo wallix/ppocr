@@ -8,7 +8,12 @@
 
 namespace ppocr { namespace strategies {
 
-void details_::check_interval(unsigned x, unsigned interval) { assert(x <= interval); }
+void details_::check_interval(unsigned x, unsigned interval)
+{
+    assert(x <= interval);
+    (void)x;
+    (void)interval;
+}
 
 unsigned proportionality_base::relationship(const proportionality_base& other, unsigned interval) const
 { return utils::compute_relationship(value(), other.value(), interval); }
