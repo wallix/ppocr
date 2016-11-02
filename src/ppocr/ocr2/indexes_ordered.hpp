@@ -22,6 +22,7 @@
 #include "ppocr/utils/range_iterator.hpp"
 
 #include <memory>
+#include <numeric>
 #include <algorithm>
 
 namespace ppocr { namespace ocr2 {
