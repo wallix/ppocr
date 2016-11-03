@@ -3,7 +3,8 @@ include cxxflags.jam ;
 project ppocr
     : requirements
     <include>src
-    <include>includes
+    <include>includes/mln
+    <include>includes/boost_unit_tests
 
     <cxxflags>-std=c++11
     $(CXXFLAGS)
