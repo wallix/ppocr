@@ -1,16 +1,16 @@
 /*
 * Copyright (C) 2016 Wallix
-* 
+*
 * This library is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Lesser General Public License as published by the Free
 * Software Foundation; either version 2.1 of the License, or (at your option)
 * any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public License along
 * with this library; if not, write to the Free Software Foundation, Inc., 59
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -202,14 +202,26 @@ struct flat_trie
     : elems_(nodes)
     {}
 
+private:
+    template<class iterator_base>
+    struct deref_it_ : iterator_base
+    {
+        using value_type = trie<T>;
+        using pointer = value_type const  *;
+        using reference = trie<T> const &;
+        using difference_type = typename std::iterator_traits<iterator_base>::difference_type;
+        using iterator_category = typename std::iterator_traits<iterator_base>::iterator_category;
+
+        deref_it_(iterator_base base) : iterator_base(base) {}
+        reference operator * () const { return iterator_base::operator*().childrens(); }
+    };
+
+public:
     flat_trie(trie<T> const & x)
     : elems_(x.begin(), x.end())
     {
         using iterator_base = decltype(x.begin());
-        struct deref_it : iterator_base {
-            deref_it(iterator_base base) : iterator_base(base) {}
-            trie<T> const & operator * () const { return iterator_base::operator*().childrens(); }
-        };
+        using deref_it = deref_it_<iterator_base>;
         using trie_ref = std::reference_wrapper<trie<T> const>;
         std::vector<trie_ref> ptries1(deref_it(x.begin()), deref_it(x.end()));
         std::vector<trie_ref> ptries2;
