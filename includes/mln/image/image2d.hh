@@ -81,7 +81,7 @@ namespace mln {
 
                 if (sz > this->real_size) {
                     delete [] this->buffer_;
-                    this->buffer_ = 0;
+                    this->buffer_ = nullptr;
                     this->real_size = sz;
                     this->buffer_ = new T[this->real_size];
                 }
