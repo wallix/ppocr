@@ -1,16 +1,16 @@
 /*
 * Copyright (C) 2016 Wallix
-* 
+*
 * This library is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Lesser General Public License as published by the Free
 * Software Foundation; either version 2.1 of the License, or (at your option)
 * any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public License along
 * with this library; if not, write to the Free Software Foundation, Inc., 59
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -71,7 +71,14 @@ int main(int ac, char **av)
         first2->img = std::move(first->img);
         //NOTE The implementation may assume that this parameter is a unique reference to this argument.
         //NOTE Self-move-assignment is not possible
+        #if defined(__GNUC__) && !defined(__clang__)
+        # pragma GCC diagnostic push
+        # pragma GCC diagnostic ignored "-Wuseless-cast"
+        #endif
         first2->views = Views(std::move(first->views));
+        #if defined(__GNUC__) && !defined(__clang__)
+        # pragma GCC diagnostic pop
+        #endif
         Views & views = first2->views;
         while (++first < pos) {
             views.insert(views.end(), first->views.begin(), first->views.end());
