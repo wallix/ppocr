@@ -1,16 +1,16 @@
 /*
 * Copyright (C) 2016 Wallix
-* 
+*
 * This library is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Lesser General Public License as published by the Free
 * Software Foundation; either version 2.1 of the License, or (at your option)
 * any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public License along
 * with this library; if not, write to the Free Software Foundation, Inc., 59
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -447,7 +447,7 @@ void reduce_complexe_universe(
     probabilities_t & out,
     PpOcrDatas const & datas, Image const & img, Image const & img90
 ) {
-    void(std::initializer_list<char>{(void(
+    void(std::initializer_list<char>{((void)(
         reduce_complexe_universe(in, out, datas.get<Strategies>(), img, img90)
     ), char())...});
 }
@@ -501,7 +501,7 @@ void reduce_exclusive_universe(
     struct
     :  data_exclusive_universe<Strategies>...
     {} store;
-    void(std::initializer_list<char>{(void((
+    void(std::initializer_list<char>{((void)((
         static_cast<data_for_strategy<Strategies>&>(store).load(img, img90),
         (static_cast<data_exclusive_universe<Strategies>&>(store).limit = get_count(datas.get<Strategies>())/2)
     )), char())...});
@@ -596,7 +596,7 @@ void compute_image(
 
     static_cast<data_for_strategy<FirstStrategy>&>(store).load(img, img90);
     static_cast<data_for_strategy<SecondStrategy>&>(store).load(img, img90);
-    void(std::initializer_list<char>{(void(
+    void(std::initializer_list<char>{((void)(
         static_cast<data_for_strategy<Strategies>&>(store).load(img, img90)
     ), char())...});
 
@@ -607,7 +607,7 @@ void compute_image(
     o.datas_accepted = datas_defs.template masks<SecondStrategy>()[
         static_cast<data_for_strategy<SecondStrategy>&>(store).x / ocr_div
     ];
-    void(std::initializer_list<char>{(void(reduce_universe(
+    void(std::initializer_list<char>{((void)(reduce_universe(
         o.datas_accepted,
         datas_defs.template masks<Strategies>(),
         static_cast<data_for_strategy<Strategies>&>(store).x / ocr_div
