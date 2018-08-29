@@ -16,14 +16,14 @@
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#define BOOST_AUTO_TEST_MAIN
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestStratAGravity
+#define RED_TEST_MODULE TestStratAGravity
 #include "boost_unit_tests.hpp"
 
 #include "ppocr/strategies/agravity.hpp"
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/image/image.hpp"
+
+#include <cmath>
 
 
 using namespace ppocr;

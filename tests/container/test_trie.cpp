@@ -16,9 +16,7 @@
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#define BOOST_AUTO_TEST_MAIN
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestTrie
+#define RED_TEST_MODULE TestTrie
 #include "boost_unit_tests.hpp"
 
 #include "ppocr//container/trie.hpp"

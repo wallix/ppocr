@@ -14,14 +14,6 @@ project ppocr
     : default-build release
 ;
 
-
-## Lib {
-
-#lib libboost_unit_test : : <name>boost_unit_test_framework-mt <link>shared ;
-lib libboost_unit_test : : <name>boost_unit_test_framework <link>shared ;
-
-## }
-
 ## Alias {
 
 obj coordinate      : src/ppocr/image/coordinate.cpp ;
@@ -184,8 +176,18 @@ alias image_from_string_src :
     src/ppocr/image/image_from_string.cpp
 ;
 
+lib libunit_test :
+    includes/test_framework.cpp
+:
+    <link>shared
+    # <cxxflags>-frtti
+;
+
 constant TEST_DEPENDENCIES :
-    <library>libboost_unit_test
+    <library>libunit_test
+    <define>BOOST_AUTO_TEST_MAIN
+    <define>BOOST_TEST_DYN_LINK
+    <define>REDEMPTION_DECL_LOG_TEST
 ;
 
 unit-test test_image :

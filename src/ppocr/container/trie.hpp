@@ -84,7 +84,9 @@ public:
             using value_iterator = typename std::iterator_traits<RandIt>::value_type;
             auto middle = std::upper_bound(
                 first, last, (*first)[depth],
-                [depth](T const & c, value_iterator & s){ return depth < s.size() && c < s[depth]; }
+                [depth](T const & c, value_iterator const & s){
+                    return depth < s.size() && c < s[depth];
+                }
             );
             this->nodes_.emplace_back((*first)[depth], depth + 1 == first->size());
             if (first->size() == depth + 1) {

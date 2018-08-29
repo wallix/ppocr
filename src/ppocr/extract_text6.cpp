@@ -44,6 +44,7 @@
 #include <algorithm>
 #include <chrono>
 #include <map>
+#include <numeric>
 
 #include <cstring>
 #include <cerrno>
