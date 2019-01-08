@@ -4,7 +4,6 @@ project ppocr
     : requirements
     <include>src
     <include>includes/mln
-    <include>includes/boost_unit_tests
 
     <cxxflags>-std=c++11
     $(CXXFLAGS)
@@ -14,56 +13,123 @@ project ppocr
     : default-build release
 ;
 
+
+## Lib {
+
+#lib libboost_unit_test : : <name>boost_unit_test_framework-mt <link>shared ;
+#lib libboost_unit_test : : <name>boost_unit_test_framework <link>shared ;
+#alias libunit_test : libboost_unit_test ;
+lib libunit_test : tests/test_framework.cpp : <link>shared ;
+
+## }
+
 ## Alias {
 
-obj coordinate      : src/ppocr/image/coordinate.cpp ;
-obj box             : src/ppocr/box_char/box.cpp ;
-obj image           : src/ppocr/image/image.cpp ;
-obj image_from_file : src/ppocr/image/image_from_file.cpp ;
-obj image_from_string : src/ppocr/image/image_from_string.cpp ;
-obj dictionary      : src/ppocr/spell/dictionary.cpp ;
-obj glyphs_loader   : src/ppocr/loader2/glyphs_loader.cpp ;
-obj image_compare   : src/ppocr/utils/image_compare.cpp ;
-obj loader2_image_io : src/ppocr/loader2/image_io.cpp ;
+rule create_ppocr_rule ( srcs * )
+{
+    local targets ;
+    for f in $(srcs)
+    {
+        local path = $(f:P) ;
+        local target = ppocr_$(path:B)_$(f:B).cpp.o ;
+        obj $(target) : $(f) ;
+        alias $(f).o : $(target) ;
+        targets += $(target) ;
+    }
 
-alias strategies_src :
+    alias ppocr : $(targets) ;
+}
+
+create_ppocr_rule
+    src/ppocr/box_char/box.cpp
+    src/ppocr/box_char/make_box_character.cpp
+    src/ppocr/image/coordinate.cpp
+    src/ppocr/image/image.cpp
+    src/ppocr/image/image_from_file.cpp
+    src/ppocr/image/image_from_string.cpp
+    src/ppocr/loader2/glyphs_loader.cpp
+    src/ppocr/loader2/image_io.cpp
+    src/ppocr/ocr2/data_indexes_by_words.cpp
+    src/ppocr/ocr2/disambiguous_with_dict.cpp
+    src/ppocr/ocr2/filter_by_font.cpp
+    src/ppocr/ocr2/filter_by_lines.cpp
+    src/ppocr/ocr2/glyphs.cpp
+    src/ppocr/ocr2/replacement.cpp
+    src/ppocr/ocr2/word_lines.cpp
+    src/ppocr/spell/dictionary.cpp
+    src/ppocr/strategies/utils/basic_proportionality.cpp
     src/ppocr/strategies/agravity.cpp
     src/ppocr/strategies/alternation.cpp
     src/ppocr/strategies/compass.cpp
     src/ppocr/strategies/dcompass.cpp
     src/ppocr/strategies/density.cpp
     src/ppocr/strategies/direction.cpp
-    src/ppocr/strategies/dvdirection2.cpp
     src/ppocr/strategies/dvdirection.cpp
-    src/ppocr/strategies/dvgravity2.cpp
+    src/ppocr/strategies/dvdirection2.cpp
     src/ppocr/strategies/dvgravity.cpp
+    src/ppocr/strategies/dvgravity2.cpp
     src/ppocr/strategies/dzdensity.cpp
-    src/ppocr/strategies/gravity2.cpp
     src/ppocr/strategies/gravity.cpp
+    src/ppocr/strategies/gravity2.cpp
     src/ppocr/strategies/hbar.cpp
-    src/ppocr/strategies/hdirection2.cpp
     src/ppocr/strategies/hdirection.cpp
-    src/ppocr/strategies/hgravity2.cpp
+    src/ppocr/strategies/hdirection2.cpp
     src/ppocr/strategies/hgravity.cpp
-    src/ppocr/strategies/zone.cpp
+    src/ppocr/strategies/hgravity2.cpp
     src/ppocr/strategies/proportionality.cpp
     src/ppocr/strategies/proportionality_zone.cpp
-    src/ppocr/strategies/utils/basic_proportionality.cpp
+    src/ppocr/strategies/zone.cpp
+    src/ppocr/utils/image_compare.cpp
+;
+
+alias coordinate      : src/ppocr/image/coordinate.cpp.o ;
+alias box             : src/ppocr/box_char/box.cpp.o ;
+alias image           : src/ppocr/image/image.cpp.o ;
+alias image_from_file : src/ppocr/image/image_from_file.cpp.o ;
+alias image_from_string : src/ppocr/image/image_from_string.cpp.o ;
+alias dictionary      : src/ppocr/spell/dictionary.cpp.o ;
+alias glyphs_loader   : src/ppocr/loader2/glyphs_loader.cpp.o ;
+alias image_compare   : src/ppocr/utils/image_compare.cpp.o ;
+alias loader2_image_io : src/ppocr/loader2/image_io.cpp.o ;
+
+alias strategies_src :
+    src/ppocr/strategies/agravity.cpp.o
+    src/ppocr/strategies/alternation.cpp.o
+    src/ppocr/strategies/compass.cpp.o
+    src/ppocr/strategies/dcompass.cpp.o
+    src/ppocr/strategies/density.cpp.o
+    src/ppocr/strategies/direction.cpp.o
+    src/ppocr/strategies/dvdirection2.cpp.o
+    src/ppocr/strategies/dvdirection.cpp.o
+    src/ppocr/strategies/dvgravity2.cpp.o
+    src/ppocr/strategies/dvgravity.cpp.o
+    src/ppocr/strategies/dzdensity.cpp.o
+    src/ppocr/strategies/gravity2.cpp.o
+    src/ppocr/strategies/gravity.cpp.o
+    src/ppocr/strategies/hbar.cpp.o
+    src/ppocr/strategies/hdirection2.cpp.o
+    src/ppocr/strategies/hdirection.cpp.o
+    src/ppocr/strategies/hgravity2.cpp.o
+    src/ppocr/strategies/hgravity.cpp.o
+    src/ppocr/strategies/zone.cpp.o
+    src/ppocr/strategies/proportionality.cpp.o
+    src/ppocr/strategies/proportionality_zone.cpp.o
+    src/ppocr/strategies/utils/basic_proportionality.cpp.o
 ;
 
 alias image_src :
-    src/ppocr/image/coordinate.cpp
-    src/ppocr/image/image.cpp
+    src/ppocr/image/coordinate.cpp.o
+    src/ppocr/image/image.cpp.o
 ;
 
 alias image_from_file_src :
     image_src
-    src/ppocr/image/image_from_file.cpp
+    src/ppocr/image/image_from_file.cpp.o
 ;
 
 alias box_character_src :
-    src/ppocr/box_char/box.cpp
-    src/ppocr/box_char/make_box_character.cpp
+    src/ppocr/box_char/box.cpp.o
+    src/ppocr/box_char/make_box_character.cpp.o
 ;
 
 ## }
@@ -72,97 +138,106 @@ alias box_character_src :
 
 exe make_trie_dictionary :
     src/ppocr/make_trie_dictionary.cpp
-    dictionary
-: ;
+:
+    <library>dictionary
+;
 
 
 exe write_glyphs :
     src/ppocr/write_glyphs.cpp
-    loader2_image_io
-    glyphs_loader
-    image_src
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>loader2_image_io
+    <library>glyphs_loader
+    <library>image_src
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 exe show_glyphs :
     src/ppocr/show_glyphs.cpp
-    image_src
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>image_src
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 exe normalize_glyphs :
     src/ppocr/normalize_glyphs.cpp
-    loader2_image_io
-    glyphs_loader
-    image_src
-    image_compare
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>loader2_image_io
+    <library>glyphs_loader
+    <library>image_src
+    <library>image_compare
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 exe write_datas :
     src/ppocr/write_datas.cpp
-    loader2_image_io
-    strategies_src
-    image_src
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>loader2_image_io
+    <library>strategies_src
+    <library>image_src
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 exe write_datas2 :
     src/ppocr/write_datas2.cpp
-    loader2_image_io
-    glyphs_loader
-    strategies_src
-    image_src
-    image_compare
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>loader2_image_io
+    <library>glyphs_loader
+    <library>strategies_src
+    <library>image_src
+    <library>image_compare
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 exe extract_text6 :
     src/ppocr/extract_text6.cpp
-    image_compare
-    glyphs_loader
-    dictionary
-    loader2_image_io
-    strategies_src
-    image_src
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>image_compare
+    <library>glyphs_loader
+    <library>dictionary
+    <library>loader2_image_io
+    <library>strategies_src
+    <library>image_src
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 exe extract_text8 :
     src/ppocr/extract_text8.cpp
-    image_compare
-    glyphs_loader
-    dictionary
-    loader2_image_io
-    strategies_src
-    image_src
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>image_compare
+    <library>glyphs_loader
+    <library>dictionary
+    <library>loader2_image_io
+    <library>strategies_src
+    <library>image_src
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 exe ocr2_extract_text :
     src/ppocr/ocr2_extract_text.cpp
-    src/ppocr/ocr2/glyphs.cpp
-    src/ppocr/ocr2/word_lines.cpp
-    src/ppocr/ocr2/data_indexes_by_words.cpp
-    src/ppocr/ocr2/filter_by_lines.cpp
-    src/ppocr/ocr2/filter_by_font.cpp
-    src/ppocr/ocr2/disambiguous_with_dict.cpp
-    image_compare
-    glyphs_loader
-    dictionary
-    loader2_image_io
-    strategies_src
-    image_src
-    box_character_src
-    image_from_file_src
-: ;
+:
+    <library>src/ppocr/ocr2/glyphs.cpp.o
+    <library>src/ppocr/ocr2/word_lines.cpp.o
+    <library>src/ppocr/ocr2/data_indexes_by_words.cpp.o
+    <library>src/ppocr/ocr2/filter_by_lines.cpp.o
+    <library>src/ppocr/ocr2/filter_by_font.cpp.o
+    <library>src/ppocr/ocr2/disambiguous_with_dict.cpp.o
+    <library>image_compare
+    <library>glyphs_loader
+    <library>dictionary
+    <library>loader2_image_io
+    <library>strategies_src
+    <library>image_src
+    <library>box_character_src
+    <library>image_from_file_src
+;
 
 ## }
 
@@ -172,178 +247,216 @@ exe ocr2_extract_text :
 import testing ;
 
 alias image_from_string_src :
-    src/ppocr/image/image.cpp
-    src/ppocr/image/image_from_string.cpp
-;
-
-lib libunit_test :
-    includes/test_framework.cpp
-:
-    <link>shared
-    # <cxxflags>-frtti
+    src/ppocr/image/image.cpp.o
+    src/ppocr/image/image_from_string.cpp.o
 ;
 
 constant TEST_DEPENDENCIES :
     <library>libunit_test
-    <define>BOOST_AUTO_TEST_MAIN
-    <define>BOOST_TEST_DYN_LINK
-    <define>REDEMPTION_DECL_LOG_TEST
 ;
 
 unit-test test_image :
     tests/test_image.cpp
-    src/ppocr/image/image.cpp
-    src/ppocr/image/image_from_file.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/image/image.cpp.o
+    <library>src/ppocr/image/image_from_file.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_make_box_character :
     tests/test_make_box_character.cpp
-    src/ppocr/box_char/make_box_character.cpp
-    src/ppocr/image/image.cpp
-    src/ppocr/image/image_from_file.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/box_char/make_box_character.cpp.o
+    <library>src/ppocr/image/image.cpp.o
+    <library>src/ppocr/image/image_from_file.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_gravity :
     tests/strategies/test_gravity.cpp
-    src/ppocr/strategies/gravity.cpp
-    image_from_string_src
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/gravity.cpp.o
+    <library>image_from_string_src
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_gravity2 :
     tests/strategies/test_gravity2.cpp
-    src/ppocr/strategies/gravity2.cpp
-    image_from_string_src
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/gravity2.cpp.o
+    <library>image_from_string_src
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_proportionality :
     tests/strategies/test_proportionality.cpp
-    src/ppocr/strategies/proportionality.cpp
-    image_from_string_src
-    src/ppocr/strategies/utils/basic_proportionality.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/proportionality.cpp.o
+    <library>image_from_string_src
+    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_proportionality_zone :
     tests/strategies/test_proportionality_zone.cpp
-    src/ppocr/strategies/proportionality_zone.cpp
-    image_from_string_src
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/proportionality_zone.cpp.o
+    <library>image_from_string_src
+    $(TEST_DEPENDENCIES)
+;
 
 
 unit-test test_agravity :
     tests/strategies/test_agravity.cpp
-    src/ppocr/strategies/agravity.cpp
-    image_from_string_src
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/agravity.cpp.o
+    <library>image_from_string_src
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_alternation :
     tests/strategies/test_alternation.cpp
-    src/ppocr/strategies/alternation.cpp
-    image_from_string_src
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/alternation.cpp.o
+    <library>image_from_string_src
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_dcompass :
     tests/strategies/test_dcompass.cpp
-    src/ppocr/strategies/dcompass.cpp
-    image_from_string_src
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/dcompass.cpp.o
+    <library>image_from_string_src
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_direction :
     tests/strategies/test_direction.cpp
-    src/ppocr/strategies/direction.cpp
-    image_from_string_src
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/direction.cpp.o
+    <library>image_from_string_src
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_hbar :
     tests/strategies/test_hbar.cpp
-    src/ppocr/strategies/hbar.cpp
-    image_from_string_src
-    src/ppocr/strategies/utils/basic_proportionality.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/hbar.cpp.o
+    <library>image_from_string_src
+    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_hdirection :
     tests/strategies/test_hdirection.cpp
-    src/ppocr/strategies/hdirection.cpp
-    image_from_string_src
-    src/ppocr/strategies/utils/basic_proportionality.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/hdirection.cpp.o
+    <library>image_from_string_src
+    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_hdirection2 :
     tests/strategies/test_hdirection2.cpp
-    src/ppocr/strategies/hdirection2.cpp
-    image_from_string_src
-    src/ppocr/strategies/utils/basic_proportionality.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/hdirection2.cpp.o
+    <library>image_from_string_src
+    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_hgravity :
     tests/strategies/test_hgravity.cpp
-    src/ppocr/strategies/hgravity.cpp
-    image_from_string_src
-    src/ppocr/strategies/utils/basic_proportionality.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/hgravity.cpp.o
+    <library>image_from_string_src
+    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_hgravity2 :
     tests/strategies/test_hgravity2.cpp
-    src/ppocr/strategies/hgravity2.cpp
-    image_from_string_src
-    src/ppocr/strategies/utils/basic_proportionality.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/hgravity2.cpp.o
+    <library>image_from_string_src
+    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_zone :
     tests/strategies/test_zone.cpp
-    src/ppocr/strategies/zone.cpp
-    image_from_string_src
-    src/ppocr/strategies/utils/basic_proportionality.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/zone.cpp.o
+    <library>image_from_string_src
+    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_trie :
     tests/container/test_trie.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_word_disambiguouser :
     tests/spell/test_word_disambiguouser.cpp
-    dictionary
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>dictionary
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_dictionary :
     tests/spell/test_dictionary.cpp
-    dictionary
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>dictionary
+    $(TEST_DEPENDENCIES)
+;
 
 
 unit-test test_datas_loader :
     tests/loader2/test_datas_loader.cpp
-    src/ppocr/strategies/hgravity.cpp
-    src/ppocr/strategies/hdirection.cpp
-    image
-    image_from_string
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/hgravity.cpp.o
+    <library>src/ppocr/strategies/hdirection.cpp.o
+    <library>image
+    <library>image_from_string
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_glyphs_loader :
     tests/loader2/test_glyphs_loader.cpp
-    loader2_image_io
-    glyphs_loader
-    coordinate
-    image_compare
-    image
-    image_from_string
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>loader2_image_io
+    <library>glyphs_loader
+    <library>coordinate
+    <library>image_compare
+    <library>image
+    <library>image_from_string
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_reindex :
     tests/utils/reindex.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_compute_image :
     tests/ocr2/test_compute_image.cpp
-    src/ppocr/strategies/hdirection.cpp
-    src/ppocr/ocr2/data_indexes_by_words.cpp
-    coordinate
-    image
-    image_from_string
-: $(TEST_DEPENDENCIES) ;
+:
+    <library>src/ppocr/strategies/hdirection.cpp.o
+    <library>src/ppocr/ocr2/data_indexes_by_words.cpp.o
+    <library>coordinate
+    <library>image
+    <library>image_from_string
+    $(TEST_DEPENDENCIES)
+;
 
 unit-test test_best_baseline :
     tests/filters/test_best_baseline.cpp
-: $(TEST_DEPENDENCIES) ;
+:
+    $(TEST_DEPENDENCIES)
+;
 
 
 actions run-ocr2-test {

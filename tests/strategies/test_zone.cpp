@@ -16,8 +16,8 @@
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#define RED_TEST_MODULE TestLoop
-#include "boost_unit_tests.hpp"
+#define BOOST_TEST_MODULE TestLoop
+#include <boost/test/auto_unit_test.hpp>
 
 #include "ppocr/strategies/zone.hpp"
 #include "ppocr/image/image_from_string.hpp"
