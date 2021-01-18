@@ -34,7 +34,16 @@ namespace ppocr
         integer_iterator & operator++() { ++n; return *this; }
         reference operator*() const { return n; }
         difference_type operator-(integer_iterator const & other) const { return this->n - other.n; }
+
+        integer_iterator& operator+=(difference_type n) { this->n += n; return *this; }
+        integer_iterator& operator-=(difference_type n) { this->n -= n; return *this; }
+
+        integer_iterator operator+(difference_type n) const { return integer_iterator{T(this->n + n)}; }
+        integer_iterator operator-(difference_type n) const { return integer_iterator{T(this->n - n)}; }
+
         bool operator==(integer_iterator const & other) const { return this->n == other.n; }
-        bool operator!=(integer_iterator const & other) const { return !(*this == other); }
+        bool operator!=(integer_iterator const & other) const { return this->n != other.n; }
+        bool operator<(integer_iterator const & other) const { return this->n < other.n; }
+        bool operator<=(integer_iterator const & other) const { return this->n < other.n; }
     };
 }
