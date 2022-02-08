@@ -112,12 +112,6 @@ struct Probabilities
     , current(data)
     {}
 
-    template<class It>
-    Probabilities(It first, It last)
-    : data(static_cast<Probability*>(::operator new((last-first) * sizeof(Probability))))
-    , current(data + (last-first))
-    { std::copy(first, last, data); }
-
     Probabilities(Probabilities &&) = delete;
     Probabilities(Probabilities const &) = delete;
 
@@ -262,36 +256,6 @@ struct compute_image_data_type
         this->result2.reserve(100);
     }
 };
-
-template<class Data>
-std::vector<unsigned> const & get_data(Data const & data) {
-    return data.data();
-}
-
-template<class Store, class... Strategies>
-double compute_probability(
-    Store const & store, size_t idata,
-    compute_image_data_type<Strategies...> & o,
-    unsigned const * intervals
-) {
-    double prob = 1;
-
-    using cont_t = std::array<std::reference_wrapper<std::vector<unsigned> const>, sizeof...(Strategies)>;
-    cont_t datas_ref {{get_data(o.template get<Strategies>())...}};
-
-    for (size_t i = 0; i < datas_ref.size(); ++i) {
-        auto const interval = intervals[i];
-        auto d = interval/10u;
-        auto sig_value = datas_ref[i].get()[idata];
-        auto value = reinterpret_cast<unsigned const *>(&store)[i];
-        prob = prob * (value < sig_value
-            ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
-            : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u)
-        ) / 100;
-    }
-
-    return prob;
-}
 
 template<class Strategy>
 using data_to_strategy = typename Strategy::strategy_type;

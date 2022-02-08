@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestHorizontalDirection
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ppocr/strategies/hdirection.hpp"
 #include "ppocr/image/image_from_string.hpp"

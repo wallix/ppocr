@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestStratDDensity
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ppocr/strategies/dzdensity.hpp"
 #include "ppocr/image/image_from_string.hpp"

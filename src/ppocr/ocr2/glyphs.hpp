@@ -31,11 +31,6 @@ namespace ppocr { namespace ocr2 {
 struct View {
     unsigned word;
     unsigned font;
-    View() = default;
-    View(View &&) = default;
-    View(View const &) = default; //delete;
-    View & operator=(View &&) = default;
-    View & operator=(View const &) = default; //delete;
 };
 struct Views : std::vector<View> {
     using std::vector<View>::vector;

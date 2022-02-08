@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestLoader2
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 
 
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(TestLoader2)
     using strat3 = loader2::Strategy<strategies::hdirection, loader2::PolicyLoader::img>;
     using Loader = loader2::Datas<strat1, strat2, strat3>;
 
-    Loader loader;
+    Loader loader {};
 
     Image img1 = image_from_string(
         {3, 3},

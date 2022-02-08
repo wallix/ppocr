@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestBestBaseline
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/defined_loader.hpp"
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
     using S1 = loader2::Strategy<strategies::hdirection, loader2::PolicyLoader::img>;
     using S2 = loader2::Strategy<strategies::hdirection, loader2::PolicyLoader::img90>;
     using list_t = mpl_strategies_list_t<S1, S2>;
-    loader2::Datas<S1, S2> datas;
+    loader2::Datas<S1, S2> datas {};
 
     auto img1 = image_from_string(
         {5, 5},

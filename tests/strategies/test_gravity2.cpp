@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestStratGravity
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ppocr/strategies/gravity2.hpp"
 #include "ppocr/image/image_from_string.hpp"

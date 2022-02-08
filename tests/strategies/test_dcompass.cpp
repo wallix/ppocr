@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestStratDCompass
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ppocr/strategies/dcompass.hpp"
 #include "ppocr/image/image_from_string.hpp"

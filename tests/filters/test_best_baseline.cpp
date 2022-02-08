@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestBestBaseline
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ppocr/filters/best_baseline.hpp"
 #include <sstream>

@@ -130,12 +130,6 @@ struct Probabilities
     , current(data)
     {}
 
-    template<class It>
-    Probabilities(It first, It last)
-    : data(static_cast<Probability*>(::operator new((last-first) * sizeof(Probability))))
-    , current(data + (last-first))
-    { std::copy(first, last, data); }
-
     Probabilities(Probabilities &&) = delete;
     Probabilities(Probabilities const &) = delete;
 
@@ -521,18 +515,6 @@ void reduce_exclusive_universe(
         }
     }
     swap(in, out);
-}
-
-template<class Data>
-void update_probability(double & prob, size_t i, unsigned value, Data const & data) {
-    auto const interval = data.count_posibilities() - 1;
-    auto d = interval/10u / ocr_div;
-    auto sig_value = data[i] / ocr_div;
-//     std::cout << typeid(data).name() << ": " << sig_value << "|-|" << value << "\n";
-    prob = prob * (value < sig_value
-        ? (sig_value <= value + d ? (interval - (sig_value - value)) * 100u / interval : 0u)
-        : (value <= sig_value + d ? (interval - (value - sig_value)) * 100u / interval : 0u)
-    ) / 100;
 }
 
 // template<class Strategy>

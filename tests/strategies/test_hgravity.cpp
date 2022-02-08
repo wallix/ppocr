@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestHorizontalGravity
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ppocr/strategies/hgravity.hpp"
 #include "ppocr/image/image_from_string.hpp"

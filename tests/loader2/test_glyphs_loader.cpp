@@ -17,7 +17,7 @@
 */
 
 #define BOOST_TEST_MODULE TestLoader2
-#include <boost/test/auto_unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 
 
