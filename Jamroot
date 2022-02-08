@@ -6,8 +6,10 @@ project ppocr
     <include>includes/mln
 
     <cxxflags>-std=c++11
-    $(CXXFLAGS)
-    <cxxflags>-frtti
+    <cxxflags>-fno-rtti
+    <toolset>clang:<cxxflags>-Wno-disabled-macro-expansion
+    <cxx-conversion-warnings>off
+    <conditional>@flags
     <define>IMAGE_PATH='\"./tests/images/\"'
 
     : default-build release
@@ -253,6 +255,7 @@ alias image_from_string_src :
 
 constant TEST_DEPENDENCIES :
     <library>libunit_test
+    <toolset>clang:<cxxflags>-Wno-used-but-marked-unused
 ;
 
 unit-test test_image :
