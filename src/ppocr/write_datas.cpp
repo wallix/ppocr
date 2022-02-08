@@ -23,6 +23,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <limits>
 
 #include <cstring>
 #include <cerrno>
