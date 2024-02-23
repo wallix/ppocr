@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -lt 3 ] || [ ! -x "$1" ] || [ ! -x "$2" ] || [ ! -x "$3" ]; then
-  echo $0 write_glyphs_bin normalizer_glyphs_bin write_datas >&2
+if (( $# < 3 )) || [[ ! -x $1 || ! -x $2 || ! -x $3 ]]; then
+  echo $0 write_glyphs_bin normalize_glyphs_bin write_datas_bin >&2
   exit 1
 fi
 
@@ -29,12 +29,15 @@ learning() {
   cd "$dir_launch"
 }
 
-learning latin "$1" > "$base"/resources/glyphs/glyphs-latin.txt &&\
-learning cyrillic "$1" > "$base"/resources/glyphs/glyphs-cyrillic.txt &&\
-"$2" "$base"/resources/glyphs/glyphs-latin.txt > "$base"/resources/glyphs/normalized-glyphs-latin.txt &&\
-"$2" "$base"/resources/glyphs/glyphs-cyrillic.txt > "$base"/resources/glyphs/normalized-glyphs-cyrillic.txt &&\
-"$2" "$base"/resources/glyphs/glyphs-latin.txt "$base"/resources/glyphs/glyphs-cyrillic.txt > "$base"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt &&\
-"$3" "$base"/resources/glyphs/normalized-glyphs-latin.txt > "$base"/resources/datas/latin.txt &&\
-"$3" "$base"/resources/glyphs/normalized-glyphs-cyrillic.txt > "$base"/resources/datas/cyrillic.txt &&\
-"$3" "$base"/resources/glyphs/normalized-glyphs-latin-cyrillic.txt > "$base"/resources/datas/latin-cyrillic.txt &&\
-rm -- "$base"/resources/glyphs/glyphs-latin.txt "$base"/resources/glyphs/glyphs-cyrillic.txt
+glyphs="$base"/resources/glyphs
+datas="$base"/resources/datas
+
+learning latin "$1" > "$glyphs"/glyphs-latin.txt &&
+learning cyrillic "$1" > "$glyphs"/glyphs-cyrillic.txt &&
+"$2" "$glyphs"/glyphs-latin.txt > "$glyphs"/normalized-glyphs-latin.txt &&
+"$2" "$glyphs"/glyphs-cyrillic.txt > "$glyphs"/normalized-glyphs-cyrillic.txt &&
+"$2" "$glyphs"/glyphs-latin.txt "$glyphs"/glyphs-cyrillic.txt > "$glyphs"/normalized-glyphs-latin-cyrillic.txt &&
+"$3" "$glyphs"/normalized-glyphs-latin.txt > "$datas"/latin.txt &&
+"$3" "$glyphs"/normalized-glyphs-cyrillic.txt > "$datas"/cyrillic.txt &&
+"$3" "$glyphs"/normalized-glyphs-latin-cyrillic.txt > "$datas"/latin-cyrillic.txt &&
+rm -- "$glyphs"/glyphs-latin.txt "$glyphs"/glyphs-cyrillic.txt
