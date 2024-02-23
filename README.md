@@ -2,7 +2,7 @@ LGPLv2.1
 
 # Learning (./learning)
 
-Génerating `glyphs/*` and `datas/*`:
+Generate `glyphs/*` and `datas/*` with
 
 $ `./learning "$bindir"/write_glyphs "$bindir"/normalize_glyphs "$bindir"/write_datas`
 

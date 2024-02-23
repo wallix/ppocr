@@ -3,7 +3,6 @@ include cxxflags.jam ;
 project ppocr
     : requirements
     <include>src
-    <include>includes/mln
 
     <cxxflags>-std=c++17
     <cxxflags>-fno-rtti
