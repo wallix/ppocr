@@ -5,7 +5,7 @@ project ppocr
     <include>src
     <include>includes/mln
 
-    <cxxflags>-std=c++11
+    <cxxflags>-std=c++17
     <cxxflags>-fno-rtti
     <toolset>clang:<cxxflags>-Wno-disabled-macro-expansion
     <cxx-conversion-warnings>off
@@ -139,14 +139,14 @@ alias box_character_src :
 ## Exe {
 
 exe make_trie_dictionary :
-    src/ppocr/make_trie_dictionary.cpp
+    main/make_trie_dictionary.cpp
 :
     <library>dictionary
 ;
 
 
 exe write_glyphs :
-    src/ppocr/write_glyphs.cpp
+    main/write_glyphs.cpp
 :
     <library>loader2_image_io
     <library>glyphs_loader
@@ -156,7 +156,7 @@ exe write_glyphs :
 ;
 
 exe show_glyphs :
-    src/ppocr/show_glyphs.cpp
+    main/show_glyphs.cpp
 :
     <library>image_src
     <library>box_character_src
@@ -164,7 +164,7 @@ exe show_glyphs :
 ;
 
 exe normalize_glyphs :
-    src/ppocr/normalize_glyphs.cpp
+    main/normalize_glyphs.cpp
 :
     <library>loader2_image_io
     <library>glyphs_loader
@@ -175,29 +175,17 @@ exe normalize_glyphs :
 ;
 
 exe write_datas :
-    src/ppocr/write_datas.cpp
+    main/write_datas.cpp
 :
     <library>loader2_image_io
     <library>strategies_src
     <library>image_src
-    <library>box_character_src
-    <library>image_from_file_src
-;
-
-exe write_datas2 :
-    src/ppocr/write_datas2.cpp
-:
-    <library>loader2_image_io
-    <library>glyphs_loader
-    <library>strategies_src
-    <library>image_src
-    <library>image_compare
     <library>box_character_src
     <library>image_from_file_src
 ;
 
 exe extract_text6 :
-    src/ppocr/extract_text6.cpp
+    main/extract_text6.cpp
 :
     <library>image_compare
     <library>glyphs_loader
@@ -210,7 +198,7 @@ exe extract_text6 :
 ;
 
 exe extract_text8 :
-    src/ppocr/extract_text8.cpp
+    main/extract_text8.cpp
 :
     <library>image_compare
     <library>glyphs_loader
@@ -223,7 +211,7 @@ exe extract_text8 :
 ;
 
 exe ocr2_extract_text :
-    src/ppocr/ocr2_extract_text.cpp
+    main/ocr2_extract_text.cpp
 :
     <library>src/ppocr/ocr2/glyphs.cpp.o
     <library>src/ppocr/ocr2/word_lines.cpp.o
@@ -474,36 +462,3 @@ make test_ocr2_extract_text :
     tests/cyrillic.negate.pnm
     ./resources/words_lines-latin-cyrillic.txt
     : run-ocr2-test : ;
-
-# run ocr2_extract_text :
-#     ./resources/glyphs/normalized-glyphs-latin-cyrillic.txt
-#     ./resources/datas/latin-cyrillic.txt
-#     /tmp/negate-35.pnm
-#     ./resources/words_lines-latin-cyrillic.txt
-# : : : test_ocr2_extract_text : run-ocr2-test ;
-
-
-# make-test test_ocr2_extract_text :
-#     ocr2_extract_text
-#     :
-#     run-ocr2-test
-#     ./resources/glyphs/normalized-glyphs-latin-cyrillic.txt
-#     ./resources/datas/latin-cyrillic.txt
-#     /tmp/negate-35.pnm
-#     ./resources/words_lines-latin-cyrillic.txt : ;
-#
-# rule run-test ( test-name : requirements * )
-# {
-#     import testing ;
-#     import python ;
-#     testing.make-test run-ocr2-test : $(test-name) : $(requirements) : $(test-name) ;
-# }
-#
-# run-test test_ocr2_extract_text : <dependency>ocr2_extract_text ;
-
-
-# run test_ocr2_extract_text :
-#
-#     : ;
-
-## }

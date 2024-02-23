@@ -74,7 +74,7 @@ private:
     Bounds bounds_;
 
     template<class PixelGetter>
-    friend class HorizontalRange;
+    friend struct HorizontalRange;
 };
 
 
@@ -119,7 +119,7 @@ struct HorizontalRange
         HorizontalRange const & r_;
         Pixel const * data_;
 
-        friend class HorizontalRange;
+        friend struct HorizontalRange;
 
         iterator(HorizontalRange const & r, Pixel const * data)
         : r_(r)
