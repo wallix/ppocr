@@ -69,8 +69,8 @@ int main(int ac, char **av)
     while (first != last) {
         auto pos = std::upper_bound(first+1, last, *first, glyph_img_cmp);
         first2->img = std::move(first->img);
-        //NOTE The implementation may assume that this parameter is a unique reference to this argument.
-        //NOTE Self-move-assignment is not possible
+        // The implementation may assume that this parameter is a unique reference to this argument.
+        // Self-move-assignment is not possible
         #if defined(__GNUC__) && !defined(__clang__)
         # pragma GCC diagnostic push
         # pragma GCC diagnostic ignored "-Wuseless-cast"

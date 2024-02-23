@@ -90,8 +90,7 @@ using PpOcrSimpleDatas = mpl_strategies_list_t<
 #endif
     loader2::Strategy<strategies::dvgravity2,   loader2::PolicyLoader::img90>,
     loader2::Strategy<strategies::dvdirection2, loader2::PolicyLoader::img90>,
-    loader2::Strategy<strategies::dzdensity,    loader2::PolicyLoader::img>,
-    loader2::Strategy<strategies::dzdensity,    loader2::PolicyLoader::img90>,
+    REGISTRY2(dzdensity),
     loader2::Strategy<strategies::dvdirection2, loader2::PolicyLoader::img>,
     loader2::Strategy<strategies::dvgravity2,   loader2::PolicyLoader::img>,
 

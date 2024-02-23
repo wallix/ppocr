@@ -40,8 +40,13 @@ std::istream& ppocr::ocr2::operator>>(std::istream& is, WordLines & wlines) {
 std::istream& ppocr::ocr2::operator>>(std::istream& is, WWordsLines& wwords_lines)
 {
     WWordLines wwl;
-    while (is >> wwl.s >> wwl.wlines) {
-        wwords_lines.push_back(wwl);
+    std::string s;
+    while (is >> s >> wwl.wlines) {
+        if (s.size() <= 8) {
+            memcpy(wwl.str_data, s.data(), s.size());
+            wwl.str_len = static_cast<uint16_t>(s.size());
+            wwords_lines.push_back(wwl);
+        }
     }
     return is;
 }

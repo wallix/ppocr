@@ -40,7 +40,7 @@ struct WordsInfos {
     WordsInfos(Glyphs const & glyphs, WWordsLines const & wwords_lines)
     {
         for (auto & p : wwords_lines) {
-            auto idx = glyphs.word_index_of(p.s);
+            auto idx = glyphs.word_index_of(p.sv());
             if (idx != Glyphs::no_index) {
                 this->words_infos.push_back({idx, p.wlines});
             }

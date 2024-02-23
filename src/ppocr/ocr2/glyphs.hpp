@@ -64,7 +64,7 @@ struct Glyphs : std::vector<Views> {
 
     constexpr static unsigned const no_index = ~unsigned{};
 
-    unsigned word_index_of(std::string const & s) const {
+    unsigned word_index_of(std::string_view s) const {
         unsigned i = 0;
         while (i < this->buf_word_sz) {
             auto r = s.compare(0, s.size(), this->get_word_(i).data(), s.size());

@@ -22,6 +22,7 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+#include <string_view>
 
 namespace ppocr { namespace ocr2 {
 
@@ -32,17 +33,23 @@ struct WordLines {
         Below = 2,
         Above = 4
     };
-    unsigned short ascentline:3;
-    unsigned short capline:3;
-    unsigned short meanline:3;
-    unsigned short baseline:3;
+    uint16_t ascentline:3;
+    uint16_t capline:3;
+    uint16_t meanline:3;
+    uint16_t baseline:3;
 };
 
 
 struct WWordLines
 {
-    std::string s;
+    char str_data[8];
+    uint16_t str_len;
     WordLines wlines;
+
+    std::string_view sv() const
+    {
+        return {str_data, str_len};
+    }
 };
 
 struct WWordsLines : std::vector<WWordLines>
