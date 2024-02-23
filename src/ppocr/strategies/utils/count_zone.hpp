@@ -24,36 +24,8 @@
 #include <vector>
 #include <map>
 
-namespace ppocr { namespace strategies { namespace utils {
-
-    inline bool propagation_zone(
-        std::vector<unsigned> & mirror, Image const & img,
-        unsigned current, Index const & idx
-    ) {
-        {
-            auto & n = mirror[img.to_size_t(idx)];
-            if (n || is_pix_letter(img[idx])) {
-                return false;
-            }
-            n = current;
-        }
-
-        if (idx.x() != 0) {
-            propagation_zone(mirror, img, current, {idx.x()-1, idx.y()});
-        }
-        if (idx.x() + 1 != img.width()) {
-            propagation_zone(mirror, img, current, {idx.x()+1, idx.y()});
-        }
-        if (idx.y() != 0) {
-            propagation_zone(mirror, img, current, {idx.x(), idx.y()-1});
-        }
-        if (idx.y() + 1 != img.height()) {
-            propagation_zone(mirror, img, current, {idx.x(), idx.y()+1});
-        }
-
-        return true;
-    }
-
+namespace ppocr { namespace strategies { namespace utils
+{
     struct ZoneInfo {
         std::map<unsigned, unsigned> top;
         std::map<unsigned, unsigned> right;
@@ -64,14 +36,49 @@ namespace ppocr { namespace strategies { namespace utils {
 
     inline ZoneInfo count_zone(const Image& img) {
         ZoneInfo zone;
-        std::vector<unsigned> mirror(img.area(), 0);
+        std::vector<unsigned> mirror(img.area() * 2, 0);
+        unsigned* const stack = mirror.data() + img.area();
 
-        for (size_t x = 0; x < img.width(); ++x) {
-            for (size_t y = 0; y < img.height(); ++y) {
-                if (utils::propagation_zone(mirror, img, zone.count_zone, {x, y})) {
-                    ++zone.count_zone;
-                }
+        for (unsigned i = 0; i < img.area(); ++i) {
+            if (mirror[i] || is_pix_letter(img.data()[i])) {
+                continue;
             }
+
+            unsigned idx = i;
+            auto stack_it = stack;
+            mirror[idx] = zone.count_zone;
+            for (;;) {
+                auto x = idx % img.width();
+                auto y = idx / img.width();
+
+                auto push_if = [&](unsigned idx){
+                    if (!mirror[idx] && !is_pix_letter(img.data()[idx])) {
+                        mirror[idx] = zone.count_zone;
+                        *stack_it++ = idx;
+                    }
+                };
+
+                if (y != 0) {
+                    push_if(idx - img.width());
+                }
+                if (y + 1 != img.height()) {
+                    push_if(idx + img.width());
+                }
+                if (x != 0) {
+                    push_if(idx - 1);
+                }
+                if (x + 1 != img.width()) {
+                    push_if(idx + 1);
+                }
+
+                if (stack_it == stack) {
+                    break;
+                }
+
+                idx = *--stack_it;
+            }
+
+            zone.count_zone++;
         }
 
         auto insert = [&](std::map<unsigned, unsigned> & m, size_t x, size_t y) {
@@ -93,7 +100,6 @@ namespace ppocr { namespace strategies { namespace utils {
 
         return zone;
     }
-
 
 } } }
 
