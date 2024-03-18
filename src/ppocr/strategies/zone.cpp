@@ -35,7 +35,7 @@ zone::value_type zone::load(const Image& img, const Image& /*img*/) const
     ret[number_right_alternations] = zone_info.right().count_used_zone();
     ret[number_bottom_alternations] = zone_info.bottom().count_used_zone();
     ret[number_left_alternations] = zone_info.left().count_used_zone();
-    ret[number_internal_alternations] = zone_info.count_zone() - 1 - zone_info.count_total_used_zone();
+    ret[number_internal_alternations] = zone_info.count_zone() - zone_info.count_total_used_zone();
 
     return ret;
 }

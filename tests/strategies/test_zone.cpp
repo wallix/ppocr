@@ -37,6 +37,16 @@ namespace {
     }
 }
 
+# define TEST_EQUAL_RANGES(...)                       \
+    [](auto const & a_, auto const & b_) {            \
+        using std::begin;                             \
+        using std::end;                               \
+        BOOST_CHECK_EQUAL_COLLECTIONS(                \
+            (void(#__VA_ARGS__), begin(a_)), end(a_), \
+            begin(b_), end(b_)                        \
+        );                                            \
+    }(__VA_ARGS__)
+
 BOOST_AUTO_TEST_CASE(TestLoop)
 {
     A zone;
@@ -46,7 +56,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "---"
         "-x-"
     );
-    BOOST_CHECK((zone == A{{1, 0, 0, 1, 1, 1, 0}}));
+    TEST_EQUAL_RANGES(zone, A{{1, 0, 0, 1, 1, 1, 0}});
 
     zone = mk_zone({3, 5},
         "--x"
@@ -55,7 +65,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "xxx"
         "--x"
     );
-    BOOST_CHECK((zone == A{{0, 1, 1, 1, 1, 2, 0}}));
+    TEST_EQUAL_RANGES(zone, A{{0, 1, 1, 1, 1, 2, 0}});
 
     zone = mk_zone({3, 4},
         "-x-"
@@ -63,7 +73,7 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "xxx"
         "x-x"
     );
-    BOOST_CHECK((zone == A{{0, 1, 2, 1, 1, 1, 1}}));
+    TEST_EQUAL_RANGES(zone, A{{0, 1, 2, 1, 1, 1, 1}});
 
     zone = mk_zone({5, 6},
         "--x--"
@@ -73,5 +83,5 @@ BOOST_AUTO_TEST_CASE(TestLoop)
         "x---x"
         "x---x"
     );
-    BOOST_CHECK((zone == A{{0, 1, 2, 1, 1, 1, 1}}));
+    TEST_EQUAL_RANGES(zone, A{{0, 1, 2, 1, 1, 1, 1}});
 }

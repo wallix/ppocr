@@ -181,12 +181,12 @@ namespace ppocr { namespace strategies { namespace utils
             count_zone++;
         }
 
-        ZoneInfo zone{count_zone};
+        ZoneInfo zone{count_zone - 1};
 
         auto insert = [&](MappingZoneView m, unsigned x, unsigned y) {
             auto i = img.to_unsigned({x, y});
             if (mirror[i]) {
-                ++m[mirror[i]];
+                ++m[mirror[i]-1];
             }
         };
 

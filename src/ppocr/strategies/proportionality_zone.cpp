@@ -32,6 +32,9 @@ proportionality_zone::value_type proportionality_zone::load(Image const & img, I
 
     utils::ZoneInfo zone_info = utils::count_zone(img);
 
+    ret.resize(zone_info.count_zone());
+    auto it = ret.begin();
+
     unsigned area = 0;
     for (unsigned i = 0; i < zone_info.count_zone(); ++i) {
         unsigned value
@@ -42,9 +45,11 @@ proportionality_zone::value_type proportionality_zone::load(Image const & img, I
 
         if (value) {
             area += value;
-            ret.push_back(value);
+            *it++ = value;
         }
     }
+
+    ret.resize(static_cast<std::size_t>(it - ret.begin()));
 
     for (unsigned& n : ret) {
         n = n * 100 / area;
