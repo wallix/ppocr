@@ -28,7 +28,7 @@ class Image;
 class Bounds;
 
 namespace utils {
-    bool horizontal_empty(Pixel const * d, std::size_t w);
+    bool horizontal_empty(Pixel const * d, unsigned w);
     bool vertical_empty(Pixel const * d, Bounds const & bnd);
 }
 

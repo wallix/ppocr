@@ -45,7 +45,7 @@ struct interval_relationship
     bool in_dist(value_type const & a, value_type const & b, value_type const & d) const
     { return (a < b ? (b > a + d) : (a > b + d)); }
 
-    std::size_t count() const { return std::size_t(this->interval_) + 1; }
+    unsigned count() const { return unsigned(this->interval_) + 1; }
 
 private:
     value_type interval_;

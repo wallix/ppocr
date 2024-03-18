@@ -41,7 +41,7 @@ struct proportionality_zone {
 
         bool in_dist(value_type const & a, value_type const & b, unsigned d) const;
 
-        std::size_t count() const;
+        unsigned count() const;
     };
     using value_type = relationship_type::value_type;
 

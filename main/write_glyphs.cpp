@@ -64,7 +64,7 @@ static void load_file(
     Image img = image_from_file(imagefilename, luminance);
     //std::cerr << img << '\n';
 
-    size_t x = 0;
+    unsigned x = 0;
     Bounds const & bounds = img.bounds();
 
     std::string s;

@@ -32,7 +32,7 @@ std::ostream & operator<<(std::ostream & os, Bounds const & bnd) {
 }
 
 std::istream & operator>>(std::istream & is, Index & idx) {
-    size_t x, y;
+    unsigned x, y;
     if (is >> x >> y) {
         idx = Index(x, y);
     }
@@ -40,7 +40,7 @@ std::istream & operator>>(std::istream & is, Index & idx) {
 }
 
 std::istream & operator>>(std::istream & is, Bounds & bnd) {
-    size_t w, h;
+    unsigned w, h;
     if (is >> w >> h) {
         bnd = Bounds(w, h);
     }

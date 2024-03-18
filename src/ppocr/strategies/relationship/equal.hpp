@@ -43,7 +43,7 @@ struct equal_relationship
     bool in_dist(value_type const & a, value_type const & b, value_type const &) const
     { return a == b; }
 
-    std::size_t count() const { return 2; }
+    unsigned count() const { return 2; }
 };
 
 } }

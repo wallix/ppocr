@@ -36,7 +36,7 @@ Image::Image(Bounds const& bounds, PtrImageData data)
 void section(Image const & from, Pixel * data, Index const & idx, Bounds const & bnd)
 {
     cP d = from.data(idx);
-    for (size_t y = 0; y != bnd.h(); ++y) {
+    for (unsigned y = 0; y != bnd.h(); ++y) {
         data = std::copy(d, d+bnd.w(), data);
         d += from.width();
     }
@@ -53,7 +53,7 @@ Image Image::section(Index const& section_idx, Bounds const& section_bnd) const
 
 void rotate90(Image const & from, Pixel * data)
 {
-    for (size_t x = from.width(); x; ) {
+    for (unsigned x = from.width(); x; ) {
         --x;
         for (cP d = from.data() + x, e = d + from.area(); d != e; d += from.width()) {
             *data++ = *d;
@@ -86,7 +86,7 @@ std::ostream & operator<<(std::ostream & os, Image const & image)
     os.width(image.width()+3);
     os << ":\n";
     cP p = image.data_.get();
-    for (size_t h = 0; h != image.height(); ++h) {
+    for (unsigned h = 0; h != image.height(); ++h) {
         os << ':';
         os.write(p, image.width());
         os << ":\n";

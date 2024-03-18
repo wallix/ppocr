@@ -31,7 +31,7 @@ using namespace ppocr;
 static void load_file(const char * imagefilename, unsigned luminance) {
     Image img = image_from_file(imagefilename, luminance);
 
-    size_t x = 0;
+    unsigned x = 0;
     Bounds const & bounds = img.bounds();
 
     std::string s;

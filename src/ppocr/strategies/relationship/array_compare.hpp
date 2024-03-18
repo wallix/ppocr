@@ -23,7 +23,7 @@
 
 namespace ppocr { namespace strategies {
 
-template<class T, std::size_t N, class R = unsigned>
+template<class T, unsigned N, class R = unsigned>
 struct array_compare_relationship
 {
     using value_type = std::array<T, N>;
@@ -51,7 +51,7 @@ struct array_compare_relationship
     bool in_dist(value_type const & a, value_type const & b, unsigned d) const
     { return static_cast<double>(operator()(a, b)) >= d; }
 
-    std::size_t count() const { return 101; }
+    unsigned count() const { return 101; }
 };
 
 } }

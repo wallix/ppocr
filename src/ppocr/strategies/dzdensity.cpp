@@ -31,7 +31,7 @@ namespace {
         int const h3 = int(img.height() * 3);
         int const w3 = int(img.width() * 3);
         int yp = 0;
-        for (size_t y = 0; y < img.height(); ++y, yp += w3) {
+        for (unsigned y = 0; y < img.height(); ++y, yp += w3) {
             //double const d = double(img.width())/3.;
             //double const xs = std::ceil(double(y+1)*w/h-d);
             //double const xe = std::floor(double(y )*w/h+d);

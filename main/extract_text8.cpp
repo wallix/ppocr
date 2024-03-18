@@ -307,7 +307,7 @@ void reduce_complexe_universe(
 
 template<class Strategy>
 struct data_exclusive_universe : data_for_strategy<Strategy> {
-    size_t limit;
+    unsigned limit;
 };
 
 template<class Store>
@@ -331,7 +331,7 @@ bool has_value(
 }
 
 template<class Data>
-size_t get_count(Data const & data) {
+unsigned get_count(Data const & data) {
     return data.count_posibilities();
 }
 
@@ -696,7 +696,7 @@ int main(int ac, char **av)
 
     Image img = image_from_file(av[3]);
     Bounds const bounds(img.width(), img.height());
-    size_t x = 0;
+    unsigned x = 0;
 
     using resolution_clock = std::chrono::high_resolution_clock;
     auto t1 = resolution_clock::now();

@@ -79,13 +79,13 @@ void ppocr::ocr2::filter_by_lines(
     using iterator_base = std::vector<Box>::const_iterator;
     struct iterator_baseline : iterator_base
     {
-        using value_type = std::size_t;
+        using value_type = unsigned;
 
         iterator_baseline(iterator_base base)
         : iterator_base(base)
         {}
 
-        std::size_t operator*() const {
+        unsigned operator*() const {
             return iterator_base::operator*().bottom();
         }
     };
@@ -95,7 +95,7 @@ void ppocr::ocr2::filter_by_lines(
         iterator_baseline(boxes.end())
     );
 
-    std::map<size_t, size_t> meanline_map;
+    std::map<unsigned, unsigned> meanline_map;
 
     //for (rdp_ppocr::view_ref_list & vec : ambiguous) {
     //    for (ppocr::ppocr::loader2::View const & view : vec) {

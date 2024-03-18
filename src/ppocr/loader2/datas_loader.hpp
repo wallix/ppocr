@@ -137,7 +137,7 @@ struct Data
         return ret;
     }
 
-    std::size_t count_posibilities() const {
+    unsigned count_posibilities() const {
         return get_relationship().count();
     }
 

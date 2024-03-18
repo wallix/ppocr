@@ -86,7 +86,7 @@ struct alternations
 {
     struct alternations_type {
         bool start_contains_letter;
-        std::size_t count;
+        unsigned count;
 
         bool operator==(alternations_type const & other) const noexcept
         { return start_contains_letter == other.start_contains_letter && count == other.count; }

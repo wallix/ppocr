@@ -789,7 +789,7 @@ int main(int ac, char **av)
 
     Image img = image_from_file(av[3]);
     Bounds const bounds(img.width(), img.height());
-    size_t x = 0;
+    unsigned x = 0;
 
     using resolution_clock = std::chrono::high_resolution_clock;
     auto t1 = resolution_clock::now();

@@ -31,10 +31,10 @@ namespace ppocr { namespace strategies {
 static unsigned count_dcompass(Bounds const & bnd, Pixel const * p, Pixel const * ep, bool is_top)
 {
     unsigned d = 0;
-    size_t ih = 0;
-    size_t const wdiv2 = bnd.w()/2;
+    unsigned ih = 0;
+    unsigned const wdiv2 = bnd.w()/2;
     for (; p != ep; p += bnd.w(), ++ih) {
-        size_t x = wdiv2 - bnd.w() / (!is_top ? bnd.h() - ih : 1 + ih) / 2;
+        unsigned x = wdiv2 - bnd.w() / (!is_top ? bnd.h() - ih : 1 + ih) / 2;
         auto leftp = p + x;
         auto rightp = p + bnd.w() - x;
         for (; leftp != rightp; ++leftp) {

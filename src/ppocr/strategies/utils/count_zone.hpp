@@ -81,19 +81,19 @@ namespace ppocr { namespace strategies { namespace utils
             zone.count_zone++;
         }
 
-        auto insert = [&](std::map<unsigned, unsigned> & m, size_t x, size_t y) {
-            auto i = img.to_size_t({x, y});
+        auto insert = [&](std::map<unsigned, unsigned> & m, unsigned x, unsigned y) {
+            auto i = img.to_unsigned({x, y});
             if (mirror[i]) {
                 ++m[mirror[i]];
             }
         };
 
-        for (size_t x = 0; x < img.width(); ++x) {
+        for (unsigned x = 0; x < img.width(); ++x) {
             insert(zone.top, x, 0);
             insert(zone.bottom, x, img.height()-1);
         }
 
-        for (size_t y = 0; y < img.height(); ++y) {
+        for (unsigned y = 0; y < img.height(); ++y) {
             insert(zone.left, 0, y);
             insert(zone.right, img.width()-1, y);
         }

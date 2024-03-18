@@ -34,7 +34,7 @@ static unsigned horizontal_gravity2(const Image& img)
 {
     utils::TopBottom g = utils::horizontal_gravity(img);
 
-    size_t const hby2 = img.height()/2;
+    unsigned const hby2 = img.height()/2;
     int const gimg = ((hby2 * (hby2 + 1)) / 2) * img.width();
     unsigned ret = (gimg ? (int(g.top) - int(g.bottom)) * 100 / gimg : 0) + 100;
 

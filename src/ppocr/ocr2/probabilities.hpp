@@ -43,7 +43,7 @@ struct Probability
 struct Probabilities
 {
     using iterator = Probability *;
-    using size_type = std::size_t;
+    using size_type = unsigned;
 
     Probabilities(size_type sz)
     : data(static_cast<Probability*>(::operator new(sz * sizeof(Probability))))

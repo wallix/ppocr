@@ -31,10 +31,10 @@ namespace details_ {
         Bounds const & bnd, Pixel const * p, Pixel const * ep, bool is_top
     ) {
         unsigned d = 0;
-        size_t ih = 0;
-        size_t const wdiv2 = bnd.w()/2;
+        unsigned ih = 0;
+        unsigned const wdiv2 = bnd.w()/2;
         for (; p != ep; p += bnd.w(), ++ih) {
-            size_t x = wdiv2 - bnd.w() / (!is_top ? bnd.h() - ih : 1 + ih) / 2;
+            unsigned x = wdiv2 - bnd.w() / (!is_top ? bnd.h() - ih : 1 + ih) / 2;
             auto leftp = p + x;
             auto rightp = p + bnd.w() - x;
             for (; leftp != rightp; ++leftp) {
@@ -50,10 +50,10 @@ namespace details_ {
         Bounds const & bnd, Pixel const * p, Pixel const * ep, bool is_top
     ) {
         unsigned d = 0;
-        size_t ih = 0;
-        size_t const wdiv2 = bnd.w()/2;
+        unsigned ih = 0;
+        unsigned const wdiv2 = bnd.w()/2;
         for (; p != ep; p += bnd.w(), ++ih) {
-            size_t x = wdiv2 - bnd.w() / (!is_top ? bnd.h() - ih : 1 + ih) / 2;
+            unsigned x = wdiv2 - bnd.w() / (!is_top ? bnd.h() - ih : 1 + ih) / 2;
             d += bnd.w() - x*2;
         }
         return d;
@@ -67,10 +67,10 @@ inline unsigned diagonal_vertical_direction_area(const Image& img)
     auto ep = img.data({0, bnd.h()});
 
     unsigned area = 0;
-    size_t ih = 0;
-    size_t const wdiv2 = bnd.w()/2;
+    unsigned ih = 0;
+    unsigned const wdiv2 = bnd.w()/2;
     for (; p != ep; p += bnd.w(), ++ih) {
-        size_t x = wdiv2 - bnd.w() / (1 + ih) / 2;
+        unsigned x = wdiv2 - bnd.w() / (1 + ih) / 2;
         area += bnd.w() - x*2;
     }
     return area * 2;
