@@ -22,50 +22,120 @@
 #include "ppocr/image/image.hpp"
 
 #include <vector>
+#include <memory>
+#include <cassert>
 
 namespace ppocr { namespace strategies { namespace utils
 {
-    struct ZoneMap
+    struct MappingZoneView
     {
-        std::vector<unsigned> zones;
+        MappingZoneView(unsigned* zones, unsigned len)
+        : zones(zones)
+        , len(len)
+        {}
+
+        unsigned& operator[](unsigned i)
+        {
+            assert(i < len);
+            return zones[i];
+        }
+
+        unsigned operator[](unsigned i) const
+        {
+            assert(i < len);
+            return zones[i];
+        }
+
+        unsigned* begin() const
+        {
+            return zones;
+        }
+
+        unsigned* end() const
+        {
+            return begin() + len;
+        }
 
         unsigned count_used_zone() const
         {
             unsigned ret = 0;
-            for (unsigned i : zones) {
+            for (unsigned i : *this) {
                 if (i) {
                     ++ret;
                 }
             }
             return ret;
         }
+
+    private:
+        unsigned* zones;
+        unsigned len;
     };
 
-    struct ZoneInfo {
-        ZoneMap top;
-        ZoneMap right;
-        ZoneMap bottom;
-        ZoneMap left;
-        unsigned count_zone = 1;
+    struct ZoneInfo
+    {
+        ZoneInfo(unsigned count_zone)
+        : _buffer(std::make_unique<unsigned[]>(count_zone * 4))
+        , _count_zone(count_zone)
+        {}
+
+        unsigned count_zone() const
+        {
+            return _count_zone;
+        }
+
+        MappingZoneView top()
+        {
+            return view(0);
+        }
+
+        MappingZoneView right()
+        {
+            return view(1);
+        }
+
+        MappingZoneView bottom()
+        {
+            return view(2);
+        }
+
+        MappingZoneView left()
+        {
+            return view(3);
+        }
 
         unsigned count_total_used_zone() const
         {
             unsigned used_zone = 0;
-            for (unsigned i = 0; i < top.zones.size(); ++i) {
-                if (top.zones[i]
-                 || right.zones[i]
-                 || bottom.zones[i]
-                 || left.zones[i]
+            for (unsigned i = 0; i < count_zone(); ++i) {
+                if (data(0)[i]
+                 || data(1)[i]
+                 || data(2)[i]
+                 || data(3)[i]
                 ) {
                     ++used_zone;
                 }
             }
             return used_zone;
         }
+
+    private:
+        std::unique_ptr<unsigned[]> _buffer;
+        unsigned _count_zone;
+
+        MappingZoneView view(unsigned d)
+        {
+            return MappingZoneView{data(d), _count_zone};
+        }
+
+        unsigned* data(unsigned d) const
+        {
+            return _buffer.get() + _count_zone * d;
+        }
     };
 
     inline ZoneInfo count_zone(const Image& img) {
-        ZoneInfo zone;
+        unsigned count_zone = 1;
         std::vector<unsigned> mirror(img.area() * 2, 0);
         unsigned* const stack = mirror.data() + img.area();
 
@@ -76,14 +146,14 @@ namespace ppocr { namespace strategies { namespace utils
 
             unsigned idx = i;
             auto stack_it = stack;
-            mirror[idx] = zone.count_zone;
+            mirror[idx] = count_zone;
             for (;;) {
                 auto x = idx % img.width();
                 auto y = idx / img.width();
 
                 auto push_if = [&](unsigned idx){
                     if (!mirror[idx] && !is_pix_letter(img.data()[idx])) {
-                        mirror[idx] = zone.count_zone;
+                        mirror[idx] = count_zone;
                         *stack_it++ = idx;
                     }
                 };
@@ -108,29 +178,26 @@ namespace ppocr { namespace strategies { namespace utils
                 idx = *--stack_it;
             }
 
-            zone.count_zone++;
+            count_zone++;
         }
 
-        zone.top.zones.resize(zone.count_zone, 0);
-        zone.right.zones.resize(zone.count_zone, 0);
-        zone.bottom.zones.resize(zone.count_zone, 0);
-        zone.left.zones.resize(zone.count_zone, 0);
+        ZoneInfo zone{count_zone};
 
-        auto insert = [&](ZoneMap & m, unsigned x, unsigned y) {
+        auto insert = [&](MappingZoneView m, unsigned x, unsigned y) {
             auto i = img.to_unsigned({x, y});
             if (mirror[i]) {
-                ++m.zones[mirror[i]];
+                ++m[mirror[i]];
             }
         };
 
         for (unsigned x = 0; x < img.width(); ++x) {
-            insert(zone.top, x, 0);
-            insert(zone.bottom, x, img.height()-1);
+            insert(zone.top(), x, 0);
+            insert(zone.bottom(), x, img.height()-1);
         }
 
         for (unsigned y = 0; y < img.height(); ++y) {
-            insert(zone.left, 0, y);
-            insert(zone.right, img.width()-1, y);
+            insert(zone.left(), 0, y);
+            insert(zone.right(), img.width()-1, y);
         }
 
         return zone;

@@ -22,7 +22,6 @@
 #include "ppocr/strategies/utils/relationship.hpp"
 
 #include <algorithm>
-#include <functional>
 #include <numeric>
 
 namespace ppocr { namespace strategies {
@@ -34,20 +33,21 @@ proportionality_zone::value_type proportionality_zone::load(Image const & img, I
     utils::ZoneInfo zone_info = utils::count_zone(img);
 
     unsigned area = 0;
-    for (unsigned i = 0; i < zone_info.top.zones.size(); ++i) {
-        zone_info.top.zones[i]
-          = zone_info.top.zones[i] ? zone_info.top.zones[i]
-          : zone_info.right.zones[i] ? zone_info.right.zones[i]
-          : zone_info.bottom.zones[i] ? zone_info.bottom.zones[i]
-          : zone_info.left.zones[i];
+    for (unsigned i = 0; i < zone_info.count_zone(); ++i) {
+        unsigned value
+          = zone_info.top()[i] ? zone_info.top()[i]
+          : zone_info.right()[i] ? zone_info.right()[i]
+          : zone_info.bottom()[i] ? zone_info.bottom()[i]
+          : zone_info.left()[i];
 
-        area += zone_info.top.zones[i];
+        if (value) {
+            area += value;
+            ret.push_back(value);
+        }
     }
 
-    for (unsigned i = 0; i < zone_info.top.zones.size(); ++i) {
-        if (zone_info.top.zones[i]) {
-            ret.push_back(zone_info.top.zones[i] * 100 / area);
-        }
+    for (unsigned& n : ret) {
+        n = n * 100 / area;
     }
 
     std::sort(ret.begin(), ret.end());
