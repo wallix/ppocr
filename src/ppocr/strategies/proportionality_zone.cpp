@@ -33,17 +33,21 @@ proportionality_zone::value_type proportionality_zone::load(Image const & img, I
 
     utils::ZoneInfo zone_info = utils::count_zone(img);
 
-    for (auto & x : zone_info.right) zone_info.top.insert(x);
-    for (auto & x : zone_info.bottom) zone_info.top.insert(x);
-    for (auto & x : zone_info.left) zone_info.top.insert(x);
-
     unsigned area = 0;
-    for (auto & x : zone_info.top) {
-        area += x.second;
+    for (unsigned i = 0; i < zone_info.top.zones.size(); ++i) {
+        zone_info.top.zones[i]
+          = zone_info.top.zones[i] ? zone_info.top.zones[i]
+          : zone_info.right.zones[i] ? zone_info.right.zones[i]
+          : zone_info.bottom.zones[i] ? zone_info.bottom.zones[i]
+          : zone_info.left.zones[i];
+
+        area += zone_info.top.zones[i];
     }
 
-    for (auto & x : zone_info.top) {
-        ret.push_back(x.second * 100 / area);
+    for (unsigned i = 0; i < zone_info.top.zones.size(); ++i) {
+        if (zone_info.top.zones[i]) {
+            ret.push_back(zone_info.top.zones[i] * 100 / area);
+        }
     }
 
     std::sort(ret.begin(), ret.end());

@@ -22,16 +22,46 @@
 #include "ppocr/image/image.hpp"
 
 #include <vector>
-#include <map>
 
 namespace ppocr { namespace strategies { namespace utils
 {
+    struct ZoneMap
+    {
+        std::vector<unsigned> zones;
+
+        unsigned count_used_zone() const
+        {
+            unsigned ret = 0;
+            for (unsigned i : zones) {
+                if (i) {
+                    ++ret;
+                }
+            }
+            return ret;
+        }
+    };
+
     struct ZoneInfo {
-        std::map<unsigned, unsigned> top;
-        std::map<unsigned, unsigned> right;
-        std::map<unsigned, unsigned> bottom;
-        std::map<unsigned, unsigned> left;
+        ZoneMap top;
+        ZoneMap right;
+        ZoneMap bottom;
+        ZoneMap left;
         unsigned count_zone = 1;
+
+        unsigned count_total_used_zone() const
+        {
+            unsigned used_zone = 0;
+            for (unsigned i = 0; i < top.zones.size(); ++i) {
+                if (top.zones[i]
+                 || right.zones[i]
+                 || bottom.zones[i]
+                 || left.zones[i]
+                ) {
+                    ++used_zone;
+                }
+            }
+            return used_zone;
+        }
     };
 
     inline ZoneInfo count_zone(const Image& img) {
@@ -81,10 +111,15 @@ namespace ppocr { namespace strategies { namespace utils
             zone.count_zone++;
         }
 
-        auto insert = [&](std::map<unsigned, unsigned> & m, unsigned x, unsigned y) {
+        zone.top.zones.resize(zone.count_zone, 0);
+        zone.right.zones.resize(zone.count_zone, 0);
+        zone.bottom.zones.resize(zone.count_zone, 0);
+        zone.left.zones.resize(zone.count_zone, 0);
+
+        auto insert = [&](ZoneMap & m, unsigned x, unsigned y) {
             auto i = img.to_unsigned({x, y});
             if (mirror[i]) {
-                ++m[mirror[i]];
+                ++m.zones[mirror[i]];
             }
         };
 
