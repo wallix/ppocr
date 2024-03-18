@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
 {
     using S1 = loader2::Strategy<strategies::hdirection, loader2::PolicyLoader::img>;
     using S2 = loader2::Strategy<strategies::hdirection, loader2::PolicyLoader::img90>;
-    using list_t = mpl_strategies_list_t<S1, S2>;
+    using list_t = mp_list<S1, S2>;
     loader2::Datas<S1, S2> datas {};
 
     auto img1 = image_from_string(
