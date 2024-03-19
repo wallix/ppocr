@@ -1,16 +1,16 @@
 /*
 * Copyright (C) 2016 Wallix
-* 
+*
 * This library is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Lesser General Public License as published by the Free
 * Software Foundation; either version 2.1 of the License, or (at your option)
 * any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public License along
 * with this library; if not, write to the Free Software Foundation, Inc., 59
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -36,8 +36,8 @@ Image::Image(Bounds const& bounds, PtrImageData data)
 void section(Image const & from, Pixel * data, Index const & idx, Bounds const & bnd)
 {
     cP d = from.data(idx);
-    for (unsigned y = 0; y != bnd.h(); ++y) {
-        data = std::copy(d, d+bnd.w(), data);
+    for (unsigned y = 0; y != bnd.height(); ++y) {
+        data = std::copy(d, d+bnd.width(), data);
         d += from.width();
     }
 }
@@ -45,10 +45,10 @@ void section(Image const & from, Pixel * data, Index const & idx, Bounds const &
 Image Image::section(Index const& section_idx, Bounds const& section_bnd) const
 {
     assert(bounds_.contains(section_idx));
-    assert(section_bnd.w() + section_idx.x() <= width() && section_bnd.h() + section_idx.y() <= height());
+    assert(section_bnd.width() + section_idx.x() <= width() && section_bnd.height() + section_idx.y() <= height());
     PtrImageData data(new Pixel[section_bnd.area()]);
     ::ppocr::section(*this, data.get(), section_idx, section_bnd);
-    return {{section_bnd.w(), section_bnd.h()}, std::move(data)};
+    return {{section_bnd.width(), section_bnd.height()}, std::move(data)};
 }
 
 void rotate90(Image const & from, Pixel * data)

@@ -84,7 +84,7 @@ static void load_file(
             {{s, fontname, ~0u}}
         };
 
-        x = cbox.x() + cbox.w();
+        x = cbox.x() + cbox.width();
     }
 
     if (file >> s) {

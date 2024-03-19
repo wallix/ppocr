@@ -38,7 +38,7 @@ static void load_file(const char * imagefilename, unsigned luminance) {
 
     while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
         std::cout << img.section(cbox.index(), cbox.bounds()) << "\n";
-        x = cbox.x() + cbox.w();
+        x = cbox.x() + cbox.width();
     }
 }
 

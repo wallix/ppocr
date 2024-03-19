@@ -1,16 +1,16 @@
 /*
 * Copyright (C) 2016 Wallix
-* 
+*
 * This library is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Lesser General Public License as published by the Free
 * Software Foundation; either version 2.1 of the License, or (at your option)
 * any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public License along
 * with this library; if not, write to the Free Software Foundation, Inc., 59
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -25,7 +25,8 @@
 
 namespace ppocr {
 
-struct Index {
+struct Index
+{
     Index(unsigned x, unsigned y)
     : x_(x)
     , y_(y)
@@ -36,17 +37,18 @@ struct Index {
     unsigned x() const noexcept { return x_; }
     unsigned y() const noexcept { return y_; }
 
-    bool operator == (Index const & other) const noexcept
-    { return this->x_ == other.x_ && this->y_ == other.y_; }
-    bool operator != (Index const & other) const noexcept
-    { return !(*this == other); }
+    bool operator==(Index const & other) const noexcept
+    {
+        return this->x_ == other.x_ && this->y_ == other.y_;
+    }
 
 private:
     unsigned x_ = 0;
     unsigned y_ = 0;
 };
 
-struct Bounds {
+struct Bounds
+{
     Bounds(unsigned w, unsigned h)
     : w_(w)
     , h_(h)
@@ -55,16 +57,18 @@ struct Bounds {
     Bounds() = default;
 
     unsigned area() const noexcept { return w_ * h_; }
-    unsigned w() const noexcept { return w_; }
-    unsigned h() const noexcept { return h_; }
+    unsigned width() const noexcept { return w_; }
+    unsigned height() const noexcept { return h_; }
 
     unsigned contains(Index const & idx) const
-    { return idx.x() < w() && idx.y() < h(); }
+    {
+        return idx.x() < w_ && idx.y() < h_;
+    }
 
-    bool operator == (Bounds const & other) const noexcept
-    { return this->w_ == other.w_ && this->h_ == other.h_; }
-    bool operator != (Bounds const & other) const noexcept
-    { return !(*this == other); }
+    bool operator==(Bounds const & other) const noexcept
+    {
+        return this->w_ == other.w_ && this->h_ == other.h_;
+    }
 
 private:
     unsigned w_ = 0;

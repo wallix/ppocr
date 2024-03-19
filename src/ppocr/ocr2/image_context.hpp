@@ -49,7 +49,7 @@ struct ImageContext
 
 private:
     PtrImageData data_;
-    unsigned capacity_sz_ = 0;
+    std::size_t capacity_sz_ = 0;
 
     ppocr::Image img_;
     ppocr::Image img90_;

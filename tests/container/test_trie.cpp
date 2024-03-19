@@ -19,7 +19,7 @@
 #define BOOST_TEST_MODULE TestTrie
 #include <boost/test/unit_test.hpp>
 
-#include "ppocr//container/trie.hpp"
+#include "ppocr/container/trie.hpp"
 
 #include <algorithm>
 #include <vector>

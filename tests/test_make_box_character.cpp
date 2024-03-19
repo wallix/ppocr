@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(TestImage)
         oss << img.section(box.index(), box.bounds());
         BOOST_CHECK_EQUAL(oss.str(), s);
         oss.str("");
-        idx = Index(box.x()+box.w(), idx.y());
+        idx = Index(box.x()+box.width(), idx.y());
     }
 
     BOOST_CHECK(!bool(make_box_character(img, idx, img.bounds())));

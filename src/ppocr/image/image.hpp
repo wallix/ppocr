@@ -1,16 +1,16 @@
 /*
 * Copyright (C) 2016 Wallix
-* 
+*
 * This library is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Lesser General Public License as published by the Free
 * Software Foundation; either version 2.1 of the License, or (at your option)
 * any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public License along
 * with this library; if not, write to the Free Software Foundation, Inc., 59
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -23,6 +23,8 @@
 #include "pixel.hpp"
 
 #include <memory>
+
+#include <cassert>
 
 
 namespace ppocr {
@@ -38,8 +40,8 @@ struct Image
 
     Image(Bounds const & bounds, PtrImageData data);
 
-    unsigned width() const noexcept { return bounds_.w(); }
-    unsigned height() const noexcept { return bounds_.h(); }
+    unsigned width() const noexcept { return bounds_.width(); }
+    unsigned height() const noexcept { return bounds_.height(); }
 
     Bounds const & bounds() const noexcept { return bounds_; }
     unsigned area() const noexcept { return bounds_.area(); }
@@ -51,18 +53,31 @@ struct Image
     Image clone() const;
 
     Pixel operator[](Index const & idx) const noexcept
-    { return data()[to_unsigned(idx)]; }
+    {
+        assert(to_size_t(idx) < width() * height());
+        return data()[to_size_t(idx)];
+    }
 
-    Pixel const * data() const noexcept { return this->data_.get(); }
+    Pixel const * data() const noexcept
+    {
+        return this->data_.get();
+    }
 
     Pixel const * data(Index const & idx) const noexcept
-    { return data() + to_unsigned(idx); }
+    {
+        assert(to_size_t(idx) < width() * height());
+        return data() + to_size_t(idx);
+    }
 
     Pixel const * data_end() const noexcept
-    { return data() + width() * height(); }
+    {
+        return data() + width() * height();
+    }
 
-    unsigned to_unsigned(Index const & idx) const noexcept
-    { return idx.y() * this->width() + idx.x(); }
+    unsigned to_size_t(Index const & idx) const noexcept
+    {
+        return idx.y() * this->width() + idx.x();
+    }
 
     explicit operator bool () const noexcept { return bool(this->data_); }
     PtrImageData release() { return std::move(data_); }
@@ -175,7 +190,7 @@ private:
 };
 
 inline HorizontalRange<AnyPixelGet> hrange(Image const & img, Index pos, Bounds bounds)
-{ return {img, pos, bounds.w(), AnyPixelGet(bounds.h(), img.width())}; }
+{ return {img, pos, bounds.width(), AnyPixelGet(bounds.height(), img.width())}; }
 
 
 namespace rng

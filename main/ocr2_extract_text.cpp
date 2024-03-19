@@ -161,7 +161,7 @@ int main(int ac, char **av)
 
         boxes.push_back(cbox);
 
-        x = cbox.x() + cbox.w();
+        x = cbox.x() + cbox.width();
     }
 
 

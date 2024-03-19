@@ -726,7 +726,7 @@ int main(int ac, char **av)
             compute_image(compute_image_data, dict, img_word, data_by_word);
         }
 
-        x = cbox.x() + cbox.w();
+        x = cbox.x() + cbox.width();
     }
 
     auto t2 = resolution_clock::now();

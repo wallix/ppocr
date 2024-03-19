@@ -55,7 +55,7 @@ void reduce_complexe_universe(
 
 template<class Strategy>
 struct data_exclusive_universe : data_strategy_loader<Strategy> {
-    unsigned limit;
+    size_t limit;
 };
 
 template<template<class...> class Temp, class Store, class Datas>
