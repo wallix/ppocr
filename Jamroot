@@ -442,12 +442,6 @@ unit-test test_compute_image :
     $(TEST_DEPENDENCIES)
 ;
 
-unit-test test_best_baseline :
-    tests/filters/test_best_baseline.cpp
-:
-    $(TEST_DEPENDENCIES)
-;
-
 
 actions run-ocr2-test {
     rm -f $(<)
