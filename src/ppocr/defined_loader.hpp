@@ -22,15 +22,9 @@
 #include "ppocr/loader2/datas_loader.hpp"
 
 #include "ppocr/strategies/alternation.hpp"
-// #include "ppocr/strategies/direction.hpp"
 #include "ppocr/strategies/hdirection.hpp"
 #include "ppocr/strategies/hdirection2.hpp"
-// #include "ppocr/strategies/agravity.hpp"
-// #include "ppocr/strategies/gravity.hpp"
-// #include "ppocr/strategies/compass.hpp"
-// #include "ppocr/strategies/dcompass.hpp"
 #include "ppocr/strategies/proportionality.hpp"
-// #include "ppocr/strategies/gravity2.hpp"
 #include "ppocr/strategies/hgravity.hpp"
 #include "ppocr/strategies/hgravity2.hpp"
 
@@ -93,19 +87,10 @@ using PpOcrSimpleDatas = mp_list<
     REGISTRY2(hdirection),
     REGISTRY2(hdirection2),
 
-    //REGISTRY(direction),
-
-    //REGISTRY(agravity),
-    //REGISTRY(gravity),
-
     REGISTRY2(hgravity),
     REGISTRY2(hgravity2),
 
-    //REGISTRY(compass),
-    //REGISTRY(dcompass),
-
     REGISTRY (proportionality),
-    //REGISTRY(gravity2),
 
     REGISTRY2(dvdirection),
 

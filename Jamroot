@@ -59,24 +59,18 @@ create_ppocr_rule
     src/ppocr/ocr2/word_lines.cpp
     src/ppocr/spell/dictionary.cpp
     src/ppocr/strategies/utils/basic_proportionality.cpp
-    src/ppocr/strategies/agravity.cpp
     src/ppocr/strategies/alternation.cpp
-    src/ppocr/strategies/compass.cpp
-    src/ppocr/strategies/dcompass.cpp
     src/ppocr/strategies/density.cpp
-    src/ppocr/strategies/direction.cpp
-    src/ppocr/strategies/dvdirection.cpp
     src/ppocr/strategies/dvdirection2.cpp
-    src/ppocr/strategies/dvgravity.cpp
+    src/ppocr/strategies/dvdirection.cpp
     src/ppocr/strategies/dvgravity2.cpp
+    src/ppocr/strategies/dvgravity.cpp
     src/ppocr/strategies/dzdensity.cpp
-    src/ppocr/strategies/gravity.cpp
-    src/ppocr/strategies/gravity2.cpp
     src/ppocr/strategies/hbar.cpp
-    src/ppocr/strategies/hdirection.cpp
     src/ppocr/strategies/hdirection2.cpp
-    src/ppocr/strategies/hgravity.cpp
+    src/ppocr/strategies/hdirection.cpp
     src/ppocr/strategies/hgravity2.cpp
+    src/ppocr/strategies/hgravity.cpp
     src/ppocr/strategies/proportionality.cpp
     src/ppocr/strategies/proportionality_zone.cpp
     src/ppocr/strategies/zone.cpp
@@ -94,27 +88,21 @@ alias image_compare   : src/ppocr/utils/image_compare.cpp.o ;
 alias loader2_image_io : src/ppocr/loader2/image_io.cpp.o ;
 
 alias strategies_src :
-    src/ppocr/strategies/agravity.cpp.o
     src/ppocr/strategies/alternation.cpp.o
-    src/ppocr/strategies/compass.cpp.o
-    src/ppocr/strategies/dcompass.cpp.o
     src/ppocr/strategies/density.cpp.o
-    src/ppocr/strategies/direction.cpp.o
     src/ppocr/strategies/dvdirection2.cpp.o
     src/ppocr/strategies/dvdirection.cpp.o
     src/ppocr/strategies/dvgravity2.cpp.o
     src/ppocr/strategies/dvgravity.cpp.o
     src/ppocr/strategies/dzdensity.cpp.o
-    src/ppocr/strategies/gravity2.cpp.o
-    src/ppocr/strategies/gravity.cpp.o
     src/ppocr/strategies/hbar.cpp.o
     src/ppocr/strategies/hdirection2.cpp.o
     src/ppocr/strategies/hdirection.cpp.o
     src/ppocr/strategies/hgravity2.cpp.o
     src/ppocr/strategies/hgravity.cpp.o
-    src/ppocr/strategies/zone.cpp.o
     src/ppocr/strategies/proportionality.cpp.o
     src/ppocr/strategies/proportionality_zone.cpp.o
+    src/ppocr/strategies/zone.cpp.o
     src/ppocr/strategies/utils/basic_proportionality.cpp.o
 ;
 
@@ -262,22 +250,6 @@ unit-test test_make_box_character :
     $(TEST_DEPENDENCIES)
 ;
 
-unit-test test_gravity :
-    tests/strategies/test_gravity.cpp
-:
-    <library>src/ppocr/strategies/gravity.cpp.o
-    <library>image_from_string_src
-    $(TEST_DEPENDENCIES)
-;
-
-unit-test test_gravity2 :
-    tests/strategies/test_gravity2.cpp
-:
-    <library>src/ppocr/strategies/gravity2.cpp.o
-    <library>image_from_string_src
-    $(TEST_DEPENDENCIES)
-;
-
 unit-test test_proportionality :
     tests/strategies/test_proportionality.cpp
 :
@@ -295,35 +267,10 @@ unit-test test_proportionality_zone :
     $(TEST_DEPENDENCIES)
 ;
 
-
-unit-test test_agravity :
-    tests/strategies/test_agravity.cpp
-:
-    <library>src/ppocr/strategies/agravity.cpp.o
-    <library>image_from_string_src
-    $(TEST_DEPENDENCIES)
-;
-
 unit-test test_alternation :
     tests/strategies/test_alternation.cpp
 :
     <library>src/ppocr/strategies/alternation.cpp.o
-    <library>image_from_string_src
-    $(TEST_DEPENDENCIES)
-;
-
-unit-test test_dcompass :
-    tests/strategies/test_dcompass.cpp
-:
-    <library>src/ppocr/strategies/dcompass.cpp.o
-    <library>image_from_string_src
-    $(TEST_DEPENDENCIES)
-;
-
-unit-test test_direction :
-    tests/strategies/test_direction.cpp
-:
-    <library>src/ppocr/strategies/direction.cpp.o
     <library>image_from_string_src
     $(TEST_DEPENDENCIES)
 ;

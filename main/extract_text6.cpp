@@ -21,7 +21,6 @@
 #include "ppocr/loader2/glyphs_loader.hpp"
 #include "ppocr/box_char/make_box_character.hpp"
 #include "ppocr/box_char/box.hpp"
-// #include "filters/line.hpp"
 
 #include "ppocr/defined_loader.hpp"
 
