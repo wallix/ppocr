@@ -59,7 +59,7 @@ create_ppocr_rule
     src/ppocr/ocr2/word_lines.cpp
     src/ppocr/spell/dictionary.cpp
     src/ppocr/strategies/utils/basic_proportionality.cpp
-    src/ppocr/strategies/alternation.cpp
+    src/ppocr/strategies/alternations.cpp
     src/ppocr/strategies/density.cpp
     src/ppocr/strategies/dvdirection2.cpp
     src/ppocr/strategies/dvdirection.cpp
@@ -88,7 +88,7 @@ alias image_compare   : src/ppocr/utils/image_compare.cpp.o ;
 alias loader2_image_io : src/ppocr/loader2/image_io.cpp.o ;
 
 alias strategies_src :
-    src/ppocr/strategies/alternation.cpp.o
+    src/ppocr/strategies/alternations.cpp.o
     src/ppocr/strategies/density.cpp.o
     src/ppocr/strategies/dvdirection2.cpp.o
     src/ppocr/strategies/dvdirection.cpp.o
@@ -267,10 +267,10 @@ unit-test test_proportionality_zone :
     $(TEST_DEPENDENCIES)
 ;
 
-unit-test test_alternation :
-    tests/strategies/test_alternation.cpp
+unit-test test_alternations :
+    tests/strategies/test_alternations.cpp
 :
-    <library>src/ppocr/strategies/alternation.cpp.o
+    <library>src/ppocr/strategies/alternations.cpp.o
     <library>image_from_string_src
     $(TEST_DEPENDENCIES)
 ;

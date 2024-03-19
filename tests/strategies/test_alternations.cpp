@@ -16,10 +16,10 @@
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#define BOOST_TEST_MODULE TestAuthentifierNew
+#define BOOST_TEST_MODULE TestStatAlternations
 #include <boost/test/unit_test.hpp>
 
-#include "ppocr/strategies/alternation.hpp"
+#include "ppocr/strategies/alternations.hpp"
 #include "ppocr/image/image_from_string.hpp"
 #include "ppocr/image/image.hpp"
 

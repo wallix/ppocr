@@ -16,7 +16,7 @@
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "ppocr/strategies/alternation.hpp"
+#include "ppocr/strategies/alternations.hpp"
 #include "ppocr/image/image.hpp"
 
 #include <ostream>

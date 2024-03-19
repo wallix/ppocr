@@ -27,10 +27,11 @@ namespace ppocr { namespace strategies {
 
 hdirection2::value_type hdirection2::load(Image const & img, Image const & /*img90*/) const
 {
-    auto const area = img.height() / 2 * img.width();
-    if (!area) {
+    auto const hby2 = img.height() / 2;
+    if (!hby2) {
         return 50;
     }
+    auto const area = hby2 * img.width();
     auto const top_bottom = utils::horizontal_direction(img);
     auto const ret = (area + top_bottom.top - top_bottom.bottom) * 100 / (area * 2);
     return ret;

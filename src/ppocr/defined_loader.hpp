@@ -21,7 +21,7 @@
 
 #include "ppocr/loader2/datas_loader.hpp"
 
-#include "ppocr/strategies/alternation.hpp"
+#include "ppocr/strategies/alternations.hpp"
 #include "ppocr/strategies/hdirection.hpp"
 #include "ppocr/strategies/hdirection2.hpp"
 #include "ppocr/strategies/proportionality.hpp"
