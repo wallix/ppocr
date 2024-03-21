@@ -24,6 +24,7 @@
 #include <type_traits>
 
 #include "ppocr/image/image.hpp"
+#include "ppocr/strategies/utils/context.hpp"
 #include <cassert>
 
 namespace ppocr {
@@ -40,6 +41,7 @@ template<class Strategy_, PolicyLoader Policy>
 struct Strategy
 {
     using strategy_type = Strategy_;
+    using ctx_type = typename Strategy_::ctx_type;
     constexpr static PolicyLoader policy = Policy;
 };
 
@@ -77,8 +79,12 @@ namespace details_ {
 
 template<class Strategy_>
 typename Strategy_::value_type
-load(Strategy_ const & strategy, PolicyLoader policy, Image const & img, Image const & img90)
-{ return policy == PolicyLoader::img ? strategy.load(img, img90) : strategy.load(img90, img); }
+load(Strategy_ const & strategy, PolicyLoader policy, Image const & img, Image const & img90, typename Strategy_::ctx_type& ctx)
+{
+    return policy == PolicyLoader::img
+        ? strategy.load(img, img90, ctx)
+        : strategy.load(img90, img, ctx);
+}
 
 template<class Strategy>
 struct Data
@@ -86,6 +92,7 @@ struct Data
     using strategy_type = typename Strategy::strategy_type;
     using value_type = typename strategy_type::value_type;
     using relationship_type = typename strategy_type::relationship_type;
+    using ctx_type = typename strategy_type::ctx_type;
 
     using container_type = std::vector<value_type>;
     using iterator = typename container_type::const_iterator;
@@ -107,11 +114,11 @@ struct Data
         return std::move(this->data_.values);
     }
 
-    void load(Image const & img, Image const & img90) {
+    void load(Image const & img, Image const & img90, ctx_type& ctx) {
         this->data_.values.push_back(::ppocr::loader2::load(
             get_strategy(),
-            Strategy::policy, img, img90)
-        );
+            Strategy::policy, img, img90, ctx
+        ));
     }
 
     value_type const & operator[](size_t i) const {
@@ -193,9 +200,8 @@ struct Datas : private Data<Strategies>...
 
     void load(Image const & img) {
         auto img90 = img.rotate90();
-        (void(std::initializer_list<char>{
-            (static_cast<Data<Strategies>&>(*this).load(img, img90), char())...
-        }));
+        ctx.reset();
+        (..., static_cast<Data<Strategies>&>(*this).load(img, img90, ctx));
     }
 
     bool lt(size_t i1, size_t i2) const {
@@ -205,6 +211,9 @@ struct Datas : private Data<Strategies>...
     bool eq(size_t i1, size_t i2) const {
         return details_::cmp_datas(i1, i2, details_::Eq(), details_::Noop(), get<Strategies>()...);
     }
+
+private:
+    unique_contexts_t<typename Strategies::ctx_type...> ctx;
 };
 
 
@@ -215,12 +224,12 @@ Data<Strategy> const & get_data(Datas<Strategies...> const & datas) {
 
 template<class Fn, class... Strategies>
 void apply_from_datas(Datas<Strategies...> const & datas, Fn fn) {
-    (void)std::initializer_list<char>{((void)(fn(datas.template get<Strategies>())), char())...};
+    (..., fn(datas.template get<Strategies>()));
 }
 
 template<class Fn, class... Strategies>
 void apply_from_datas(Datas<Strategies...> & datas, Fn fn) {
-    (void)std::initializer_list<char>{((void)(fn(datas.template get<Strategies>())), char())...};
+    (..., fn(datas.template get<Strategies>()));
 }
 
 } }

@@ -20,6 +20,7 @@
 #define PPOCR_SRC_STRATEGIES_HBAR_HPP
 
 #include "ppocr/strategies/relationship/equal.hpp"
+#include "ppocr/strategies/utils/context.hpp"
 
 namespace ppocr {
 
@@ -32,9 +33,11 @@ struct hbar
     using value_type = unsigned;
     using relationship_type = equal_relationship<value_type>;
 
+    using ctx_type = no_context;
+
     static constexpr bool one_axis = true;
 
-    value_type load(Image const & img, Image const & /*img90*/) const;
+    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     constexpr relationship_type relationship() const { return {}; }
     constexpr unsigned best_difference() const { return 0; }

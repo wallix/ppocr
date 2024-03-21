@@ -32,7 +32,8 @@ namespace {
     strategies::hbar::value_type to_hbar_value(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        return hbar.load(img, img);
+        no_context ctx;
+        return hbar.load(img, img, ctx);
     }
 }
 

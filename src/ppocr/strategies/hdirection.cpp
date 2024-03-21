@@ -24,7 +24,7 @@
 
 namespace ppocr { namespace strategies {
 
-hdirection::value_type hdirection::load(Image const & img, Image const & /*img90*/) const
+hdirection::value_type hdirection::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     auto const top_bottom = utils::horizontal_direction(img);
     auto const sum = top_bottom.top + top_bottom.bottom;

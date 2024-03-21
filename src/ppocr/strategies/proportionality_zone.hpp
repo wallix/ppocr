@@ -19,6 +19,9 @@
 #ifndef PPOCR_SRC_STRATEGIES_PROPORTIONALITY_ZONE_HPP
 #define PPOCR_SRC_STRATEGIES_PROPORTIONALITY_ZONE_HPP
 
+#include "ppocr/strategies/utils/context.hpp"
+#include "ppocr/strategies/utils/count_zone.hpp"
+
 #include <vector>
 
 namespace ppocr {
@@ -27,8 +30,10 @@ class Image;
 
 namespace strategies {
 
-struct proportionality_zone {
-    struct relationship_type {
+struct proportionality_zone
+{
+    struct relationship_type
+    {
         using value_type = std::vector<unsigned>;
         using result_type = unsigned;
 
@@ -45,7 +50,9 @@ struct proportionality_zone {
     };
     using value_type = relationship_type::value_type;
 
-    value_type load(Image const & img, Image const & /*img90*/) const;
+    using ctx_type = cache_context<utils::count_zone_fn>;
+
+    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     static constexpr bool one_axis() { return false; }
     constexpr relationship_type relationship() const { return {}; }

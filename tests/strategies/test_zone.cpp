@@ -33,7 +33,8 @@ namespace {
     A mk_zone(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        return zone_.load(img, img/*.rotate90()*/);
+        strategies::zone::ctx_type ctx;
+        return zone_.load(img, img/*.rotate90()*/, ctx);
     }
 }
 

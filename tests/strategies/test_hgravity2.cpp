@@ -34,7 +34,8 @@ namespace {
     D to_hgravity2_value(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        return hgravity2.load(img, img/*.rotate90()*/);
+        no_context ctx;
+        return hgravity2.load(img, img/*.rotate90()*/, ctx);
     }
 }
 

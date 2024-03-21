@@ -111,6 +111,7 @@ int main(int ac, char **av)
     using resolution_clock = std::chrono::high_resolution_clock;
     auto t1 = resolution_clock::now();
     unsigned i_space = 0;
+    PpOcrDataCtxs ctx;
     while (auto const cbox = make_box_character(img, {x, 0}, bounds)) {
         //min_y = std::min(cbox.y(), min_y);
         //bounds_y = std::max(cbox.y() + cbox.h(), bounds_y);
@@ -146,6 +147,7 @@ int main(int ac, char **av)
                 id_views,
                 img_word,
                 img_ctx.img90(),
+                ctx,
                 0.5
             );
             auto it = images_cache.emplace(

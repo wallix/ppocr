@@ -24,7 +24,7 @@
 
 namespace ppocr { namespace strategies {
 
-dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img90*/) const
+dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     auto const top_bottom = utils::diagonal_vertical_direction(img);
     auto const sum = top_bottom.top + top_bottom.bottom;

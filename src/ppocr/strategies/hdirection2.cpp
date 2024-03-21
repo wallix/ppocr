@@ -25,7 +25,7 @@
 
 namespace ppocr { namespace strategies {
 
-hdirection2::value_type hdirection2::load(Image const & img, Image const & /*img90*/) const
+hdirection2::value_type hdirection2::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     auto const hby2 = img.height() / 2;
     if (!hby2) {

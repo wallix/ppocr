@@ -24,7 +24,7 @@
 
 namespace ppocr { namespace strategies {
 
-dvgravity::value_type dvgravity::load(Image const & img, Image const & /*img90*/) const
+dvgravity::value_type dvgravity::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     auto const top_bottom = utils::diagonal_vertical_gravity(img);
     auto const sum = top_bottom.top + top_bottom.bottom;

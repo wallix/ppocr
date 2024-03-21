@@ -32,7 +32,8 @@ namespace {
     to_proportion(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        return proportionality_zone.load(img, img/*.rotate90()*/);
+        strategies::proportionality_zone::ctx_type ctx;
+        return proportionality_zone.load(img, img/*.rotate90()*/, ctx);
     }
 }
 

@@ -20,6 +20,7 @@
 #define PPOCR_SRC_STRATEGIES_HGRAVITY2_HPP
 
 #include "ppocr/strategies/relationship/interval.hpp"
+#include "ppocr/strategies/utils/context.hpp"
 
 namespace ppocr {
 
@@ -34,7 +35,9 @@ struct hgravity2
 
     static constexpr bool one_axis = true;
 
-    value_type load(Image const & img, Image const & /*img90*/) const;
+    using ctx_type = no_context;
+
+    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     relationship_type relationship() const;
     unsigned best_difference() const;

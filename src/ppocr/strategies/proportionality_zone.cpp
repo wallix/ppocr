@@ -26,11 +26,11 @@
 
 namespace ppocr { namespace strategies {
 
-proportionality_zone::value_type proportionality_zone::load(Image const & img, Image const & /*img90*/) const
+proportionality_zone::value_type proportionality_zone::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
 {
     proportionality_zone::value_type ret;
 
-    utils::ZoneInfo zone_info = utils::count_zone(img);
+    utils::ZoneInfo const& zone_info = ctx.compute(img);
 
     ret.resize(zone_info.count_zone());
     auto it = ret.begin();

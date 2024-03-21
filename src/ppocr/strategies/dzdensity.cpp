@@ -46,7 +46,7 @@ namespace {
     }
 }
 
-dzdensity::value_type dzdensity::load(Image const & img, Image const & /*img90*/) const
+dzdensity::value_type dzdensity::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     if (img.width() < 3 || img.height() < 3) {
         return 0;

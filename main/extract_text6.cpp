@@ -404,12 +404,13 @@ using data_to_strategy = typename Strategy::strategy_type;
 template<class LoaderStrategy>
 struct data_for_strategy {
     using strategy_type = data_to_strategy<LoaderStrategy>;
+    using ctx_type = typename strategy_type::ctx_type;
 
     typename strategy_type::value_type x;
 
     typename strategy_type::value_type
-    load(Image const & img, Image const & img90) {
-        x = loader2::load(strategy_type(), LoaderStrategy::policy, img, img90);
+    load(Image const & img, Image const & img90, ctx_type& ctx) {
+        x = loader2::load(strategy_type(), LoaderStrategy::policy, img, img90, ctx);
         return x;
     }
 };
@@ -421,7 +422,8 @@ void reduce_complexe_universe(
     loader2::Data<Strategy> const & data, Image const & img, Image const & img90
 ) {
     data_for_strategy<Strategy> store;
-    store.load(img, img90);
+    typename Strategy::ctx_type ctx;
+    store.load(img, img90, ctx);
     auto const count = data.count_posibilities() - 1;
     auto const limit = (count+1) / 2;
     out.clear();
@@ -496,7 +498,10 @@ void reduce_exclusive_universe(
     :  data_exclusive_universe<Strategies>...
     {} store;
     void(std::initializer_list<char>{((void)((
-        static_cast<data_for_strategy<Strategies>&>(store).load(img, img90),
+        [&]{
+            typename Strategies::ctx_type ctx;
+            return static_cast<data_for_strategy<Strategies>&>(store).load(img, img90, ctx);
+        }(),
         (static_cast<data_exclusive_universe<Strategies>&>(store).limit = get_count(datas.get<Strategies>())/2)
     )), char())...});
 
@@ -576,11 +581,14 @@ void compute_image(
 
     auto img90 = img.rotate90();
 
-    static_cast<data_for_strategy<FirstStrategy>&>(store).load(img, img90);
-    static_cast<data_for_strategy<SecondStrategy>&>(store).load(img, img90);
-    void(std::initializer_list<char>{((void)(
-        static_cast<data_for_strategy<Strategies>&>(store).load(img, img90)
-    ), char())...});
+    typename FirstStrategy::ctx_type ctx1;
+    typename SecondStrategy::ctx_type ctx2;
+    static_cast<data_for_strategy<FirstStrategy>&>(store).load(img, img90, ctx1);
+    static_cast<data_for_strategy<SecondStrategy>&>(store).load(img, img90, ctx2);
+    void(std::initializer_list<char>{((void)([&]{
+        typename Strategies::ctx_type ctx;
+        return static_cast<data_for_strategy<Strategies>&>(store).load(img, img90, ctx);
+    }()), char())...});
 
     auto const icat = static_cast<data_for_strategy<FirstStrategy>&>(store).x / ocr_div;
     auto const nb_u64 = o.nb_u64[icat];

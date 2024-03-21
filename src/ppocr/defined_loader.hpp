@@ -69,6 +69,33 @@ namespace details_
     {
         using type = DefaultDatas<T1..., T2..., T3...>;
     };
+
+
+    template<
+        class SimpleAlgos,
+        class ComplexAlgos,
+        class ExclusifAlgos
+    >
+    struct context_from_algos
+    {};
+
+    template<
+        class... SimpleAlgos,
+        class... ComplexAlgos,
+        class... ExclusifAlgos
+    >
+    struct context_from_algos<
+        mp_list<SimpleAlgos...>,
+        mp_list<ComplexAlgos...>,
+        mp_list<ExclusifAlgos...>
+    >
+    {
+        using type = unique_contexts_t<
+            typename SimpleAlgos::ctx_type...,
+            typename ComplexAlgos::ctx_type...,
+            typename ExclusifAlgos::ctx_type...
+        >;
+    };
 }
 
 #define REGISTRY(name) \
@@ -114,6 +141,12 @@ using PpOcrExclusiveDatas = mp_list<
 #undef REGISTRY
 
 using PpOcrDatas = details_::ppocr_to_datas<
+    PpOcrSimpleDatas,
+    PpOcrComplexDatas,
+    PpOcrExclusiveDatas
+>::type;
+
+using PpOcrDataCtxs = details_::context_from_algos<
     PpOcrSimpleDatas,
     PpOcrComplexDatas,
     PpOcrExclusiveDatas

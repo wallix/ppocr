@@ -268,7 +268,8 @@ struct data_for_strategy {
 
     typename strategy_type::value_type
     load(Image const & img, Image const & img90) {
-        x = loader2::load(strategy_type(), LoaderStrategy::policy, img, img90);
+        typename strategy_type::ctx_type ctx;
+        x = loader2::load(strategy_type(), LoaderStrategy::policy, img, img90, ctx);
         return x;
     }
 };

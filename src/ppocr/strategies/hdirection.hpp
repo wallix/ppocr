@@ -20,6 +20,7 @@
 #define PPOCR_SRC_STRATEGIES_HDIRECTION_HPP
 
 #include "ppocr/strategies/relationship/interval.hpp"
+#include "ppocr/strategies/utils/context.hpp"
 
 namespace ppocr {
 
@@ -32,9 +33,11 @@ struct hdirection
     using value_type = unsigned;
     using relationship_type = interval_relationship<value_type>;
 
+    using ctx_type = no_context;
+
     static constexpr bool one_axis = true;
 
-    value_type load(Image const & img, Image const & /*img90*/) const;
+    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     relationship_type relationship() const;
     unsigned best_difference() const;

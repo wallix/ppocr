@@ -41,9 +41,10 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
 
     strategies::alternations alternations;
     auto relationship = alternations.relationship();
+    no_context ctx;
 
     using alternations_t = strategies::alternations::alternations_type;
-    auto const a = alternations.load(img, img.rotate90());
+    auto const a = alternations.load(img, img.rotate90(), ctx);
     BOOST_CHECK(a[0] == alternations_t({1, 3}));
     BOOST_CHECK(a[1] == alternations_t({1, 2}));
     BOOST_CHECK(a[2] == alternations_t({1, 1}));
@@ -63,7 +64,7 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
         "-xxxx-"
     );
 
-    auto const a2 = alternations.load(img, img.rotate90());
+    auto const a2 = alternations.load(img, img.rotate90(), ctx);
     BOOST_CHECK(a2[0] == alternations_t({1, 3}));
     BOOST_CHECK(a2[1] == alternations_t({1, 2}));
     BOOST_CHECK(a2[2] == alternations_t({1, 3}));

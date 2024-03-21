@@ -24,7 +24,7 @@
 
 namespace ppocr { namespace strategies {
 
-hgravity::value_type hgravity::load(Image const & img, Image const & /*img90*/) const
+hgravity::value_type hgravity::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     auto const top_bottom = utils::horizontal_gravity(img);
     auto const sum = top_bottom.top + top_bottom.bottom;

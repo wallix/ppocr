@@ -27,18 +27,14 @@
 
 namespace ppocr { namespace strategies { namespace utils
 {
+    struct count_zone_fn;
+
     struct MappingZoneView
     {
         MappingZoneView(unsigned* zones, unsigned len)
         : zones(zones)
         , len(len)
         {}
-
-        unsigned& operator[](unsigned i)
-        {
-            assert(i < len);
-            return zones[i];
-        }
 
         unsigned operator[](unsigned i) const
         {
@@ -70,10 +66,20 @@ namespace ppocr { namespace strategies { namespace utils
     private:
         unsigned* zones;
         unsigned len;
+
+        friend class count_zone_fn;
+
+        unsigned& writable_get(unsigned i)
+        {
+            assert(i < len);
+            return zones[i];
+        }
     };
 
     struct ZoneInfo
     {
+        ZoneInfo() = default;
+
         ZoneInfo(unsigned count_zone)
         : _buffer(std::make_unique<unsigned[]>(count_zone * 4))
         , _count_zone(count_zone)
@@ -84,22 +90,22 @@ namespace ppocr { namespace strategies { namespace utils
             return _count_zone;
         }
 
-        MappingZoneView top()
+        MappingZoneView top() const
         {
             return view(0);
         }
 
-        MappingZoneView right()
+        MappingZoneView right() const
         {
             return view(1);
         }
 
-        MappingZoneView bottom()
+        MappingZoneView bottom() const
         {
             return view(2);
         }
 
-        MappingZoneView left()
+        MappingZoneView left() const
         {
             return view(3);
         }
@@ -121,9 +127,9 @@ namespace ppocr { namespace strategies { namespace utils
 
     private:
         std::unique_ptr<unsigned[]> _buffer;
-        unsigned _count_zone;
+        unsigned _count_zone = 0;
 
-        MappingZoneView view(unsigned d)
+        MappingZoneView view(unsigned d) const
         {
             return MappingZoneView{data(d), _count_zone};
         }
@@ -134,7 +140,21 @@ namespace ppocr { namespace strategies { namespace utils
         }
     };
 
-    inline ZoneInfo count_zone(const Image& img) {
+    struct count_zone_fn
+    {
+        ZoneInfo const& value() const
+        {
+            return zone;
+        }
+
+        void compute(const Image& img);
+
+    private:
+        ZoneInfo zone;
+    };
+
+    inline void count_zone_fn::compute(const Image& img)
+    {
         unsigned count_zone = 1;
         std::vector<unsigned> mirror(img.area() * 2, 0);
         unsigned* const stack = mirror.data() + img.area();
@@ -181,12 +201,12 @@ namespace ppocr { namespace strategies { namespace utils
             count_zone++;
         }
 
-        ZoneInfo zone{count_zone - 1};
+        zone = ZoneInfo{count_zone - 1};
 
         auto insert = [&](MappingZoneView m, unsigned x, unsigned y) {
             auto i = img.to_size_t({x, y});
             if (mirror[i]) {
-                ++m[mirror[i]-1];
+                ++m.writable_get(mirror[i]-1);
             }
         };
 
@@ -199,8 +219,6 @@ namespace ppocr { namespace strategies { namespace utils
             insert(zone.left(), 0, y);
             insert(zone.right(), img.width()-1, y);
         }
-
-        return zone;
     }
 
 } } }

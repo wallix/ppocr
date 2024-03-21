@@ -23,9 +23,9 @@
 
 namespace ppocr { namespace strategies {
 
-zone::value_type zone::load(const Image& img, const Image& /*img*/) const
+zone::value_type zone::load(const Image& img, const Image& /*img*/, ctx_type& ctx) const
 {
-    utils::ZoneInfo zone_info = utils::count_zone(img);
+    utils::ZoneInfo const& zone_info = ctx.compute(img);
 
     zone::value_type ret;
 

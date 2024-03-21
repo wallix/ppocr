@@ -25,7 +25,7 @@
 
 namespace ppocr { namespace strategies {
 
-hgravity2::value_type hgravity2::load(Image const & img, Image const & /*img90*/) const
+hgravity2::value_type hgravity2::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     auto const hby2 = img.height() / 2;
     if (!hby2) {

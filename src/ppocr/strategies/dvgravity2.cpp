@@ -24,7 +24,7 @@
 
 namespace ppocr { namespace strategies {
 
-dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90*/) const
+dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
 {
     auto const area = utils::diagonal_vertical_gravity_area(img);
     if (!area) {

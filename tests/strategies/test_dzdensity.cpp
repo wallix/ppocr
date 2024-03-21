@@ -33,7 +33,8 @@ namespace {
     D to_ddensity_id(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        return strategies::dzdensity(img, img.rotate90()).value();
+        no_context ctx;
+        return strategies::dzdensity(img, img.rotate90(), ctx).value();
     }
 }
 

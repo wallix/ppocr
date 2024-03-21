@@ -24,7 +24,7 @@
 
 namespace ppocr { namespace strategies {
 
-dvdirection2::value_type dvdirection2::load(const Image& img, const Image&) const
+dvdirection2::value_type dvdirection2::load(const Image& img, const Image&, ctx_type& /*ctx*/) const
 {
     auto const area = utils::diagonal_vertical_direction_area(img);
     if (!area) {

@@ -55,6 +55,8 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
 
     datas.load(img1);
     datas.load(img2);
+    auto img1_r90 = img1.rotate90();
+    auto img2_r90 = img2.rotate90();
 
     ocr2::Glyphs glyphs;
     glyphs.push_back({{0, 0}});
@@ -65,8 +67,9 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
     ocr2::DataIndexesOrdered<S1> const first_strategy_ordered(datas);
     ocr2::Probabilities probabilities(glyphs.size());
     ocr2::Probabilities tmp_probabilities(glyphs.size());
+    no_context ctx;
 
-    ocr2::compute_simple_universe(list_t{}, probabilities, datas, first_strategy_ordered, img1, img1.rotate90());
+    ocr2::compute_simple_universe(list_t{}, probabilities, datas, first_strategy_ordered, img1, img1_r90, ctx);
 
     {
         double prob[]{1., 0.92};
@@ -75,7 +78,7 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
         BOOST_CHECK_EQUAL(probabilities[1].prob, prob[probabilities[1].i]);
     }
 
-    ocr2::compute_simple_universe(list_t{}, probabilities, datas, first_strategy_ordered, img2, img2.rotate90());
+    ocr2::compute_simple_universe(list_t{}, probabilities, datas, first_strategy_ordered, img2, img2_r90, ctx);
 
     {
         double prob[]{0.92, 1.};
@@ -84,7 +87,7 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
         BOOST_CHECK_EQUAL(probabilities[1].prob, prob[probabilities[1].i]);
     }
 
-    ocr2::reduce_complexe_universe(list_t{}, probabilities, datas, img1, img1.rotate90());
+    ocr2::reduce_complexe_universe(list_t{}, probabilities, datas, img1, img1_r90, ctx);
 
     {
         double prob[]{0.92, 0.92};
@@ -93,7 +96,7 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
         BOOST_CHECK_EQUAL(probabilities[1].prob, prob[probabilities[1].i]);
     }
 
-    ocr2::reduce_complexe_universe(list_t{}, probabilities, datas, img2, img2.rotate90());
+    ocr2::reduce_complexe_universe(list_t{}, probabilities, datas, img2, img2_r90, ctx);
 
     {
         double prob[]{0.8464, 0.92};
@@ -104,7 +107,7 @@ BOOST_AUTO_TEST_CASE(TestComputeImage)
 
     ocr2::DataIndexesByWords const data_indexes_by_words(glyphs);
 
-    ocr2::reduce_exclusive_universe(list_t{}, probabilities, datas, img1, img1.rotate90(), data_indexes_by_words);
+    ocr2::reduce_exclusive_universe(list_t{}, probabilities, datas, img1, img1_r90, ctx, data_indexes_by_words);
 
     {
         double prob[]{0.8464, 0.92};

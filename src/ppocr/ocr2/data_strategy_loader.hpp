@@ -28,11 +28,12 @@ template<class LoaderStrategy>
 struct data_strategy_loader {
     using strategy_type = typename LoaderStrategy::strategy_type;
     using value_type = typename strategy_type::value_type;
+    using ctx_type = typename strategy_type::ctx_type;
 
     value_type x;
 
-    value_type load(ppocr::Image const & img, ppocr::Image const & img90) {
-        x = ppocr::loader2::load(strategy_type(), LoaderStrategy::policy, img, img90);
+    value_type load(ppocr::Image const & img, ppocr::Image const & img90, ctx_type& ctx) {
+        x = ppocr::loader2::load(strategy_type(), LoaderStrategy::policy, img, img90, ctx);
         return x;
     }
 };
