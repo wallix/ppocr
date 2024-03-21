@@ -20,6 +20,7 @@
 #define PPOCR_SRC_STRATEGIES_HDIRECTION2_HPP
 
 #include "ppocr/strategies/relationship/interval.hpp"
+#include "ppocr/strategies/utils/horizontal_direction.hpp"
 #include "ppocr/strategies/utils/context.hpp"
 
 namespace ppocr {
@@ -33,7 +34,7 @@ struct hdirection2
     using value_type = unsigned;
     using relationship_type = interval_relationship<value_type>;
 
-    using ctx_type = no_context;
+    using ctx_type = cache_context<utils::horizontal_direction_fn>;
 
     static constexpr bool one_axis = true;
 

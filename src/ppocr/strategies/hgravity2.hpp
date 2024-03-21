@@ -20,6 +20,7 @@
 #define PPOCR_SRC_STRATEGIES_HGRAVITY2_HPP
 
 #include "ppocr/strategies/relationship/interval.hpp"
+#include "ppocr/strategies/utils/horizontal_gravity.hpp"
 #include "ppocr/strategies/utils/context.hpp"
 
 namespace ppocr {
@@ -35,7 +36,7 @@ struct hgravity2
 
     static constexpr bool one_axis = true;
 
-    using ctx_type = no_context;
+    using ctx_type = cache_context<utils::horizontal_gravity_fn>;
 
     value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 

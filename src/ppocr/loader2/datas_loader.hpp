@@ -37,11 +37,23 @@ using std::size_t;
 
 enum class PolicyLoader { img, img90 };
 
+template<PolicyLoader Policy, class Ctx>
+struct MakeRotatedCtx
+{
+    struct type : Ctx {};
+};
+
+template<PolicyLoader Policy>
+struct MakeRotatedCtx<Policy, no_context>
+{
+    using type = no_context;
+};
+
 template<class Strategy_, PolicyLoader Policy>
 struct Strategy
 {
     using strategy_type = Strategy_;
-    using ctx_type = typename Strategy_::ctx_type;
+    using ctx_type = typename MakeRotatedCtx<Policy, typename Strategy_::ctx_type>::type;
     constexpr static PolicyLoader policy = Policy;
 };
 
@@ -77,13 +89,14 @@ namespace details_ {
     is_contiguous(unsigned) { return {}; }
 }
 
-template<class Strategy_>
-typename Strategy_::value_type
-load(Strategy_ const & strategy, PolicyLoader policy, Image const & img, Image const & img90, typename Strategy_::ctx_type& ctx)
+template<class Strategy>
+typename Strategy::value_type
+load(Strategy const & strategy, PolicyLoader policy, Image const & img, Image const & img90, typename Strategy::ctx_type& ctx)
 {
+    auto& real_ctx = static_cast<typename Strategy::ctx_type&>(ctx);
     return policy == PolicyLoader::img
-        ? strategy.load(img, img90, ctx)
-        : strategy.load(img90, img, ctx);
+        ? strategy.load(img, img90, real_ctx)
+        : strategy.load(img90, img, real_ctx);
 }
 
 template<class Strategy>
@@ -201,7 +214,9 @@ struct Datas : private Data<Strategies>...
     void load(Image const & img) {
         auto img90 = img.rotate90();
         ctx.reset();
-        (..., static_cast<Data<Strategies>&>(*this).load(img, img90, ctx));
+        (..., static_cast<Data<Strategies>&>(*this).load(
+            img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
+        ));
     }
 
     bool lt(size_t i1, size_t i2) const {

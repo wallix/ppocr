@@ -34,7 +34,7 @@ namespace {
     D to_hdirection2_value(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        no_context ctx;
+        strategies::hdirection2::ctx_type ctx;
         return hdirection2.load(img, img/*.rotate90()*/, ctx);
     }
 }

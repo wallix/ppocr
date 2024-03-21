@@ -34,7 +34,7 @@ namespace {
     D to_hgravity_value(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        no_context ctx;
+        strategies::hgravity::ctx_type ctx;
         return hgravity.load(img, img/*.rotate90()*/, ctx);
     }
 }

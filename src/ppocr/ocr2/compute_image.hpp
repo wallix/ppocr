@@ -50,7 +50,9 @@ void reduce_complexe_universe(
     UNPACK(reduce_universe_and_update_probability(
         probabilities,
         datas.template get<Strategies>(),
-        data_strategy_loader<Strategies>().load(img, img90, ctx),
+        data_strategy_loader<Strategies>().load(
+            img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
+        ),
         0.5
     ));
 }
@@ -98,7 +100,9 @@ void reduce_exclusive_universe(
     {} store;
 
     UNPACK((
-        static_cast<data_strategy_loader<Strategies>&>(store).load(img, img90, ctx),
+        static_cast<data_strategy_loader<Strategies>&>(store).load(
+            img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
+        ),
         (static_cast<data_exclusive_universe<Strategies>&>(store).limit
          = datas.template get<Strategies>().count_posibilities()/2)
     ));
@@ -166,13 +170,17 @@ void compute_simple_universe(
         probabilities,
         datas,
         first_strategy_ordered,
-        static_cast<data_strategy_loader<FirstStrategy>&>(store).load(img, img90, ctx)
+        static_cast<data_strategy_loader<FirstStrategy>&>(store).load(
+            img, img90, static_cast<typename FirstStrategy::ctx_type&>(ctx)
+        )
     );
 
     UNPACK(reduce_universe_with_distance(
         probabilities,
         datas.template get<Strategies>(),
-        static_cast<data_strategy_loader<Strategies>&>(store).load(img, img90, ctx),
+        static_cast<data_strategy_loader<Strategies>&>(store).load(
+            img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
+        ),
         (datas.template get<Strategies>().count_posibilities()-1)/10u
     ));
 

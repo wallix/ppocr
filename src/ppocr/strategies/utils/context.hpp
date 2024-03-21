@@ -21,7 +21,7 @@ struct no_context
 template<class Ctx>
 struct cache_context : Ctx
 {
-    auto const& compute(Image const & img)
+    decltype(auto) compute(Image const & img)
     {
         Ctx& ctx = *this;
         if (!is_loaded) {

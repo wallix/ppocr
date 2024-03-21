@@ -16,17 +16,15 @@
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "ppocr//strategies/hgravity.hpp"
-
-#include "ppocr/strategies/utils/horizontal_gravity.hpp"
+#include "ppocr/strategies/hgravity.hpp"
 
 #include "ppocr/image/image.hpp"
 
 namespace ppocr { namespace strategies {
 
-hgravity::value_type hgravity::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
+hgravity::value_type hgravity::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
 {
-    auto const top_bottom = utils::horizontal_gravity(img);
+    auto const top_bottom = ctx.compute(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }

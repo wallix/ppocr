@@ -20,6 +20,7 @@
 #define PPOCR_SRC_STRATEGIES_DVDIRECTION_HPP
 
 #include "ppocr/strategies/relationship/interval.hpp"
+#include "ppocr/strategies/utils/diagonal_vertical_direction.hpp"
 #include "ppocr/strategies/utils/context.hpp"
 
 namespace ppocr {
@@ -33,7 +34,7 @@ struct dvdirection
     using value_type = unsigned;
     using relationship_type = interval_relationship<value_type>;
 
-    using ctx_type = no_context;
+    using ctx_type = cache_context<utils::diagonal_vertical_direction_fn>;
 
     static constexpr bool one_axis = true;
 

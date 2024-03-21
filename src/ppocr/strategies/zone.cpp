@@ -18,7 +18,6 @@
 
 #include "ppocr/strategies/zone.hpp"
 #include "ppocr/image/image.hpp"
-#include "ppocr/strategies/utils/count_zone.hpp"
 
 
 namespace ppocr { namespace strategies {

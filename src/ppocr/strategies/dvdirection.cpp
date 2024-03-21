@@ -18,15 +18,13 @@
 
 #include "ppocr/strategies/dvdirection.hpp"
 
-#include "ppocr/strategies/utils/diagonal_vertical_direction.hpp"
-
 #include "ppocr/image/image.hpp"
 
 namespace ppocr { namespace strategies {
 
-dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
+dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
 {
-    auto const top_bottom = utils::diagonal_vertical_direction(img);
+    auto const top_bottom = ctx.compute(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }

@@ -18,7 +18,6 @@
 
 #include "ppocr/strategies/proportionality_zone.hpp"
 #include "ppocr/image/image.hpp"
-#include "ppocr/strategies/utils/count_zone.hpp"
 #include "ppocr/strategies/utils/relationship.hpp"
 
 #include <algorithm>
