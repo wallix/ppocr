@@ -21,13 +21,36 @@
 
 #include "ppocr/image/image.hpp"
 
-#include <vector>
 #include <memory>
 #include <cassert>
+#include <cstring>
 
 namespace ppocr { namespace strategies { namespace utils
 {
     struct count_zone_fn;
+
+    template<class T>
+    struct Buffer
+    {
+        T* alloc_and_init_to_zero(std::size_t n)
+        {
+            if (n > _capacity) {
+                _buffer.reset(new T[n * 2]);
+                _capacity = n * 2;
+            }
+            std::memset(data(), 0, n * sizeof(T));
+            return data();
+        }
+
+        T* data() const
+        {
+            return _buffer.get();
+        }
+
+    private:
+        std::unique_ptr<T[]> _buffer;
+        std::size_t _capacity = 0;
+    };
 
     struct MappingZoneView
     {
@@ -80,10 +103,11 @@ namespace ppocr { namespace strategies { namespace utils
     {
         ZoneInfo() = default;
 
-        ZoneInfo(unsigned count_zone)
-        : _buffer(std::make_unique<unsigned[]>(count_zone * 4))
-        , _count_zone(count_zone)
-        {}
+        void alloc(unsigned count_zone)
+        {
+            _buffer.alloc_and_init_to_zero(count_zone * 4);
+            _count_zone = count_zone;
+        }
 
         unsigned count_zone() const
         {
@@ -126,7 +150,7 @@ namespace ppocr { namespace strategies { namespace utils
         }
 
     private:
-        std::unique_ptr<unsigned[]> _buffer;
+        Buffer<unsigned> _buffer;
         unsigned _count_zone = 0;
 
         MappingZoneView view(unsigned d) const
@@ -136,7 +160,7 @@ namespace ppocr { namespace strategies { namespace utils
 
         unsigned* data(unsigned d) const
         {
-            return _buffer.get() + _count_zone * d;
+            return _buffer.data() + _count_zone * d;
         }
     };
 
@@ -151,13 +175,15 @@ namespace ppocr { namespace strategies { namespace utils
 
     private:
         ZoneInfo zone;
+        Buffer<unsigned> _buffer;
     };
 
     inline void count_zone_fn::compute(const Image& img)
     {
+        unsigned* mirror = _buffer.alloc_and_init_to_zero(img.area() * 2 + 2);
+        unsigned* const stack = mirror + img.area();
+
         unsigned count_zone = 1;
-        std::vector<unsigned> mirror(img.area() * 2, 0);
-        unsigned* const stack = mirror.data() + img.area();
 
         for (unsigned i = 0; i < img.area(); ++i) {
             if (mirror[i] || is_pix_letter(img.data()[i])) {
@@ -201,7 +227,7 @@ namespace ppocr { namespace strategies { namespace utils
             count_zone++;
         }
 
-        zone = ZoneInfo{count_zone - 1};
+        zone.alloc(count_zone - 1);
 
         auto insert = [&](MappingZoneView m, unsigned x, unsigned y) {
             auto i = img.to_size_t({x, y});
