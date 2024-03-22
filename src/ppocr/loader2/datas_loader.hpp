@@ -52,8 +52,7 @@ struct MakeRotatedCtx<Policy, no_context>
 template<class Strategy_, PolicyLoader Policy>
 struct Strategy
 {
-    using strategy_type = Strategy_;
-    using value_type = typename strategy_type::value_type;
+    using value_type = typename Strategy_::value_type;
     using relationship_type = typename Strategy_::relationship_type;
     using ctx_type = typename MakeRotatedCtx<Policy, typename Strategy_::ctx_type>::type;
     constexpr static PolicyLoader policy = Policy;
@@ -61,16 +60,16 @@ struct Strategy
     static value_type load(Image const & img, Image const & img90, ctx_type& ctx)
     {
         if constexpr (policy == PolicyLoader::img) {
-            return strategy_type::load(img, img90, ctx);
+            return Strategy_::load(img, img90, ctx);
         }
         else {
-            return strategy_type::load(img90, img, ctx);
+            return Strategy_::load(img90, img, ctx);
         }
     }
 
     static relationship_type relationship()
     {
-        return strategy_type::relationship();
+        return Strategy_::relationship();
     }
 };
 
@@ -119,7 +118,7 @@ load(Strategy const & strategy, PolicyLoader policy, Image const & img, Image co
 template<class Strategy>
 struct Data
 {
-    using strategy_type = typename Strategy::strategy_type;
+    using strategy_type = Strategy;
     using value_type = typename strategy_type::value_type;
     using relationship_type = typename strategy_type::relationship_type;
     using ctx_type = typename strategy_type::ctx_type;
@@ -145,10 +144,7 @@ struct Data
     }
 
     void load(Image const & img, Image const & img90, ctx_type& ctx) {
-        this->data_.values.push_back(::ppocr::loader2::load(
-            get_strategy(),
-            Strategy::policy, img, img90, ctx
-        ));
+        this->data_.values.push_back(Strategy::load(img, img90, ctx));
     }
 
     value_type const & operator[](size_t i) const {

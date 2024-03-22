@@ -398,12 +398,9 @@ double compute_probability(
     return prob;
 }
 
-template<class Strategy>
-using data_to_strategy = typename Strategy::strategy_type;
-
 template<class LoaderStrategy>
 struct data_for_strategy {
-    using strategy_type = data_to_strategy<LoaderStrategy>;
+    using strategy_type = LoaderStrategy;
     using ctx_type = typename strategy_type::ctx_type;
 
     typename strategy_type::value_type x;

@@ -257,12 +257,9 @@ struct compute_image_data_type
     }
 };
 
-template<class Strategy>
-using data_to_strategy = typename Strategy::strategy_type;
-
 template<class LoaderStrategy>
 struct data_for_strategy {
-    using strategy_type = data_to_strategy<LoaderStrategy>;
+    using strategy_type = LoaderStrategy;
 
     typename strategy_type::value_type x;
 

@@ -20,7 +20,6 @@
 #define PPOCR_SRC_OCR2_COMPUTE_IMAGE_HPP
 
 #include "ppocr/ocr2/reduce_universe.hpp"
-#include "ppocr/ocr2/data_strategy_loader.hpp"
 #include "ppocr/ocr2/data_indexes_ordered.hpp"
 #include "ppocr/ocr2/sort_probabilities.hpp"
 #include "ppocr/ocr2/insert_views.hpp"
@@ -32,11 +31,6 @@
 
 namespace ppocr { namespace ocr2 {
 
-#ifndef IN_IDE_PARSER
-# define UNPACK(...) void(std::initializer_list<char>{(void(__VA_ARGS__), char())...})
-#else
-# define UNPACK(a) void(std::initializer_list<char>{(void(a), char())...})
-#endif
 
 template<template<class...> class Tpl, class... Strategies, class Datas, class Ctx>
 void reduce_complexe_universe(
@@ -47,19 +41,19 @@ void reduce_complexe_universe(
     Image const & img90,
     Ctx& ctx
 ) {
-    UNPACK(reduce_universe_and_update_probability(
+    (..., reduce_universe_and_update_probability(
         probabilities,
         datas.template get<Strategies>(),
-        data_strategy_loader<Strategies>().load(
-            img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
-        ),
+        Strategies::load(img, img90, ctx),
         0.5
     ));
 }
 
 template<class Strategy>
-struct data_exclusive_universe : data_strategy_loader<Strategy> {
-    size_t limit;
+struct value_and_limit
+{
+    typename Strategy::value_type value;
+    unsigned limit;
 };
 
 template<template<class...> class Tpl, class... Strategies, class Datas, class Ctx>
@@ -75,22 +69,17 @@ void reduce_exclusive_universe(
     }
 
     struct
-    : data_exclusive_universe<Strategies>...
-    {} store;
-
-    UNPACK((
-        static_cast<data_strategy_loader<Strategies>&>(store).load(
-            img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
-        ),
-        (static_cast<data_exclusive_universe<Strategies>&>(store).limit
-         = datas.template get<Strategies>().count_posibilities() / 2)
-    ));
+    : value_and_limit<Strategies>...
+    {} const store {{
+        Strategies::load(img, img90, ctx),
+        datas.template get<Strategies>().count_posibilities() / 2,
+    }...};
 
     reduce_universe_by_word(probabilities, data_indexes_by_words, [&](unsigned i) {
         return (true && ... && datas.template get<Strategies>().get_relationship().in_dist(
             datas.template get<Strategies>()[i],
-            static_cast<data_strategy_loader<Strategies> const&>(store).x,
-            static_cast<data_exclusive_universe<Strategies> const&>(store).limit
+            static_cast<value_and_limit<Strategies> const&>(store).value,
+            static_cast<value_and_limit<Strategies> const&>(store).limit
         ));
     });
 }
@@ -125,6 +114,12 @@ void update_probability(Probabilities & probabilities, unsigned value, Data cons
     }
 }
 
+template<class Strategy>
+struct value_wrapper
+{
+    typename Strategy::value_type value;
+};
+
 template<
     template<class...> class Tpl,
     class FirstStrategyOrdered,
@@ -142,40 +137,39 @@ void compute_simple_universe(
     Image const & img90,
     Ctx& ctx
 ) {
-    struct
-    : data_strategy_loader<FirstStrategy>
-    , data_strategy_loader<Strategies>...
-    {} store;
-
     static_assert(std::is_same<FirstStrategyOrdered, FirstStrategy>::value, "is different");
+
+    auto first_value = FirstStrategy::load(img, img90, ctx);
 
     initialize_universe<FirstStrategy>(
         probabilities,
         datas,
         first_strategy_ordered,
-        static_cast<data_strategy_loader<FirstStrategy>&>(store).load(
-            img, img90, static_cast<typename FirstStrategy::ctx_type&>(ctx)
-        )
+        first_value
     );
 
-    UNPACK(reduce_universe_with_distance(
+    struct
+    : value_wrapper<Strategies>...
+    {} store {{
+        Strategies::load(img, img90, ctx)
+    }...};
+
+    (..., reduce_universe_with_distance(
         probabilities,
         datas.template get<Strategies>(),
-        static_cast<data_strategy_loader<Strategies>&>(store).load(
-            img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
-        ),
+        static_cast<value_wrapper<Strategies>&>(store).value,
         (datas.template get<Strategies>().count_posibilities()-1)/10u
     ));
 
     initialize_probability(
         probabilities,
-        static_cast<data_strategy_loader<FirstStrategy>&>(store).x,
+        first_value,
         datas.template get<FirstStrategy>()
     );
 
-    UNPACK(update_probability(
+    (..., update_probability(
         probabilities,
-        static_cast<data_strategy_loader<Strategies>&>(store).x,
+        static_cast<value_wrapper<Strategies>&>(store).value,
         datas.template get<Strategies>()
     ));
 }
@@ -240,8 +234,6 @@ view_ref_list compute_image(
 
     return cache_element;
 }
-
-#undef UNPACK
 
 } }
 
