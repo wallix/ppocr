@@ -22,7 +22,7 @@
 
 namespace ppocr { namespace strategies {
 
-density::value_type density::load(const Image& img, const Image& /*img90*/, ctx_type& /*ctx*/) const
+density::value_type density::load(const Image& img, const Image& /*img90*/, ctx_type& /*ctx*/)
 {
     unsigned count = 0;
     auto first = img.data();
@@ -35,7 +35,7 @@ density::value_type density::load(const Image& img, const Image& /*img90*/, ctx_
     return count * 100 / img.area();
 }
 
-density::relationship_type density::relationship() const
+density::relationship_type density::relationship()
 { return {100}; }
 
 } }

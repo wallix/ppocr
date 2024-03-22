@@ -48,9 +48,9 @@ struct zone {
 
     using ctx_type = cache_context<utils::count_zone_fn>;
 
-    value_type load(const Image & img, const Image & img90, ctx_type& ctx) const;
+    static value_type load(const Image & img, const Image & img90, ctx_type& ctx);
 
-    constexpr relationship_type relationship() const { return {}; }
+    static constexpr relationship_type relationship() { return {}; }
 };
 
 } }

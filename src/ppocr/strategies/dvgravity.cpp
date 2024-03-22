@@ -22,14 +22,14 @@
 
 namespace ppocr { namespace strategies {
 
-dvgravity::value_type dvgravity::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
+dvgravity::value_type dvgravity::load(Image const & img, Image const & /*img90*/, ctx_type& ctx)
 {
     auto const top_bottom = ctx.compute(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-dvgravity::relationship_type dvgravity::relationship() const
+dvgravity::relationship_type dvgravity::relationship()
 { return 200; }
 
 } }

@@ -58,7 +58,6 @@ create_ppocr_rule
     src/ppocr/ocr2/replacement.cpp
     src/ppocr/ocr2/word_lines.cpp
     src/ppocr/spell/dictionary.cpp
-    src/ppocr/strategies/utils/basic_proportionality.cpp
     src/ppocr/strategies/alternations.cpp
     src/ppocr/strategies/density.cpp
     src/ppocr/strategies/dvdirection2.cpp
@@ -103,7 +102,6 @@ alias strategies_src :
     src/ppocr/strategies/proportionality.cpp.o
     src/ppocr/strategies/proportionality_zone.cpp.o
     src/ppocr/strategies/zone.cpp.o
-    src/ppocr/strategies/utils/basic_proportionality.cpp.o
 ;
 
 alias image_src :
@@ -255,7 +253,6 @@ unit-test test_proportionality :
 :
     <library>src/ppocr/strategies/proportionality.cpp.o
     <library>image_from_string_src
-    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
     $(TEST_DEPENDENCIES)
 ;
 
@@ -280,7 +277,6 @@ unit-test test_hbar :
 :
     <library>src/ppocr/strategies/hbar.cpp.o
     <library>image_from_string_src
-    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
     $(TEST_DEPENDENCIES)
 ;
 
@@ -289,7 +285,6 @@ unit-test test_hdirection :
 :
     <library>src/ppocr/strategies/hdirection.cpp.o
     <library>image_from_string_src
-    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
     $(TEST_DEPENDENCIES)
 ;
 
@@ -298,7 +293,6 @@ unit-test test_hdirection2 :
 :
     <library>src/ppocr/strategies/hdirection2.cpp.o
     <library>image_from_string_src
-    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
     $(TEST_DEPENDENCIES)
 ;
 
@@ -307,7 +301,6 @@ unit-test test_hgravity :
 :
     <library>src/ppocr/strategies/hgravity.cpp.o
     <library>image_from_string_src
-    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
     $(TEST_DEPENDENCIES)
 ;
 
@@ -316,7 +309,6 @@ unit-test test_hgravity2 :
 :
     <library>src/ppocr/strategies/hgravity2.cpp.o
     <library>image_from_string_src
-    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
     $(TEST_DEPENDENCIES)
 ;
 
@@ -325,7 +317,6 @@ unit-test test_zone :
 :
     <library>src/ppocr/strategies/zone.cpp.o
     <library>image_from_string_src
-    <library>src/ppocr/strategies/utils/basic_proportionality.cpp.o
     $(TEST_DEPENDENCIES)
 ;
 

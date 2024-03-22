@@ -47,9 +47,9 @@ struct dzdensity
 
     using ctx_type = no_context;
 
-    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
+    static value_type load(Image const & img, Image const & img90, ctx_type& ctx);
 
-    relationship_type relationship() const;
+    static relationship_type relationship();
 };
 
 } }

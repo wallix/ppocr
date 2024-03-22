@@ -22,10 +22,10 @@
 
 namespace ppocr { namespace strategies {
 
-proportionality::value_type proportionality::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
+proportionality::value_type proportionality::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/)
 { return img.width() * 100 / (img.width() + img.height()); }
 
-proportionality::relationship_type proportionality::relationship() const
+proportionality::relationship_type proportionality::relationship()
 { return {100}; }
 
 } }

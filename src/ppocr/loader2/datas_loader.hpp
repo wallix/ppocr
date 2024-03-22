@@ -53,8 +53,25 @@ template<class Strategy_, PolicyLoader Policy>
 struct Strategy
 {
     using strategy_type = Strategy_;
+    using value_type = typename strategy_type::value_type;
+    using relationship_type = typename Strategy_::relationship_type;
     using ctx_type = typename MakeRotatedCtx<Policy, typename Strategy_::ctx_type>::type;
     constexpr static PolicyLoader policy = Policy;
+
+    static value_type load(Image const & img, Image const & img90, ctx_type& ctx)
+    {
+        if constexpr (policy == PolicyLoader::img) {
+            return strategy_type::load(img, img90, ctx);
+        }
+        else {
+            return strategy_type::load(img90, img, ctx);
+        }
+    }
+
+    static relationship_type relationship()
+    {
+        return strategy_type::relationship();
+    }
 };
 
 namespace details_ {

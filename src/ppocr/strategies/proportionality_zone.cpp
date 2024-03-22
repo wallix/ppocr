@@ -25,7 +25,7 @@
 
 namespace ppocr { namespace strategies {
 
-proportionality_zone::value_type proportionality_zone::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
+proportionality_zone::value_type proportionality_zone::load(Image const & img, Image const & /*img90*/, ctx_type& ctx)
 {
     proportionality_zone::value_type ret;
 

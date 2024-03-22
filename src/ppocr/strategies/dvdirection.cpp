@@ -22,14 +22,14 @@
 
 namespace ppocr { namespace strategies {
 
-dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
+dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img90*/, ctx_type& ctx)
 {
     auto const top_bottom = ctx.compute(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-dvdirection::relationship_type dvdirection::relationship() const
+dvdirection::relationship_type dvdirection::relationship()
 { return {200}; }
 
 } }

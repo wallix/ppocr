@@ -46,7 +46,7 @@ namespace {
     }
 }
 
-dzdensity::value_type dzdensity::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/) const
+dzdensity::value_type dzdensity::load(Image const & img, Image const & /*img90*/, ctx_type& /*ctx*/)
 {
     if (img.width() < 3 || img.height() < 3) {
         return 0;
@@ -66,7 +66,7 @@ dzdensity::value_type dzdensity::load(Image const & img, Image const & /*img90*/
     return dzdensity::value_type(res * 100 / area);
 }
 
-dzdensity::relationship_type dzdensity::relationship() const
+dzdensity::relationship_type dzdensity::relationship()
 { return {100}; }
 
 } }

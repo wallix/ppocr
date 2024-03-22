@@ -36,9 +36,9 @@ struct hgravity2
 
     using ctx_type = cache_context<utils::horizontal_gravity_fn>;
 
-    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
+    static value_type load(Image const & img, Image const & img90, ctx_type& ctx);
 
-    relationship_type relationship() const;
+    static relationship_type relationship();
 };
 
 } }

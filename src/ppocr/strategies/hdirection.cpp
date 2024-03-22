@@ -22,14 +22,14 @@
 
 namespace ppocr { namespace strategies {
 
-hdirection::value_type hdirection::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
+hdirection::value_type hdirection::load(Image const & img, Image const & /*img90*/, ctx_type& ctx)
 {
     auto const top_bottom = ctx.compute(img);
     auto const sum = top_bottom.top + top_bottom.bottom;
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-hdirection::relationship_type hdirection::relationship() const
+hdirection::relationship_type hdirection::relationship()
 { return {200}; }
 
 } }

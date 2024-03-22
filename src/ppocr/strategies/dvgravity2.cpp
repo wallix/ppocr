@@ -22,7 +22,7 @@
 
 namespace ppocr { namespace strategies {
 
-dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
+dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90*/, ctx_type& ctx)
 {
     auto const area = utils::diagonal_vertical_gravity_area(img);
     if (!area) {
@@ -34,7 +34,7 @@ dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90
     return ret;
 }
 
-dvgravity2::relationship_type dvgravity2::relationship() const
+dvgravity2::relationship_type dvgravity2::relationship()
 { return {100}; }
 
 } }

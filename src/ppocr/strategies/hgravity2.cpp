@@ -23,7 +23,7 @@
 
 namespace ppocr { namespace strategies {
 
-hgravity2::value_type hgravity2::load(Image const & img, Image const & /*img90*/, ctx_type& ctx) const
+hgravity2::value_type hgravity2::load(Image const & img, Image const & /*img90*/, ctx_type& ctx)
 {
     auto const hby2 = img.height() / 2;
     if (!hby2) {
@@ -35,7 +35,7 @@ hgravity2::value_type hgravity2::load(Image const & img, Image const & /*img90*/
     return ret;
 }
 
-hgravity2::relationship_type hgravity2::relationship() const
+hgravity2::relationship_type hgravity2::relationship()
 { return {100}; }
 
 } }

@@ -22,7 +22,7 @@
 
 namespace ppocr { namespace strategies {
 
-zone::value_type zone::load(const Image& img, const Image& /*img*/, ctx_type& ctx) const
+zone::value_type zone::load(const Image& img, const Image& /*img*/, ctx_type& ctx)
 {
     utils::ZoneInfo const& zone_info = ctx.compute(img);
 

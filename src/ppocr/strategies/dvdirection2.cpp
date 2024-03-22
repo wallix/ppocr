@@ -22,7 +22,7 @@
 
 namespace ppocr { namespace strategies {
 
-dvdirection2::value_type dvdirection2::load(const Image& img, const Image&, ctx_type& ctx) const
+dvdirection2::value_type dvdirection2::load(const Image& img, const Image&, ctx_type& ctx)
 {
     auto const area = utils::diagonal_vertical_direction_area(img);
     if (!area) {
@@ -34,7 +34,7 @@ dvdirection2::value_type dvdirection2::load(const Image& img, const Image&, ctx_
     return ret;
 }
 
-dvdirection2::relationship_type dvdirection2::relationship() const
+dvdirection2::relationship_type dvdirection2::relationship()
 { return {100}; }
 
 } }

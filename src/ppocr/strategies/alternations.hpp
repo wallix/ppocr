@@ -104,9 +104,9 @@ struct alternations
 
     using ctx_type = no_context;
 
-    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
+    static value_type load(Image const & img, Image const & img90, ctx_type& ctx);
 
-    constexpr relationship_type relationship() const { return {}; }
+    static constexpr relationship_type relationship() { return {}; }
 };
 
 std::ostream & operator<<(std::ostream &, alternations::alternations_type const &);

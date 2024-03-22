@@ -52,9 +52,9 @@ struct proportionality_zone
 
     using ctx_type = cache_context<utils::count_zone_fn>;
 
-    value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
+    static value_type load(Image const & img, Image const & img90, ctx_type& ctx);
 
-    constexpr relationship_type relationship() const { return {}; }
+    static constexpr relationship_type relationship() { return {}; }
 };
 
 } }

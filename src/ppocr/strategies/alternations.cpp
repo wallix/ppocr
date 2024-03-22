@@ -43,7 +43,7 @@ namespace {
     }
 }
 
-alternations::value_type alternations::load(const Image& img, const Image& img90, ctx_type& /*ctx*/) const
+alternations::value_type alternations::load(const Image& img, const Image& img90, ctx_type& /*ctx*/)
 {
     alternations::value_type seq_alternations;
     auto it = seq_alternations.begin();
