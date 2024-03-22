@@ -50,10 +50,18 @@ void reduce_complexe_universe(
 }
 
 template<class Strategy>
-struct value_and_limit
+struct value_for_strategy
 {
     typename Strategy::value_type value;
-    unsigned limit;
+};
+
+template<class... Strategy>
+struct value_for_strategies : value_for_strategy<Strategy>...
+{
+    template<class Ctx>
+    value_for_strategies(Image const & img, Image const & img90, Ctx& ctx)
+      : value_for_strategy<Strategy>{Strategy::load(img, img90, ctx)}...
+    {}
 };
 
 template<template<class...> class Tpl, class... Strategies, class Datas, class Ctx>
@@ -68,18 +76,13 @@ void reduce_exclusive_universe(
         return ;
     }
 
-    struct
-    : value_and_limit<Strategies>...
-    {} const store {{
-        Strategies::load(img, img90, ctx),
-        Strategies::relationship_type::count() / 2,
-    }...};
+    value_for_strategies<Strategies...> const store(img, img90, ctx);
 
     reduce_universe_by_word(probabilities, data_indexes_by_words, [&](unsigned i) {
         return (true && ... && datas.template get<Strategies>().in_dist_with(
             i,
-            static_cast<value_and_limit<Strategies> const&>(store).value,
-            static_cast<value_and_limit<Strategies> const&>(store).limit
+            static_cast<value_for_strategy<Strategies> const&>(store).value,
+            Strategies::relationship_type::count() / 2
         ));
     });
 }
@@ -93,8 +96,7 @@ void initialize_universe(
     unsigned value
 ) {
     probabilities.clear();
-    auto & data = datas.template get<Strategy>();
-    auto d = (data.count_posibilities()-1)/10u;
+    auto d = (Strategy::relationship_type::count()-1) / 10u;
     for (auto idx : first_strategy_ordered.get_range(datas, value, d)) {
         probabilities.emplace_back(idx);
     }
@@ -113,12 +115,6 @@ void update_probability(Probabilities & probabilities, unsigned value, Data cons
         prob.prob *= Data::relationship_type::dist(data[prob.i], value);
     }
 }
-
-template<class Strategy>
-struct value_wrapper
-{
-    typename Strategy::value_type value;
-};
 
 template<
     template<class...> class Tpl,
@@ -148,17 +144,13 @@ void compute_simple_universe(
         first_value
     );
 
-    struct
-    : value_wrapper<Strategies>...
-    {} store {{
-        Strategies::load(img, img90, ctx)
-    }...};
+    value_for_strategies<Strategies...> store(img, img90, ctx);
 
     (..., reduce_universe_with_distance(
         probabilities,
         datas.template get<Strategies>(),
-        static_cast<value_wrapper<Strategies>&>(store).value,
-        (datas.template get<Strategies>().count_posibilities()-1)/10u
+        static_cast<value_for_strategy<Strategies>&>(store).value,
+        (Strategies::relationship_type::count()-1) / 10u
     ));
 
     initialize_probability(
@@ -169,7 +161,7 @@ void compute_simple_universe(
 
     (..., update_probability(
         probabilities,
-        static_cast<value_wrapper<Strategies>&>(store).value,
+        static_cast<value_for_strategy<Strategies>&>(store).value,
         datas.template get<Strategies>()
     ));
 }
