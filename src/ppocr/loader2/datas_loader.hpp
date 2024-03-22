@@ -55,6 +55,7 @@ struct Strategy
     using value_type = typename Strategy_::value_type;
     using relationship_type = typename Strategy_::relationship_type;
     using ctx_type = typename MakeRotatedCtx<Policy, typename Strategy_::ctx_type>::type;
+
     constexpr static PolicyLoader policy = Policy;
 
     static value_type load(Image const & img, Image const & img90, ctx_type& ctx)
@@ -65,11 +66,6 @@ struct Strategy
         else {
             return Strategy_::load(img90, img, ctx);
         }
-    }
-
-    static relationship_type relationship()
-    {
-        return Strategy_::relationship();
     }
 };
 
@@ -151,27 +147,23 @@ struct Data
         return data_.values[i];
     }
 
-    relationship_type const & get_relationship() const {
-        return static_cast<relationship_type const &>(data_);
-    }
-
-    strategy_type const & get_strategy() const {
-        return static_cast<strategy_type const &>(this->data_);
+    relationship_type get_relationship() const {
+        return relationship_type();
     }
 
     typename relationship_type::result_type
     relationship(value_type const & a, value_type const & b) const {
-        return get_relationship()(a, b);
+        return relationship_type::compute(a, b);
     }
 
     double dist(value_type const & a, value_type const & b) const {
-        double const ret = get_relationship().dist(a, b);
+        double const ret = relationship_type::dist(a, b);
         assert(0. <= ret && ret <= 1.);
         return ret;
     }
 
     unsigned count_posibilities() const {
-        return get_relationship().count();
+        return relationship_type::count();
     }
 
     std::size_t size() const noexcept {
@@ -186,13 +178,13 @@ struct Data
     iterator end() const { return this->data().end(); }
 
 private:
-    struct impl : strategy_type, relationship_type /*empty class optimization*/ {
+    struct impl
+    {
         container_type values;
 
         template<class... Args>
         impl(Args && ... args)
-        : relationship_type(static_cast<strategy_type const &>(*this).relationship())
-        , values(std::forward<Args>(args)...)
+        : values(std::forward<Args>(args)...)
         {}
     } data_;
 };

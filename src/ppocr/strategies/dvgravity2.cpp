@@ -34,7 +34,4 @@ dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90
     return ret;
 }
 
-dvgravity2::relationship_type dvgravity2::relationship()
-{ return {100}; }
-
 } }

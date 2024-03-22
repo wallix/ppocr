@@ -29,7 +29,4 @@ dvdirection::value_type dvdirection::load(Image const & img, Image const & /*img
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-dvdirection::relationship_type dvdirection::relationship()
-{ return {200}; }
-
 } }

@@ -42,7 +42,8 @@ namespace {
 BOOST_AUTO_TEST_CASE(TestHGravity)
 {
     D value;
-    auto hInterval = hgravity.relationship().count() / 2;
+    using relationship = strategies::hgravity::relationship_type;
+    auto hInterval = relationship::count() / 2;
 
     value = to_hgravity_value({3, 3},
         "---"
@@ -95,14 +96,12 @@ BOOST_AUTO_TEST_CASE(TestHGravity)
     );
     BOOST_CHECK_EQUAL(value, (6 + 2 - 4) *100/6);
 
-    auto const & relationship = hgravity.relationship();
-
-    BOOST_CHECK_EQUAL(100, relationship(hInterval, hInterval));
-    BOOST_CHECK_EQUAL(50,  relationship(hInterval*2, hInterval));
-    BOOST_CHECK_EQUAL(75,  relationship(hInterval+hInterval/2, hInterval));
-    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, hInterval));
-    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, 0));
-    BOOST_CHECK_EQUAL(25,  relationship(hInterval/2, hInterval*2));
-    BOOST_CHECK_EQUAL(92,  relationship(hInterval/2, hInterval/3));
-    BOOST_CHECK_EQUAL(79,  relationship(88, 45));
+    BOOST_CHECK_EQUAL(100, relationship::compute(hInterval, hInterval));
+    BOOST_CHECK_EQUAL(50,  relationship::compute(hInterval*2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship::compute(hInterval+hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship::compute(hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship::compute(hInterval/2, 0));
+    BOOST_CHECK_EQUAL(25,  relationship::compute(hInterval/2, hInterval*2));
+    BOOST_CHECK_EQUAL(92,  relationship::compute(hInterval/2, hInterval/3));
+    BOOST_CHECK_EQUAL(79,  relationship::compute(88, 45));
 }

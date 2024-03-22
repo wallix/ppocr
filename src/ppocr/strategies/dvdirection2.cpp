@@ -34,7 +34,4 @@ dvdirection2::value_type dvdirection2::load(const Image& img, const Image&, ctx_
     return ret;
 }
 
-dvdirection2::relationship_type dvdirection2::relationship()
-{ return {100}; }
-
 } }

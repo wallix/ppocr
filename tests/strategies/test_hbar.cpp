@@ -132,9 +132,9 @@ BOOST_AUTO_TEST_CASE(TestHBar)
     BOOST_CHECK_EQUAL(value, 2);
 
 
-    auto const & relationship = hbar.relationship();
+    using relationship = strategies::hbar::relationship_type;
 
-    BOOST_CHECK_EQUAL(true, relationship(0, 0));
-    BOOST_CHECK_EQUAL(true, relationship(2, 2));
-    BOOST_CHECK_EQUAL(false, relationship(2, 1));
+    BOOST_CHECK_EQUAL(true, relationship::compute(0, 0));
+    BOOST_CHECK_EQUAL(true, relationship::compute(2, 2));
+    BOOST_CHECK_EQUAL(false, relationship::compute(2, 1));
 }

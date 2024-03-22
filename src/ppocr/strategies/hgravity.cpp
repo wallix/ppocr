@@ -29,7 +29,4 @@ hgravity::value_type hgravity::load(Image const & img, Image const & /*img90*/, 
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-hgravity::relationship_type hgravity::relationship()
-{ return {200}; }
-
 } }

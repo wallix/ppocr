@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(TestProportionality)
     );
     BOOST_CHECK_EQUAL(proportion, 60);
 
-    auto const & relationship = proportionality.relationship();
-    BOOST_CHECK_EQUAL(86, relationship(20, 6));
-    BOOST_CHECK_EQUAL(86, relationship(6, 20));
+    using relationship = strategies::proportionality::relationship_type;
+    BOOST_CHECK_EQUAL(86, relationship::compute(20, 6));
+    BOOST_CHECK_EQUAL(86, relationship::compute(6, 20));
 }

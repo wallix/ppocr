@@ -37,24 +37,20 @@ struct proportionality_zone
         using value_type = std::vector<unsigned>;
         using result_type = unsigned;
 
-        constexpr relationship_type() noexcept {}
-
-        result_type operator()(value_type const & a, value_type const & b) const;
+        static result_type compute(value_type const & a, value_type const & b);
 
         /// \return [0, 1]
-        double dist(value_type const & a, value_type const & b) const;
+        static double dist(value_type const & a, value_type const & b);
 
-        bool in_dist(value_type const & a, value_type const & b, unsigned d) const;
+        static bool in_dist(value_type const & a, value_type const & b, unsigned d);
 
-        unsigned count() const;
+        static unsigned count();
     };
     using value_type = relationship_type::value_type;
 
     using ctx_type = cache_context<utils::count_zone_fn>;
 
     static value_type load(Image const & img, Image const & img90, ctx_type& ctx);
-
-    static constexpr relationship_type relationship() { return {}; }
 };
 
 } }

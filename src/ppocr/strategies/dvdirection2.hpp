@@ -32,13 +32,11 @@ namespace strategies {
 struct dvdirection2
 {
     using value_type = unsigned;
-    using relationship_type = interval_relationship<value_type>;
+    using relationship_type = interval_relationship<value_type, 100>;
 
     using ctx_type = cache_context<utils::diagonal_vertical_direction_fn>;
 
     static value_type load(Image const & img, Image const & img90, ctx_type& ctx);
-
-    static relationship_type relationship();
 };
 
 } }

@@ -35,7 +35,4 @@ hgravity2::value_type hgravity2::load(Image const & img, Image const & /*img90*/
     return ret;
 }
 
-hgravity2::relationship_type hgravity2::relationship()
-{ return {100}; }
-
 } }

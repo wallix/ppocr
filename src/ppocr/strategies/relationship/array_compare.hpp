@@ -29,9 +29,7 @@ struct array_compare_relationship
     using value_type = std::array<T, N>;
     using result_type = unsigned;
 
-    constexpr array_compare_relationship() noexcept {}
-
-    result_type operator()(value_type const & a, value_type const & b) const
+    static result_type compute(value_type const & a, value_type const & b)
     {
         result_type n{};
         auto it = std::begin(a);
@@ -45,13 +43,20 @@ struct array_compare_relationship
     }
 
     /// \return [0, 1]
-    double dist(value_type const & a, value_type const & b) const
-    { return static_cast<double>(operator()(a, b)) / 100.; }
+    static double dist(value_type const & a, value_type const & b)
+    {
+        return static_cast<double>(compute(a, b)) / 100.;
+    }
 
-    bool in_dist(value_type const & a, value_type const & b, unsigned d) const
-    { return operator()(a, b) >= d; }
+    static bool in_dist(value_type const & a, value_type const & b, unsigned d)
+    {
+        return compute(a, b) >= d;
+    }
 
-    unsigned count() const { return 101; }
+    static unsigned count()
+    {
+        return 101;
+    }
 };
 
 } }

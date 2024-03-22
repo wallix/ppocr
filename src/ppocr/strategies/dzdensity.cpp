@@ -66,7 +66,4 @@ dzdensity::value_type dzdensity::load(Image const & img, Image const & /*img90*/
     return dzdensity::value_type(res * 100 / area);
 }
 
-dzdensity::relationship_type dzdensity::relationship()
-{ return {100}; }
-
 } }

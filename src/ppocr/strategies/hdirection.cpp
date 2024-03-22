@@ -29,7 +29,4 @@ hdirection::value_type hdirection::load(Image const & img, Image const & /*img90
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-hdirection::relationship_type hdirection::relationship()
-{ return {200}; }
-
 } }

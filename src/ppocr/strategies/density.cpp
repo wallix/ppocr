@@ -35,7 +35,4 @@ density::value_type density::load(const Image& img, const Image& /*img90*/, ctx_
     return count * 100 / img.area();
 }
 
-density::relationship_type density::relationship()
-{ return {100}; }
-
 } }

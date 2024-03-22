@@ -26,15 +26,16 @@
 
 using namespace ppocr;
 
-using D = ppocr::strategies::hdirection::value_type;
+using Strategy = strategies::hdirection;
+using D = Strategy::value_type;
 
 namespace {
-    strategies::hdirection hdirection;
+    Strategy hdirection;
 
     D to_hdirection_value(Bounds bnd, const char * data_text)
     {
         Image img = image_from_string(bnd, data_text);
-        strategies::hdirection::ctx_type ctx;
+        Strategy::ctx_type ctx;
         return hdirection.load(img, img/*.rotate90()*/, ctx);
     }
 }
@@ -42,7 +43,7 @@ namespace {
 BOOST_AUTO_TEST_CASE(TestHDirection)
 {
     D value;
-    auto hInterval = hdirection.relationship().count() / 2;
+    auto hInterval = Strategy::relationship_type::count() / 2;
 
     value = to_hdirection_value({3, 3},
         "---"
@@ -95,14 +96,14 @@ BOOST_AUTO_TEST_CASE(TestHDirection)
     );
     BOOST_CHECK_EQUAL(value, (hInterval*2) / 4);
 
-    auto const & relationship = hdirection.relationship();
+    using relationship = Strategy::relationship_type;
 
-    BOOST_CHECK_EQUAL(100, relationship(hInterval, hInterval));
-    BOOST_CHECK_EQUAL(50,  relationship(hInterval*2, hInterval));
-    BOOST_CHECK_EQUAL(75,  relationship(hInterval+hInterval/2, hInterval));
-    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, hInterval));
-    BOOST_CHECK_EQUAL(75,  relationship(hInterval/2, 0));
-    BOOST_CHECK_EQUAL(25,  relationship(hInterval/2, hInterval*2));
-    BOOST_CHECK_EQUAL(92,  relationship(hInterval/2, hInterval/3));
-    BOOST_CHECK_EQUAL(79,  relationship(88, 45));
+    BOOST_CHECK_EQUAL(100, relationship::compute(hInterval, hInterval));
+    BOOST_CHECK_EQUAL(50,  relationship::compute(hInterval*2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship::compute(hInterval+hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship::compute(hInterval/2, hInterval));
+    BOOST_CHECK_EQUAL(75,  relationship::compute(hInterval/2, 0));
+    BOOST_CHECK_EQUAL(25,  relationship::compute(hInterval/2, hInterval*2));
+    BOOST_CHECK_EQUAL(92,  relationship::compute(hInterval/2, hInterval/3));
+    BOOST_CHECK_EQUAL(79,  relationship::compute(88, 45));
 }

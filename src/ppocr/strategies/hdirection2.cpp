@@ -35,7 +35,4 @@ hdirection2::value_type hdirection2::load(Image const & img, Image const & /*img
     return ret;
 }
 
-hdirection2::relationship_type hdirection2::relationship()
-{ return {100}; }
-
 } }

@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
     );
 
     strategies::alternations alternations;
-    auto relationship = alternations.relationship();
+    using relationship = strategies::alternations::relationship_type;
     no_context ctx;
 
     using alternations_t = strategies::alternations::alternations_type;
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
     BOOST_CHECK(a[4] == alternations_t({1, 5}));
     BOOST_CHECK(a[5] == alternations_t({1, 1}));
     BOOST_CHECK(a[6] == alternations_t({1, 3}));
-    BOOST_CHECK_EQUAL(100, relationship(a, a));
+    BOOST_CHECK_EQUAL(100, relationship::compute(a, a));
 
     img = image_from_string({6, 7},
         "-x--x-"
@@ -72,8 +72,8 @@ BOOST_AUTO_TEST_CASE(TestAlternation)
     BOOST_CHECK(a2[4] == alternations_t({0, 4}));
     BOOST_CHECK(a2[5] == alternations_t({1, 1}));
     BOOST_CHECK(a2[6] == alternations_t({1, 3}));
-    BOOST_CHECK_EQUAL(5*100/7, relationship(a, a2));
-    BOOST_CHECK_EQUAL(5*100/7, relationship(a2, a));
+    BOOST_CHECK_EQUAL(5*100/7, relationship::compute(a, a2));
+    BOOST_CHECK_EQUAL(5*100/7, relationship::compute(a2, a));
 
     std::stringstream ss;
     for (auto & x : a2) {

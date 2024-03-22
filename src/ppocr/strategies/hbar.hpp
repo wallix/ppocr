@@ -36,8 +36,6 @@ struct hbar
     using ctx_type = no_context;
 
     static value_type load(Image const & img, Image const & img90, ctx_type& ctx);
-
-    static constexpr relationship_type relationship() { return {}; }
 };
 
 }

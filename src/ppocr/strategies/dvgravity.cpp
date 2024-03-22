@@ -29,7 +29,4 @@ dvgravity::value_type dvgravity::load(Image const & img, Image const & /*img90*/
     return sum ? (sum + top_bottom.top - top_bottom.bottom) * 100 / sum : 100;
 }
 
-dvgravity::relationship_type dvgravity::relationship()
-{ return 200; }
-
 } }
