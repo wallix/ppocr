@@ -23,17 +23,17 @@
 
 namespace ppocr { namespace strategies {
 
-template<class T, std::size_t N, class R = unsigned>
+template<class T, std::size_t N>
 struct array_compare_relationship
 {
     using value_type = std::array<T, N>;
-    using result_type = R;
+    using result_type = unsigned;
 
     constexpr array_compare_relationship() noexcept {}
 
     result_type operator()(value_type const & a, value_type const & b) const
     {
-        R n{};
+        result_type n{};
         auto it = std::begin(a);
         for (auto const & i : b) {
             if (*it == i) {
@@ -41,7 +41,7 @@ struct array_compare_relationship
             }
             ++it;
         }
-        return R(n * R{100} / a.size());
+        return result_type(n * result_type{100} / a.size());
     }
 
     /// \return [0, 1]
@@ -49,7 +49,7 @@ struct array_compare_relationship
     { return static_cast<double>(operator()(a, b)) / 100.; }
 
     bool in_dist(value_type const & a, value_type const & b, unsigned d) const
-    { return static_cast<double>(operator()(a, b)) >= d; }
+    { return operator()(a, b) >= d; }
 
     unsigned count() const { return 101; }
 };

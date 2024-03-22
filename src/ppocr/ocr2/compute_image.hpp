@@ -62,27 +62,6 @@ struct data_exclusive_universe : data_strategy_loader<Strategy> {
     size_t limit;
 };
 
-template<template<class...> class Tpl, class Store, class Datas>
-bool has_value(Tpl<>, Datas const &, unsigned, Store const &) {
-    return true;
-}
-
-template<template<class...> class Tpl, class Store, class Strategy, class... Strategies, class Datas>
-bool has_value(
-    Tpl<Strategy, Strategies...>,
-    Datas const & datas,
-    unsigned i, Store const & store
-) {
-    if (datas.template get<Strategy>().get_relationship().in_dist(
-        datas.template get<Strategy>()[i],
-        static_cast<data_strategy_loader<Strategy> const&>(store).x,
-        static_cast<data_exclusive_universe<Strategy> const&>(store).limit
-    )) {
-        return has_value(Tpl<Strategies...>(), datas, i, store);
-    }
-    return false;
-}
-
 template<template<class...> class Tpl, class... Strategies, class Datas, class Ctx>
 void reduce_exclusive_universe(
     Tpl<Strategies...>,
@@ -96,7 +75,7 @@ void reduce_exclusive_universe(
     }
 
     struct
-    :  data_exclusive_universe<Strategies>...
+    : data_exclusive_universe<Strategies>...
     {} store;
 
     UNPACK((
@@ -104,11 +83,15 @@ void reduce_exclusive_universe(
             img, img90, static_cast<typename Strategies::ctx_type&>(ctx)
         ),
         (static_cast<data_exclusive_universe<Strategies>&>(store).limit
-         = datas.template get<Strategies>().count_posibilities()/2)
+         = datas.template get<Strategies>().count_posibilities() / 2)
     ));
 
     reduce_universe_by_word(probabilities, data_indexes_by_words, [&](unsigned i) {
-        return has_value(Tpl<Strategies...>(), datas, i, store);
+        return (true && ... && datas.template get<Strategies>().get_relationship().in_dist(
+            datas.template get<Strategies>()[i],
+            static_cast<data_strategy_loader<Strategies> const&>(store).x,
+            static_cast<data_exclusive_universe<Strategies> const&>(store).limit
+        ));
     });
 }
 
