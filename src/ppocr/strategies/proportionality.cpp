@@ -28,7 +28,4 @@ proportionality::value_type proportionality::load(Image const & img, Image const
 proportionality::relationship_type proportionality::relationship() const
 { return {100}; }
 
-unsigned proportionality::best_difference() const
-{ return 5; }
-
 } }

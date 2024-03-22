@@ -37,7 +37,4 @@ dvdirection2::value_type dvdirection2::load(const Image& img, const Image&, ctx_
 dvdirection2::relationship_type dvdirection2::relationship() const
 { return {100}; }
 
-unsigned dvdirection2::best_difference() const
-{ return 5; }
-
 } }

@@ -38,7 +38,4 @@ hdirection2::value_type hdirection2::load(Image const & img, Image const & /*img
 hdirection2::relationship_type hdirection2::relationship() const
 { return {100}; }
 
-unsigned hdirection2::best_difference() const
-{ return 5; }
-
 } }

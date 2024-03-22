@@ -104,12 +104,9 @@ struct alternations
 
     using ctx_type = no_context;
 
-    static constexpr bool one_axis = false;
-
     value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     constexpr relationship_type relationship() const { return {}; }
-    unsigned best_difference() const;
 };
 
 std::ostream & operator<<(std::ostream &, alternations::alternations_type const &);

@@ -36,12 +36,9 @@ struct hgravity
 
     using ctx_type = cache_context<utils::horizontal_gravity_fn>;
 
-    static constexpr bool one_axis = true;
-
     value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     relationship_type relationship() const;
-    unsigned best_difference() const;
 };
 
 } }

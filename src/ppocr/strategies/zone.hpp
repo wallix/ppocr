@@ -48,12 +48,9 @@ struct zone {
 
     using ctx_type = cache_context<utils::count_zone_fn>;
 
-    static constexpr bool one_axis = false;
-
     value_type load(const Image & img, const Image & img90, ctx_type& ctx) const;
 
     constexpr relationship_type relationship() const { return {}; }
-    constexpr unsigned best_difference() const { return 20; }
 };
 
 } }

@@ -32,7 +32,4 @@ hgravity::value_type hgravity::load(Image const & img, Image const & /*img90*/, 
 hgravity::relationship_type hgravity::relationship() const
 { return {200}; }
 
-unsigned hgravity::best_difference() const
-{ return 10; }
-
 } }

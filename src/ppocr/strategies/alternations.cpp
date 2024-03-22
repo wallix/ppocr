@@ -75,9 +75,6 @@ alternations::value_type alternations::load(const Image& img, const Image& img90
     return seq_alternations;
 }
 
-unsigned alternations::best_difference() const
-{ return 10; }
-
 std::ostream & operator<<(std::ostream & os, alternations::alternations_type const & x) {
     return os << x.start_contains_letter << ' ' << x.count;
 }

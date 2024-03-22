@@ -34,14 +34,11 @@ struct hgravity2
     using value_type = unsigned;
     using relationship_type = interval_relationship<value_type>;
 
-    static constexpr bool one_axis = true;
-
     using ctx_type = cache_context<utils::horizontal_gravity_fn>;
 
     value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     relationship_type relationship() const;
-    unsigned best_difference() const;
 };
 
 } }

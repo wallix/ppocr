@@ -54,9 +54,7 @@ struct proportionality_zone
 
     value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
-    static constexpr bool one_axis() { return false; }
     constexpr relationship_type relationship() const { return {}; }
-    constexpr unsigned best_difference() const { return 20u; }
 };
 
 } }

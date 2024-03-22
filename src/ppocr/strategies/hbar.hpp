@@ -35,12 +35,9 @@ struct hbar
 
     using ctx_type = no_context;
 
-    static constexpr bool one_axis = true;
-
     value_type load(Image const & img, Image const & img90, ctx_type& ctx) const;
 
     constexpr relationship_type relationship() const { return {}; }
-    constexpr unsigned best_difference() const { return 0; }
 };
 
 }

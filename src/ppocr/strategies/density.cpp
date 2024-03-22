@@ -38,7 +38,4 @@ density::value_type density::load(const Image& img, const Image& /*img90*/, ctx_
 density::relationship_type density::relationship() const
 { return {100}; }
 
-unsigned density::best_difference() const
-{ return 5; }
-
 } }

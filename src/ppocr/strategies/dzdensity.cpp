@@ -69,7 +69,4 @@ dzdensity::value_type dzdensity::load(Image const & img, Image const & /*img90*/
 dzdensity::relationship_type dzdensity::relationship() const
 { return {100}; }
 
-unsigned dzdensity::best_difference() const
-{ return 5; }
-
 } }

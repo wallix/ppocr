@@ -37,7 +37,4 @@ dvgravity2::value_type dvgravity2::load(Image const & img, Image const & /*img90
 dvgravity2::relationship_type dvgravity2::relationship() const
 { return {100}; }
 
-unsigned dvgravity2::best_difference() const
-{ return 5; }
-
 } }
