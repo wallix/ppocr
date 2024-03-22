@@ -147,19 +147,15 @@ struct Data
         return data_.values[i];
     }
 
-    relationship_type get_relationship() const {
-        return relationship_type();
-    }
-
-    typename relationship_type::result_type
-    relationship(value_type const & a, value_type const & b) const {
-        return relationship_type::compute(a, b);
-    }
-
-    double dist(value_type const & a, value_type const & b) const {
-        double const ret = relationship_type::dist(a, b);
+    double dist_with(size_t i, value_type const & value) const {
+        double const ret = relationship_type::dist(value, (*this)[i]);
         assert(0. <= ret && ret <= 1.);
         return ret;
+    }
+
+    bool in_dist_with(size_t i, value_type const & value, unsigned d) const
+    {
+        return relationship_type::in_dist((*this)[i], value, d);
     }
 
     unsigned count_posibilities() const {

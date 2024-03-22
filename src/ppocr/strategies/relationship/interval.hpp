@@ -42,7 +42,7 @@ struct interval_relationship
         return static_cast<double>(compute(a, b)) / 100.;
     }
 
-    static bool in_dist(value_type const & a, value_type const & b, value_type const & d)
+    static bool in_dist(value_type const & a, value_type const & b, unsigned d)
     {
         return (a < b) ? (b > a + d) : (a > b + d);
     }

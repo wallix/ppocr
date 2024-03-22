@@ -425,7 +425,7 @@ void reduce_complexe_universe(
     auto const limit = (count+1) / 2;
     out.clear();
     for (auto & prob : in) {
-        auto const x = data.relationship(data[prob.i], store.x);
+        auto const x = Strategy::relationship_type::compute(data[prob.i], store.x);
         if (x >= limit) {
             out.emplace_back(prob.i, prob.prob * x / count);
         }
@@ -460,7 +460,7 @@ bool has_value(
     PpOcrDatas const & datas, unsigned i, Store const & store,
     Strategy, Strategies... other
 ) {
-    if (datas.get<Strategy>().relationship(
+    if (Strategy::relationship_type::compute(
         datas.get<Strategy>()[i],
         static_cast<data_for_strategy<Strategy> const&>(store).x
        ) >= static_cast<data_exclusive_universe<Strategy> const&>(store).limit

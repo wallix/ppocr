@@ -59,17 +59,17 @@ BOOST_AUTO_TEST_CASE(TestLoader2)
 
     {
         auto & data = loader.get<strat1>();
-        BOOST_CHECK_EQUAL(data.relationship(data[0], data[1]), 100);
-        BOOST_CHECK_EQUAL(data.relationship(data[1], data[2]), 83);
+        BOOST_CHECK_EQUAL(strat1::relationship_type::compute(data[0], data[1]), 100);
+        BOOST_CHECK_EQUAL(strat1::relationship_type::compute(data[1], data[2]), 83);
     }
     {
         auto & data = loader.get<strat2>();
-        BOOST_CHECK_EQUAL(data.relationship(data[0], data[1]), 100);
-        BOOST_CHECK_EQUAL(data.relationship(data[1], data[2]), 90);
+        BOOST_CHECK_EQUAL(strat1::relationship_type::compute(data[0], data[1]), 100);
+        BOOST_CHECK_EQUAL(strat1::relationship_type::compute(data[1], data[2]), 90);
     }
     {
         auto & data = loader.get<strat3>();
-        BOOST_CHECK_EQUAL(data.relationship(data[0], data[1]), 100);
-        BOOST_CHECK_EQUAL(data.relationship(data[1], data[2]), 83);
+        BOOST_CHECK_EQUAL(strat1::relationship_type::compute(data[0], data[1]), 100);
+        BOOST_CHECK_EQUAL(strat1::relationship_type::compute(data[1], data[2]), 83);
     }
 }

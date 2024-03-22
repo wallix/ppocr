@@ -46,7 +46,7 @@ void reduce_universe_with_distance(
     auto it = std::remove_if(
         probabilities.begin(), probabilities.end(),
         [&](ocr2::Probability const & prop) {
-            return data.get_relationship().in_dist(value, data[prop.i], d);
+            return data.in_dist_with(prop.i, value, d);
         });
     resize_probabilities(probabilities, it);
 }
@@ -60,7 +60,7 @@ void reduce_universe_and_update_probability(
 ) {
     auto it = probabilities.begin();
     for (auto & prob : probabilities) {
-        auto const x = data.dist(data[prob.i], value);
+        auto const x = data.dist_with(prob.i, value);
         if (x >= prob_limit) {
             *it = {prob.i, prob.prob * x};
             ++it;

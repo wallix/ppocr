@@ -42,7 +42,7 @@ struct equal_relationship
         return a == b ? 1. : 0.;
     }
 
-    static bool in_dist(value_type const & a, value_type const & b, value_type const &)
+    static bool in_dist(value_type const & a, value_type const & b, unsigned)
     {
         return a == b;
     }

@@ -72,12 +72,12 @@ void reduce_exclusive_universe(
     : value_and_limit<Strategies>...
     {} const store {{
         Strategies::load(img, img90, ctx),
-        datas.template get<Strategies>().count_posibilities() / 2,
+        Strategies::relationship_type::count() / 2,
     }...};
 
     reduce_universe_by_word(probabilities, data_indexes_by_words, [&](unsigned i) {
-        return (true && ... && datas.template get<Strategies>().get_relationship().in_dist(
-            datas.template get<Strategies>()[i],
+        return (true && ... && datas.template get<Strategies>().in_dist_with(
+            i,
             static_cast<value_and_limit<Strategies> const&>(store).value,
             static_cast<value_and_limit<Strategies> const&>(store).limit
         ));
@@ -103,14 +103,14 @@ void initialize_universe(
 template<class Data>
 void initialize_probability(Probabilities & probabilities, unsigned value, Data const & data) {
     for (auto & prob : probabilities) {
-        prob.prob = data.dist(data[prob.i], value);
+        prob.prob = Data::relationship_type::dist(data[prob.i], value);
     }
 }
 
 template<class Data>
 void update_probability(Probabilities & probabilities, unsigned value, Data const & data) {
     for (auto & prob : probabilities) {
-        prob.prob *= data.dist(data[prob.i], value);
+        prob.prob *= Data::relationship_type::dist(data[prob.i], value);
     }
 }
 
